@@ -1,0 +1,130 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Cargo {
+  PROPRIETARIA
+  RH
+  DESIGNER
+  REDATORA
+  VIDEOMAKER
+  GESTORTRAFEGO
+}
+
+model Empresa {
+  cnpj      String @id @db.VarChar(18)
+  nome      String @db.VarChar(100)
+  email     String @unique @db.VarChar(100)
+  senha     String @db.VarChar(100)
+  atuacao   String @db.VarChar(100)
+  logotipo  String @db.VarChar(255)
+  feedbacks Feedback[]
+  contratos Contrato[]
+}
+
+model Feedback {
+  id         Int          @id @default(autoincrement())
+  empresaCnpj String      @db.VarChar(18)
+  titulo      String      @db.VarChar(100)
+  nota        Int
+  comentario   String     @db.VarChar(255)
+  data        DateTime    @db.Date
+  empresa    Empresa      @relation(fields: [empresaCnpj], references: [cnpj])
+}
+
+model Colaborador {
+  id         Int      @id @default(autoincrement())
+  nome       String   @db.VarChar(100)
+  email      String   @unique @db.VarChar(100)
+  senha      String   @db.VarChar(100)
+  telefone   String   @db.VarChar(15)
+  sobre      String   @db.VarChar(255)
+  dtnasc     DateTime @db.Date
+  foto       String   @db.VarChar(255)
+  cargo      Cargo
+  atividades Atividade[]
+  comentarios Comentario[]
+}
+
+model Servico {
+  cod          Int     @id @default(autoincrement())
+  nome        String  @db.VarChar(100)
+  descricao   String  @db.VarChar(255)
+  preco       Float
+  simbolo     String  @db.VarChar(255)
+  contratos   Contrato[]
+}
+
+model Contrato {
+  id            Int       @id @default(autoincrement())
+  empresaCnpj   String    @db.VarChar(18)
+  servicoId     Int
+  termos        String    @db.VarChar(255)
+  dataInicio    DateTime  @db.Date 
+  dataFim       DateTime  @db.Date
+  valorTotal    Float
+  empresa       Empresa   @relation(fields: [empresaCnpj], references: [cnpj])
+  servico       Servico   @relation(fields: [servicoId], references: [cod])
+}
+
+model Atividade {
+  id           Int       @id @default(autoincrement())
+  colaboradorId  Int
+  tarefa       String    @db.VarChar(100)
+  area         String    @db.VarChar(100)
+  descricao    String    @db.VarChar(255)
+  // prioridade: baixa, media, alta
+  prioridade   String    @db.VarChar(60)
+  // status: pendente, em andamento, concluida
+  status       String    @db.VarChar(60)
+  ultimaModificacao DateTime
+  arquivos     Arquivo[]
+  comentarios  Comentario[]
+  colaborador       Colaborador @relation(fields: [colaboradorId], references: [id])
+}
+
+model Arquivo {
+  id          Int      @id @default(autoincrement())
+  atividadeId Int
+  nome        String   @db.VarChar(100)
+  url         String   @db.VarChar(255)
+  // tipo: pdf, docx, png, jpg, etc
+  tipo        String   @db.VarChar(50)
+  uploadData  DateTime
+  atividade   Atividade @relation(fields: [atividadeId], references: [id])
+}
+
+model Comentario {
+  id          Int      @id @default(autoincrement())
+  atividadeId Int
+  colaboradorId Int
+  descricao    String   @db.VarChar(255)
+  data        DateTime
+  atividade   Atividade @relation(fields: [atividadeId], references: [id])
+  colaborador Colaborador @relation(fields: [colaboradorId], references: [id])
+}
+
+model Projeto {
+  id          Int      @id @default(autoincrement())
+  nome        String   @db.VarChar(100)
+  descricao   String   @db.VarChar(255)
+  // categoria: marketing, desenvolvimento, design, etc
+  categoria    String   @db.VarChar(100)
+  // status: planejado, em andamento, concluido
+  status      String   @db.VarChar(60)
+  prazo       DateTime @db.Date
+  dataInicio  DateTime @db.Date
+  dataFim     DateTime @db.Date
+}
