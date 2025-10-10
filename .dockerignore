@@ -1,0 +1,18 @@
+# Node modules (não precisamos copiar, vamos instalar na imagem)
+node_modules
+
+# Build local do Next.js
+.next
+out
+dist
+
+# Logs
+npm-debug.log
+yarn-error.log
+
+# Git
+.git
+.gitignore
+
+# Configurações locais e secrets
+.env
