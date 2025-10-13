@@ -19,7 +19,10 @@ COPY . .
 
 # Geração do cliente Prisma e build do Next
 COPY prisma ./prisma/
+
+USER root
 RUN npx prisma generate
+USER node
 
 # Builda o Next
 RUN npm run build
@@ -44,7 +47,7 @@ RUN chown -R nextjs:nextjs /app
 
 # Copia o necessário da etapa de build
 COPY --from=builder --chown=nextjs:nextjs /app/package.json ./package.json
-COPY --from=builder --chown=nextjs:nextjs /app/next.config.js ./next.config.js
+COPY --from=builder --chown=nextjs:nextjs /app/next.config.ts ./next.config.ts
 COPY --from=builder --chown=nextjs:nextjs /app/public ./public
 COPY --from=builder --chown=nextjs:nextjs /app/prisma ./prisma
 COPY --from=builder --chown=nextjs:nextjs /app/.next ./.next
