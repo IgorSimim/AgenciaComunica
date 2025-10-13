@@ -22,20 +22,20 @@ model Empresa {
   nome      String @db.VarChar(100)
   email     String @unique @db.VarChar(100)
   senha     String @db.VarChar(100)
-  atuacao   String @db.VarChar(100)
+  setor     String @db.VarChar(100)
   logotipo  String @db.VarChar(255)
   feedbacks Feedback[]
   contratos Contrato[]
 }
 
 model Feedback {
-  id         Int          @id @default(autoincrement())
+  id          Int          @id @default(autoincrement())
   empresaCnpj String      @db.VarChar(18)
   titulo      String      @db.VarChar(100)
-  nota        Int
-  comentario   String     @db.VarChar(255)
+  avaliacao   Int
+  comentario  String     @db.VarChar(255)
   data        DateTime    @db.Date
-  empresa    Empresa      @relation(fields: [empresaCnpj], references: [cnpj])
+  empresa     Empresa      @relation(fields: [empresaCnpj], references: [cnpj])
 }
 
 model Colaborador {
@@ -53,7 +53,7 @@ model Colaborador {
 }
 
 model Servico {
-  cod          Int     @id @default(autoincrement())
+  cod         Int     @id @default(autoincrement())
   nome        String  @db.VarChar(100)
   descricao   String  @db.VarChar(255)
   preco       Float
