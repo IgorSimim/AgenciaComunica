@@ -1,6 +1,6 @@
-import { Cargo } from "@/generated/prisma";
+import { Cargo } from "@prisma/client";
 
-export interface Empresa {
+export interface TEmpresa {
     cnpj: string;
     nome: string;
     email: string;
@@ -23,11 +23,18 @@ export interface Empresa {
         dataInicio: Date;
         dataFim: Date;
         valorTotal: number;
-        servico: Servico;
+        servico: TServico;
     }[];
 }
 
-export interface Feedback {
+export interface EmpresaSession {
+    cnpj: string;
+    nome: string;
+    email: string;
+    logotipo: string;
+}
+
+export interface TFeedback {
     id: number;
     empresaCnpj: string;
     titulo: string;
@@ -36,7 +43,7 @@ export interface Feedback {
     data: Date;
 }
 
-export interface Colaborador {
+export interface TColaborador {
     id: number;
     nome: string;
     email: string;
@@ -71,7 +78,7 @@ export interface Colaborador {
     }[] | null;
 }
 
-export interface Servico {
+export interface TServico {
     cod: number;
     nome: string;
     descricao: string;

@@ -42,5 +42,4 @@ next-env.d.ts
 
 .docker
 
-/prisma/generated
 /prisma/migrations

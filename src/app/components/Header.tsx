@@ -22,7 +22,7 @@ function Header() {
     }).then((result) => {
       if (result.isConfirmed) {
         mudaLogin({ cod: null, nome: "", logotipo: "" });
-        router.push("/home-deslogado");
+        router.push("/");
       }
     });
   }
@@ -44,7 +44,7 @@ function Header() {
               </span>
             </>
           ) : (
-            <Link href="/home-deslogado">
+            <Link href="/">
               <img src="/logo.png" alt="Logo da Agência Comunica" className="w-44 h-auto" />
             </Link>
           )}
@@ -56,7 +56,7 @@ function Header() {
             <ul className="flex justify-center space-x-16 text-white text-3xl font-normal me-[13rem]">
               <li>
                 <Link
-                  href="/home-deslogado"
+                  href="/"
                   className="hover:text-orange-600 hover:scale-105 transition-all duration-300"
                 >
                   Home
@@ -107,7 +107,7 @@ function Header() {
             </>
           ) : (
             <Link
-              href="/login"
+              href="/loginempresa"
               className="bg-orange-600 text-white px-20 py-4 rounded-full text-3xl font-normal hover:bg-orange-700 min-w-[200px] text-center"
             >
               Entrar

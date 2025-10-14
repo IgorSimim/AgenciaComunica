@@ -1,6 +1,5 @@
 export type ColaboradorCargo = 'PROPRIETARIA' | 'RH' | 'DESIGNER' | 'REDATORA' | 'VIDEOMAKER' | 'GESTORTRAFEGO';
 
-
 export interface Empresa {
     cnpj: string;
     email: string;

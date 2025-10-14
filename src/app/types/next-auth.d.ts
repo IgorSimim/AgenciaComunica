@@ -1,4 +1,4 @@
-import { Cargo } from "@/generated/prisma";
+import { Cargo } from "@prisma/client";
 import NextAuth from "next-auth";
 
 declare module "next-auth" {
