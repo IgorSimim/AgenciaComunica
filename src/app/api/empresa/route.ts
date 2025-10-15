@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
         // }
 
         const data = await request.json()
-        const { cnpj, nome, email, senha, setor, logotipo } = data
+        const { cnpj, nome, email, senha, setor, logotipo, ativa } = data
 
         if (!cnpj || !nome || !email || !senha || !setor || !logotipo) {
             return NextResponse.json(
@@ -80,6 +80,7 @@ export async function POST(request: NextRequest) {
                 senha: hashedPassword,
                 setor,
                 logotipo,
+                ativa
             },
         })
 

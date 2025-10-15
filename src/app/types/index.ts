@@ -7,6 +7,7 @@ export interface TEmpresa {
     senha: string;
     setor: string;
     logotipo: string;
+    ativa: boolean;
     feedbacks: {
         id: number;
         empresaCnpj: string;

@@ -11,6 +11,7 @@ const EmpresasData: Prisma.EmpresaCreateInput[] = [
     senha: '-Senha123',
     setor: 'Comércio',
     logotipo: 'http://example.com/logoA.png',
+    ativa: true,
     feedbacks: { create: [] },
     contratos: { create: [] },
   },

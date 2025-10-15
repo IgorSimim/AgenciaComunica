@@ -23,6 +23,7 @@ model Empresa {
   senha     String @db.VarChar(100)
   setor     String @db.VarChar(100)
   logotipo  String @db.VarChar(255)
+  ativa     Boolean @default(true)
   feedbacks Feedback[]
   contratos Contrato[]
 }
