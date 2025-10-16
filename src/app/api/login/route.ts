@@ -3,13 +3,18 @@ import prisma from '@/lib/prisma'
 import bcryptjs from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 
-
-export async function POST(request: NextRequest) {
+// POST /api/login (Empresa)
+export async function POST(
+    _request: NextRequest
+) {
     try {
-        const { email, senha } = await request.json()
+        const { email, senha } = await _request.json()
 
         if (!email || !senha) {
-            return NextResponse.json({ msg: 'Erro! Email e senha são obrigatórios.' }, { status: 400 })
+            return NextResponse.json(
+                { message: 'Email e senha são obrigatórios' },
+                { status: 400 }
+            )
         }
 
         const empresa = await prisma.empresa.findUnique({
@@ -17,12 +22,17 @@ export async function POST(request: NextRequest) {
         })
 
         if (!empresa) {
-            return NextResponse.json({ msg: 'Erro! Empresa não encontrada.' }, { status: 404 })
+            return NextResponse.json(
+                { message: 'Empresa não encontrada' },
+                { status: 404 }
+            )
         }
 
         const senhaValida = await bcryptjs.compare(senha, empresa.senha)
         if (!senhaValida) {
-            return NextResponse.json({ msg: 'Erro! Email ou senha incorreta.' }, { status: 401 })
+            return NextResponse.json(
+                { message: 'Email ou senha incorreta' },
+                { status: 401 })
         }
 
         const token = jwt.sign(
@@ -42,10 +52,9 @@ export async function POST(request: NextRequest) {
             empresa: empresaSemSenha,
             token
         })
-    } catch (error: any) {
-        console.error('Erro no login da empresa:', error)
+    } catch (error) {
         return NextResponse.json(
-            { error: error.message },
+            { message: 'Erro ao realizar login' },
             { status: 500 }
         )
     }
