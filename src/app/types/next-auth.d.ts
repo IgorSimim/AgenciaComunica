@@ -9,11 +9,12 @@ declare module "next-auth" {
       nome: string;
       cargo: Cargo;
     };
-    
+
     empresa: {
       cnpj: string;
       email: string;
       nome: string;
+      logotipo: string;
     };
   }
 }
