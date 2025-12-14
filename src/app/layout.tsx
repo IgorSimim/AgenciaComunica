@@ -1,9 +1,5 @@
 import type { Metadata } from "next";
 import "@/app/styles/globals.css";
-import Header from "@/app/components/Header";
-import Footer from "@/app/components/Footer";
-import NextAuthSessionProvider from "./providers/SessionProvider";
-import EmpresaProvider from "@/app/context/EmpresaContext";
 
 export const metadata: Metadata = {
   title: "Agência Comunica",
@@ -25,14 +21,7 @@ export default function RootLayout({
         <link rel="shortcut icon" href="/logo.png" type="image/x-icon" />
       </head>
       <body className="bg-black text-white dark:bg-black dark:text-white">
-        <NextAuthSessionProvider>
-          <EmpresaProvider>
-            <Header />
-            {children}
-            <Footer />
-          </EmpresaProvider>
-        </NextAuthSessionProvider>
-        {/* <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script> */}
+        {children}
       </body>
     </html>
   );

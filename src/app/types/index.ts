@@ -44,7 +44,7 @@ export interface TFeedback {
     data: Date;
 }
 
-export interface TColaborador {
+export interface TContratado {
     id: number;
     nome: string;
     email: string;
@@ -56,7 +56,7 @@ export interface TColaborador {
     cargo: Cargo;
     atividades: {
         id: number;
-        colaboradorId: number;
+        contratadoId: number;
         descricao: string;
         prioridade: string;
         status: string;
@@ -72,7 +72,7 @@ export interface TColaborador {
         comentarios: {
             id: number;
             atividadeId: number;
-            colaboradorId: number;
+            contratadoId: number;
             descricao: string;
             data: Date;
         }[] | null;

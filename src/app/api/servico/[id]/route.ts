@@ -31,18 +31,18 @@ export async function PUT(
         }
 
         const session = await getServerSession(authOptions);
-        if (!session?.colaborador?.email) {
+        if (!session?.contratado?.email) {
             return NextResponse.json(
-                { message: "Colaborador não autenticado" },
+                { message: "Contratado não autenticado" },
                 { status: 401 }
             );
         }
 
-        const colaborador = await prisma.colaborador.findUnique({
-            where: { email: session.colaborador.email }
+        const contratado = await prisma.contratado.findUnique({
+            where: { email: session.contratado.email }
         });
 
-        if (!colaborador || (colaborador.cargo !== "PROPRIETARIA" && colaborador.cargo !== "REDATORA")) {
+        if (!contratado || (contratado.cargo !== "PROPRIETARIA" && contratado.cargo !== "REDATORA")) {
             return NextResponse.json(
                 { message: "Acesso negado para atualizar os dados da serviço" },
                 { status: 403 }
@@ -109,18 +109,18 @@ export async function DELETE(
         }
 
         const session = await getServerSession(authOptions);
-        if (!session?.colaborador?.email) {
+        if (!session?.contratado?.email) {
             return NextResponse.json(
-                { message: "Colaborador não autenticado" },
+                { message: "Contratado não autenticado" },
                 { status: 401 }
             );
         }
 
-        const colaborador = await prisma.colaborador.findUnique({
-            where: { email: session.colaborador.email }
+        const contratado = await prisma.contratado.findUnique({
+            where: { email: session.contratado.email }
         });
 
-        if (!colaborador || (colaborador.cargo !== "PROPRIETARIA" && colaborador.cargo !== "REDATORA")) {
+        if (!contratado || (contratado.cargo !== "PROPRIETARIA" && contratado.cargo !== "REDATORA")) {
             return NextResponse.json(
                 { message: "Acesso negado para deletar o serviço" },
                 { status: 403 }

@@ -31,18 +31,18 @@ export async function PUT(
         }
 
         const session = await getServerSession(authOptions);
-        if (!session?.colaborador?.email) {
+        if (!session?.contratado?.email) {
             return NextResponse.json(
-                { message: "Colaborador não autenticado" },
+                { message: "Contratado não autenticado" },
                 { status: 401 }
             );
         }
 
-        const colaborador = await prisma.colaborador.findUnique({
-            where: { email: session.colaborador.email }
+        const contratado = await prisma.contratado.findUnique({
+            where: { email: session.contratado.email }
         });
 
-        if (!colaborador || colaborador.cargo !== "RH") {
+        if (!contratado || contratado.cargo !== "RH") {
             return NextResponse.json(
                 { message: "Acesso negado para atualizar os dados da empresa" },
                 { status: 403 }
@@ -110,18 +110,18 @@ export async function DELETE(
         }
 
         const session = await getServerSession(authOptions);
-        if (!session?.colaborador?.email) {
+        if (!session?.contratado?.email) {
             return NextResponse.json(
-                { message: "Colaborador não autenticado" },
+                { message: "Contratado não autenticado" },
                 { status: 401 }
             );
         }
 
-        const colaborador = await prisma.colaborador.findUnique({
-            where: { email: session.colaborador.email }
+        const contratado = await prisma.contratado.findUnique({
+            where: { email: session.contratado.email }
         });
 
-        if (!colaborador || colaborador.cargo !== "RH") {
+        if (!contratado || contratado.cargo !== "RH") {
             return NextResponse.json(
                 { message: "Acesso negado para deletar a empresa" },
                 { status: 403 }

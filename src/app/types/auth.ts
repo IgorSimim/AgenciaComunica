@@ -1,4 +1,4 @@
-export type ColaboradorCargo = 'PROPRIETARIA' | 'RH' | 'DESIGNER' | 'REDATORA' | 'VIDEOMAKER' | 'GESTORTRAFEGO';
+export type ContratadoCargo = 'PROPRIETARIA' | 'RH' | 'DESIGNER' | 'REDATORA' | 'VIDEOMAKER' | 'GESTORTRAFEGO';
 
 export interface Empresa {
     cnpj: string;
@@ -6,9 +6,9 @@ export interface Empresa {
     senha: string;
 }
 
-export interface Colaborador {
+export interface Contratado {
     id: number;
     email: string;
     senha: string;
-    cargo: ColaboradorCargo;
+    cargo: ContratadoCargo;
 }

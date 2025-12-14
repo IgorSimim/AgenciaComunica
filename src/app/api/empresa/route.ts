@@ -8,18 +8,18 @@ import { getServerSession } from "next-auth"
 export async function GET() {
     try {
         const session = await getServerSession(authOptions)
-        if (!session?.colaborador?.email) {
+        if (!session?.contratado?.email) {
             return NextResponse.json(
-                { message: "Colaborador não autenticado" },
+                { message: "Contratado não autenticado" },
                 { status: 401 }
             )
         }
 
-        const colaborador = await prisma.colaborador.findUnique({
-            where: { email: session.colaborador.email },
+        const contratado = await prisma.contratado.findUnique({
+            where: { email: session.contratado.email },
         })
 
-        if (!colaborador || (colaborador.cargo !== "PROPRIETARIA" && colaborador.cargo !== "RH")) {
+        if (!contratado || (contratado.cargo !== "PROPRIETARIA" && contratado.cargo !== "RH")) {
             const empresas = await prisma.empresa.findMany({
                 select: {
                     cnpj: true,
@@ -37,7 +37,7 @@ export async function GET() {
             )
         }
 
-        if (colaborador.cargo === "PROPRIETARIA" || colaborador.cargo === "RH") {
+        if (contratado.cargo === "PROPRIETARIA" || contratado.cargo === "RH") {
             const empresas = await prisma.empresa.findMany({
                 select: {
                     cnpj: true,
@@ -69,18 +69,18 @@ export async function POST(
 ) {
     try {
         const session = await getServerSession(authOptions)
-        if (!session?.colaborador?.email) {
+        if (!session?.contratado?.email) {
             return NextResponse.json(
-                { message: "Colaborador não autenticado" },
+                { message: "Contratado não autenticado" },
                 { status: 401 }
             )
         }
 
-        const colaborador = await prisma.colaborador.findUnique({
-            where: { email: session.colaborador.email },
+        const contratado = await prisma.contratado.findUnique({
+            where: { email: session.contratado.email },
         })
 
-        if (!colaborador || (colaborador.cargo !== "REDATORA" && colaborador.cargo !== "PROPRIETARIA")) {
+        if (!contratado || (contratado.cargo !== "REDATORA" && contratado.cargo !== "PROPRIETARIA")) {
             return NextResponse.json(
                 { message: "Acesso negado" },
                 { status: 403 }
@@ -108,11 +108,11 @@ export async function POST(
             )
         }
 
-        const existingEmpresa = await prisma.empresa.findUnique({
+        const existingEmail = await prisma.empresa.findUnique({
             where: { email }
         })
 
-        if (existingEmpresa) {
+        if (existingEmail) {
             return NextResponse.json(
                 { message: "Já existe uma empresa com este email" },
                 { status: 400 }

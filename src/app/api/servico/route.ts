@@ -34,18 +34,18 @@ export async function POST(
 ) {
     try {
         const session = await getServerSession(authOptions)
-        if (!session?.colaborador?.email) {
+        if (!session?.contratado?.email) {
             return NextResponse.json(
-                { message: "Colaborador não autenticado" },
+                { message: "Contratado não autenticado" },
                 { status: 401 }
             )
         }
 
-        const colaborador = await prisma.colaborador.findUnique({
-            where: { email: session.colaborador.email },
+        const contratado = await prisma.contratado.findUnique({
+            where: { email: session.contratado.email },
         })
 
-        if (!colaborador || (colaborador.cargo !== "REDATORA" && colaborador.cargo !== "PROPRIETARIA")) {
+        if (!contratado || (contratado.cargo !== "REDATORA" && contratado.cargo !== "PROPRIETARIA")) {
             return NextResponse.json(
                 { message: "Acesso negado" },
                 { status: 403 }

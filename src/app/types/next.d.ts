@@ -2,7 +2,7 @@ import { NextApiRequest } from 'next/server';
 
 declare module 'next/server' {
     interface NextRequest {
-        colaborador?: {
+        contratado?: {
             id: string;
             email: string;
             cargo: 'PROPRIETARIA' | 'RH' | 'DESIGNER' | 'REDATORA' | 'VIDEOMAKER' | 'GESTORTRAFEGO';

@@ -3,7 +3,7 @@ import NextAuth from "next-auth";
 
 declare module "next-auth" {
   interface Session {
-    colaborador: {
+    contratado: {
       id: string;
       email: string;
       nome: string;
