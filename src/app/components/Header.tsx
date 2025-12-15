@@ -1,29 +1,20 @@
 'use client';
-import { useContext } from "react";
-import { useRouter } from "next/navigation"; // Importa o hook useRouter
+import { useSession, signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { RxExit } from "react-icons/rx";
-import { EmpresaContext } from "@/app/context/EmpresaContext";
-import Swal from "sweetalert2";
 import Link from "next/link";
+import { alerts } from "@/lib/alerts";
 
 function Header() {
-  const { codEmpresaLogado, nomeEmpresaLogado, logotipoEmpresaLogado, mudaLogin } = useContext(EmpresaContext);
-  const router = useRouter(); // Instancia o roteador
+  const { data: session } = useSession();
+  const router = useRouter();
+  const empresa = (session as any)?.empresa;
 
-  function logout() {
-    Swal.fire({
-      title: "Confirmar saída do site da agência?",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Sim",
-      cancelButtonText: "Não",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        mudaLogin({ cod: null, nome: "", logotipo: "" });
-        router.push("/");
-      }
+  async function logout() {
+    alerts.confirm("Deseja realmente fazer logout?", async () => {
+      await signOut({ redirect: false });
+      alerts.success("Logout realizado com sucesso!");
+      router.push("/");
     });
   }
 
@@ -32,15 +23,15 @@ function Header() {
       <div className="container mx-auto flex items-center justify-between">
         {/* Esquerda: Logo e Nome */}
         <div className="flex items-center space-x-4">
-          {codEmpresaLogado ? (
+          {session ? (
             <>
               <img
-                src={logotipoEmpresaLogado}
+                src={empresa?.logotipo || "/logo.png"}
                 alt="Logo ou Foto de Perfil da Empresa"
                 className="w-20 h-20 rounded-full border-4 border-white me-3"
               />
               <span className="text-white text-2xl font-semibold">
-                {nomeEmpresaLogado}
+                {empresa?.nome || "Empresa"}
               </span>
             </>
           ) : (
@@ -52,7 +43,7 @@ function Header() {
 
         {/* Centro: Navegação ou Boas-vindas */}
         <div className="flex-1 text-center">
-          {!codEmpresaLogado && (
+          {!session && (
             <ul className="flex justify-center space-x-16 text-white text-3xl font-normal me-[13rem]">
               <li>
                 <Link
@@ -92,10 +83,10 @@ function Header() {
 
         {/* Direita: Login ou Logout */}
         <div className="flex items-center space-x-10">
-          {codEmpresaLogado ? (
+          {session ? (
             <>
               <span className="text-white text-xl font-normal">
-                Bem-vindo(a), {nomeEmpresaLogado}
+                Bem-vindo(a), {empresa?.nome || "Empresa"}
               </span>
               <span
                 onClick={logout}

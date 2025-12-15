@@ -1,9 +1,9 @@
 'use client'
 
-import { useActionState, useState, useEffect, useContext } from "react"
+import { useActionState, useState, useEffect } from "react"
 import Form from "next/form"
 import { Loader2 as SpinnerIcon } from "lucide-react"
-import { EmpresaContext } from "@/app/context/EmpresaContext"
+import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { alerts } from "@/lib/alerts"
 
@@ -38,7 +38,6 @@ async function handlerEmpresaLogin(prevState: LoginState | null, formData: FormD
 
 export default function EmpresaLoginForm() {
   const [state, formAction, isPending] = useActionState(handlerEmpresaLogin, null)
-  const { mudaLogin } = useContext(EmpresaContext)
   const router = useRouter()
 
   const [email, setEmail] = useState("")
@@ -53,31 +52,18 @@ export default function EmpresaLoginForm() {
   useEffect(() => {
     if (wasPending && !isPending) {
       if (state?.success) {
-        // Login bem-sucedido - processar no cliente
-        fetch("/api/loginempresa", {
-          method: "POST",
-          headers: { "Content-type": "application/json" },
-          body: JSON.stringify({ email, senha }),
+        signIn('credentials', {
+          email,
+          senha,
+          redirect: false
+        }).then((result) => {
+          if (result?.ok) {
+            alerts.success("Login realizado com sucesso!")
+            router.push('/home-empresa')
+          } else {
+            setLastError("Erro no login")
+          }
         })
-          .then(response => response.json())
-          .then(dados => {
-            if (dados.token) {
-              localStorage.setItem('isLoggedIn', 'true')
-              localStorage.setItem('token', dados.token)
-              localStorage.setItem('codEmpresaLogado', String(dados.empresa.cod))
-              localStorage.setItem('nomeEmpresaLogado', dados.empresa.nome)
-              localStorage.setItem('logotipoEmpresaLogado', dados.empresa.logotipo)
-
-              mudaLogin({
-                cod: dados.empresa.cod,
-                nome: dados.empresa.nome,
-                logotipo: dados.empresa.logotipo
-              })
-
-              alerts.success("Login realizado com sucesso!")
-              router.push('/home-empresa')
-            }
-          })
       } else if (state?.error) {
         // Tratar erros
         if (state.error.toLowerCase().includes("email")) {
@@ -92,7 +78,7 @@ export default function EmpresaLoginForm() {
     if (!state?.error && lastError) {
       setLastError(null)
     }
-  }, [state, isPending, wasPending, lastError, email, senha, mudaLogin, router])
+  }, [state, isPending, wasPending, lastError, email, senha, router])
 
   function validateFields() {
     const errors: { [key: string]: string } = {}
