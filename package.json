@@ -20,7 +20,9 @@
     "prisma:migrate:revert": "prisma migrate revert"
   },
   "dependencies": {
+    "@next/third-parties": "^16.0.10",
     "@prisma/client": "^6.17.0",
+    "@types/nodemailer": "^7.0.4",
     "axios": "^1.13.2",
     "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.2",
@@ -29,6 +31,7 @@
     "lucide-react": "^0.545.0",
     "next": "^15.5.9",
     "next-auth": "^4.24.11",
+    "nodemailer": "^7.0.11",
     "prisma": "^6.17.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
