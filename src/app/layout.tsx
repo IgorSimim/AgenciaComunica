@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "@/app/styles/globals.css";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "Agência Comunica",
@@ -22,6 +23,7 @@ export default function RootLayout({
       </head>
       <body className="bg-black text-white dark:bg-black dark:text-white">
         {children}
+        <Toaster position="top-right" richColors />
       </body>
     </html>
   );

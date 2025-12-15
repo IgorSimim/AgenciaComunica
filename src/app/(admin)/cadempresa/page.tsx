@@ -2,7 +2,7 @@
 import 'react-responsive-modal/styles.css'
 import { Modal } from 'react-responsive-modal'
 import { useEffect, useState } from "react"
-import NovaEmpresa from '../../components/Empresas/NovaEmpresa'
+import NovaEmpresa from '@/app/components/Empresas/NovaEmpresa'
 import ItemEmpresa from '@/app/components/Empresas/ItemEmpresa'
 import axios from 'axios'
 

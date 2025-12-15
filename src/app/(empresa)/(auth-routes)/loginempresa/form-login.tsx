@@ -5,7 +5,8 @@ import Form from "next/form"
 import { Loader2 as SpinnerIcon } from "lucide-react"
 import { EmpresaContext } from "@/app/context/EmpresaContext"
 import { useRouter } from "next/navigation"
-import { Toaster, toast } from "sonner"
+import { alerts } from "@/lib/alerts"
+
 
 interface LoginState {
   error?: string
@@ -28,7 +29,7 @@ async function handlerEmpresaLogin(prevState: LoginState | null, formData: FormD
     if (response.ok && dados.token) {
       return { success: true }
     } else {
-      return { error: dados.msg || "Erro! Login ou senha incorreta." }
+      return { error: dados.msg || "Erro! Email ou senha incorreta." }
     }
   } catch (error) {
     return { error: "Erro de conexão. Tente novamente." }
@@ -73,7 +74,7 @@ export default function EmpresaLoginForm() {
                 logotipo: dados.empresa.logotipo
               })
 
-              toast.success("Login realizado com sucesso")
+              alerts.success("Login realizado com sucesso!")
               router.push('/home-empresa')
             }
           })
@@ -85,7 +86,6 @@ export default function EmpresaLoginForm() {
           setFieldErrors((prev) => ({ ...prev, senha: state.error! }))
         }
         setLastError(state.error)
-        toast.error(state.error)
       }
     }
     setWasPending(isPending)
@@ -199,8 +199,6 @@ export default function EmpresaLoginForm() {
 
         </div>
       </div>
-
-      <Toaster position="top-right" richColors />
     </div>
   )
 }

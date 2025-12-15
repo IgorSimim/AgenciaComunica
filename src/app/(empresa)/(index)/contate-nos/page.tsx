@@ -1,46 +1,67 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
-import { toast, Toaster } from 'sonner';
+import { sendGTMEvent } from '@next/third-parties/google'
+import { stringify } from 'querystring'
+import { useState, FormEvent } from 'react'
+import { alerts } from '@/lib/alerts'
 
-export default function ContateNos() {
-    const { register, handleSubmit, reset } = useForm<{
-        nome: string;
-        email: string;
-        mensagem: string;
-    }>();
+type FormData = {
+    nome: string
+    email: string
+    mensagem: string
+}
 
-    async function enviarContato(data: { nome: string; email: string; mensagem: string }) {
+export default function Contato() {
+    const [formData, setFormData] = useState<FormData>({
+        nome: '',
+        email: '',
+        mensagem: ''
+    })
+
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
+        const { name, value } = e.target
+
+        if (name === 'nome') {
+            // Aceita apenas letras (maiúsculas/minúsculas), acentos e espaços
+            const somenteLetras = value.replace(/[^A-Za-zÀ-ÿ\s]/g, '')
+            setFormData(prev => ({ ...prev, [name]: somenteLetras }))
+        } else {
+            setFormData(prev => ({ ...prev, [name]: value }))
+        }
+    }
+
+    const handleSubmit = async (e: FormEvent) => {
+        e.preventDefault()
+
+        // Validação simples de Email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        if (!emailRegex.test(formData.email)) {
+            alerts.warning('Por favor, informe um Email válido.')
+            return
+        }
+
         try {
-            const response = await fetch('http://localhost:3004/enviaemail', {
+            const res = await fetch('/api/contato', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data),
-            });
+                body: JSON.stringify(formData),
+            })
+            if (!res.ok) throw new Error('Erro ao enviar o formulário')
 
-            if (response.ok) {
-                toast.success('Sua mensagem foi enviada com sucesso! Em breve entraremos em contato.');
-                reset();
-            } else {
-                const responseData = await response.json();
+            sendGTMEvent({ event: 'buttonClicked', value: stringify({ email: formData.email, mensagem: formData.mensagem }) });
 
-                if (responseData.msg) {
-                    toast.error(`Erro: ${responseData.msg}`);
-                } else {
-                    toast.error('Erro ao enviar a mensagem. Tente novamente mais tarde.');
-                }
-            }
-        } catch (error) {
-            console.error('Erro ao enviar a mensagem:', error);
-            toast.error('Erro inesperado. Verifique sua conexão ou tente novamente mais tarde.');
+            alerts.success('Formulário enviado com sucesso!')
+            setFormData({ nome: '', email: '', mensagem: '' })
+        } catch (err) {
+            alerts.error('Não foi possível enviar sua mensagem. Tente novamente mais tarde.')
         }
     }
 
 
     return (
         <>
-            {/* Toaster para exibir notificações */}
-            <Toaster position="top-right" richColors />
 
             <div className="bg-black py-12">
                 {/* Título da página */}
@@ -53,7 +74,7 @@ export default function ContateNos() {
 
                 {/* Formulário de Contato */}
                 <div className="max-w-4xl mx-auto bg-yellow-400 p-10 rounded-xl shadow-lg">
-                    <form onSubmit={handleSubmit(enviarContato)}>
+                    <form onSubmit={handleSubmit}>
                         {/* Nome */}
                         <div className="mb-6">
                             <label
@@ -63,11 +84,15 @@ export default function ContateNos() {
                                 Nome
                             </label>
                             <input
-                                {...register('nome', { required: true })}
                                 id="nome"
                                 type="text"
-                                className="w-full p-4 rounded-lg border-2 border-gray-300 text-gray-800"
+                                name="nome"
                                 placeholder="Seu nome completo"
+                                aria-label="Nome completo"
+                                value={formData.nome}
+                                onChange={handleChange}
+                                required
+                                className="w-full p-4 rounded-lg border-2 border-gray-300 text-gray-800"
                             />
                         </div>
 
@@ -80,11 +105,15 @@ export default function ContateNos() {
                                 E-mail
                             </label>
                             <input
-                                {...register('email', { required: true })}
                                 id="email"
                                 type="email"
-                                className="w-full p-4 rounded-lg border-2 border-gray-300 text-gray-800"
+                                name="email"
                                 placeholder="Seu e-mail"
+                                aria-label="Email"
+                                value={formData.email}
+                                onChange={handleChange}
+                                required
+                                className="w-full p-4 rounded-lg border-2 border-gray-300 text-gray-800"
                             />
                         </div>
 
@@ -97,11 +126,15 @@ export default function ContateNos() {
                                 Mensagem
                             </label>
                             <textarea
-                                {...register('mensagem', { required: true })}
                                 id="mensagem"
-                                className="w-full p-4 rounded-lg border-2 border-gray-300 text-gray-800"
-                                rows={6}
+                                name="mensagem"
                                 placeholder="Escreva sua mensagem aqui"
+                                aria-label="Mensagem"
+                                value={formData.mensagem}
+                                onChange={handleChange}
+                                required
+                                rows={6}
+                                className="w-full p-4 rounded-lg border-2 border-gray-300 text-gray-800"
                             ></textarea>
                         </div>
 

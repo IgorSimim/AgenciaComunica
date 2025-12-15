@@ -1,4 +1,3 @@
-import { Toaster } from "sonner";
 import Titulo from "@/app/components/Titulo";
 
 export default function AdminLayout({
@@ -8,7 +7,6 @@ export default function AdminLayout({
 }) {
   return (
     <>
-      <Toaster richColors position="top-right" />
       <Titulo />
       {children}
     </>

@@ -2,7 +2,7 @@
 import 'react-responsive-modal/styles.css'
 import { Modal } from 'react-responsive-modal'
 import { useEffect, useState } from "react"
-import NovoServico from '../../components/Servicos/NovoServico'
+import NovoServico from '@/app/components/Servicos/NovoServico'
 import ItemServico from '@/app/components/Servicos/ItemServico'
 import axios from 'axios'
 
