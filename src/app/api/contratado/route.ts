@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs"
 import prisma from "@/lib/prisma";
 import { Atividade, Cargo, Comentario } from "@prisma/client";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../config/auth/authOptions";
+import { authOptions } from "@/app/api/config/auth/authOptions";
 
 // GET /api/contratado
 export async function GET() {

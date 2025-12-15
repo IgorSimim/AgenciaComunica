@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import prisma from "@/lib/prisma";
-import { authOptions } from "../../config/auth/authOptions";
+import { authOptions } from "@/app/api/config/auth/authOptions";
 
 // PUT /api/servico/:cod
 export async function PUT(
