@@ -69,4 +69,29 @@ export const alerts = {
       },
     });
   },
+
+  confirm: (message: string, onConfirm: () => void) => {
+    toast(message, {
+      duration: Infinity,
+      position: 'top-center',
+      style: {
+        background: '#F59E0B',
+        color: 'white',
+        border: 'none',
+        borderRadius: '12px',
+        fontSize: '16px',
+        fontWeight: '500',
+      },
+      action: {
+        label: 'Sim',
+        onClick: () => {
+          onConfirm();
+        },
+      },
+      cancel: {
+        label: 'Cancelar',
+        onClick: () => {},
+      },
+    });
+  },
 };
