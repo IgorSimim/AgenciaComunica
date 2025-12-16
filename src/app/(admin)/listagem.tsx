@@ -7,7 +7,7 @@ type Contratados = {
   nome: string
   email: string
   senha: string
-  atuacao: string
+  cargo: string
   dtnasc: Date
   sobre: string
   foto: string
@@ -38,7 +38,7 @@ export default function Listagem() {
   useEffect(() => {
     async function fetchContratados() {
       try {
-        const response = await fetch("http://localhost:3004/contratados")
+        const response = await fetch("/api/contratado")
         if (response.ok) {
           const data = await response.json()
           setContratados(data)
@@ -52,7 +52,7 @@ export default function Listagem() {
 
     async function fetchEmpresas() {
       try {
-        const response = await fetch("http://localhost:3004/empresas")
+        const response = await fetch("/api/empresa")
         if (response.ok) {
           const data = await response.json()
           setEmpresas(data)
@@ -66,7 +66,7 @@ export default function Listagem() {
 
     async function fetchServicos() {
       try {
-        const response = await fetch("http://localhost:3004/servicos")
+        const response = await fetch("/api/servico")
         if (response.ok) {
           const data = await response.json()
           setServicos(data)

@@ -22,6 +22,7 @@ export async function GET() {
         if (!contratado || (contratado.cargo !== "PROPRIETARIA" && contratado.cargo !== "RH")) {
             const empresas = await prisma.empresa.findMany({
                 select: {
+                    cod: true,  
                     cnpj: true,
                     nome: true,
                     email: true,
@@ -40,6 +41,7 @@ export async function GET() {
         if (contratado.cargo === "PROPRIETARIA" || contratado.cargo === "RH") {
             const empresas = await prisma.empresa.findMany({
                 select: {
+                    cod: true,  
                     cnpj: true,
                     nome: true,
                     email: true,

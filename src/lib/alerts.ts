@@ -94,4 +94,49 @@ export const alerts = {
       },
     });
   },
+
+  delete: async (title: string, message: string, onDelete: () => void, onSuccess?: (name: string) => void, onError?: (message: string) => void) => {
+    const Swal = (await import('sweetalert2')).default;
+    
+    const result = await Swal.fire({
+      title: title,
+      text: message,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#DC2626",
+      cancelButtonColor: "#6B7280",
+      confirmButtonText: "Sim, excluir",
+      cancelButtonText: "Cancelar",
+      background: '#ffffff',
+      customClass: {
+        confirmButton: 'font-semibold',
+        cancelButton: 'font-semibold'
+      }
+    });
+
+    if (result.isConfirmed) {
+      try {
+        onDelete();
+        Swal.fire({
+          title: "Excluído com sucesso!",
+          text: title,
+          icon: "success",
+          confirmButtonColor: "#10B981",
+          customClass: {
+            confirmButton: 'font-semibold'
+          }
+        });
+      } catch (error) {
+        Swal.fire({
+          title: "Erro ao excluir",
+          text: error instanceof Error ? error.message : "Erro desconhecido",
+          icon: "error",
+          confirmButtonColor: "#EF4444",
+          customClass: {
+            confirmButton: 'font-semibold'
+          }
+        });
+      }
+    }
+  },
 };

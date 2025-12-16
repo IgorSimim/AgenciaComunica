@@ -140,3 +140,47 @@ export async function DELETE(
         );
     }
 }
+
+// GET /api/contratado/:id
+export async function GET(
+    _request: NextRequest,
+    { params }: { params: Promise<{ id: string }> }
+) {
+    try {
+        const idStr = await params?.then((e) => e.id);
+        if (!idStr) {
+            return NextResponse.json(
+                { error: "ID da contratado é obrigatório" },
+                { status: 400 }
+            );
+        }
+
+        const id = parseInt(idStr, 10);
+        if (isNaN(id)) {
+            return NextResponse.json(
+                { error: "ID da contratado deve ser um número válido" },
+                { status: 400 }
+            );
+        }
+
+        const contratado = await prisma.contratado.findFirst({
+            where: {
+                id: id
+            },
+        });
+
+        if (!contratado) {
+            return NextResponse.json(
+                { error: "Contratado não encontrado" },
+                { status: 404 }
+            );
+        }
+
+        return NextResponse.json(contratado, { status: 200 });
+    } catch (error) {
+        return NextResponse.json(
+            { message: "Erro ao buscar contratado" },
+            { status: 500 }
+        );
+    }
+}

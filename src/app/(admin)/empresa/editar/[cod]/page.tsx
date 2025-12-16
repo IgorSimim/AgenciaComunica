@@ -1,0 +1,254 @@
+'use client'
+import { useEffect } from "react"
+import { useForm } from "react-hook-form"
+import { useParams } from "next/navigation"
+import { alerts } from "@/lib/alerts"
+import Link from "next/link"
+import { TEmpresa } from "@/app/types"
+
+export default function AlteracaoEmpresa() {
+  const params = useParams()
+  const { register, reset, handleSubmit, formState: { errors } } = useForm<TEmpresa>({
+    mode: "onBlur"
+  })
+
+  const validateNome = (nome: string) => {
+    const nomeRegex = /^[A-Za-zÀ-ú\s]+$/
+    if (!nomeRegex.test(nome)) {
+      return "Nome não pode conter números ou caracteres especiais"
+    }
+    return true
+  }
+
+  const validateCNPJ = (cnpj: string) => {
+    const cleanCNPJ = cnpj.replace(/[^\d]/g, '')
+    if (cleanCNPJ.length !== 14) {
+      return "CNPJ deve ter 14 dígitos"
+    }
+    return true
+  }
+
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      return "Email deve ter um formato válido"
+    }
+    if (email.length > 100) {
+      return "Email deve ter no máximo 100 caracteres"
+    }
+    return true
+  }
+
+  const validateURL = (url: string) => {
+    try {
+      new URL(url)
+      if (url.length > 255) {
+        return "URL deve ter no máximo 255 caracteres"
+      }
+      return true
+    } catch {
+      return "URL deve ter um formato válido"
+    }
+  }
+
+  useEffect(() => {
+    async function getEmpresa() {
+      try {
+        const response = await fetch("/api/empresa/" + params.cod)
+        const dado = await response.json()
+
+        if (response.ok) {
+          reset({
+            nome: dado.nome,
+            cnpj: dado.cnpj,
+            email: dado.email,
+            senha: dado.senha,
+            setor: dado.setor,
+            logotipo: dado.logotipo
+          })
+        } else {
+          alerts.error("Não foi possível carregar os dados da empresa")
+        }
+      } catch (error) {
+        alerts.error("Erro ao carregar os dados da empresa")
+      }
+    }
+    getEmpresa()
+  }, [])
+
+  async function alteraDados(data: TEmpresa) {
+    try {
+      const response = await fetch("/api/empresa/" + params.cod, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...data }),
+      })
+
+      if (response.status === 200) {
+        alerts.success("Empresa alterada com sucesso!")
+      } else {
+        const errorData = await response.json()
+
+        if (errorData.msg === "Formato de email inválido.") {
+          alerts.error("O formato do e-mail fornecido é inválido.")
+        } else if (errorData.msg === "Empresa não encontrada.") {
+          alerts.error("A empresa com o código fornecido não foi encontrada.")
+        } else if (errorData.msg === "Não foi possível atualizar a empresa.") {
+          alerts.error("Ocorreu um erro ao tentar atualizar a empresa. Tente novamente.")
+        } else {
+          alerts.error(`Erro ao alterar a empresa: ${errorData.msg || 'Tente novamente.'}`)
+        }
+      }
+    } catch (error) {
+      alerts.error("Erro ao processar a alteração. Tente novamente mais tarde.")
+    }
+  }
+
+
+  return (
+    <div className="container mx-auto p-6">
+      <h2 className="text-3xl mb-6 font-bold text-gray-900">Alteração das informações da empresa</h2>
+      <form
+        className="grid grid-cols-1 gap-6 max-w-4xl mx-auto bg-gray-100 p-6 rounded-lg shadow-lg"
+        onSubmit={handleSubmit(alteraDados)}
+      >
+        <fieldset className="border border-gray-300 rounded-md p-4">
+          <legend className="text-lg font-bold text-gray-700 px-2">Informações básicas</legend>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+            <div>
+              <label htmlFor="nome" className="block mb-2 text-sm font-medium text-gray-800">
+                Nome
+              </label>
+              <input
+                {...register("nome", {
+                  required: "Nome é obrigatório",
+                  maxLength: { value: 100, message: "Nome deve ter no máximo 100 caracteres" },
+                  minLength: { value: 2, message: "Nome deve ter pelo menos 2 caracteres" },
+                  validate: validateNome
+                })}
+                type="text"
+                id="nome"
+                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.nome ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'
+                  }`}
+                placeholder="Digite o nome da empresa"
+                maxLength={100}
+              />
+              {errors.nome && <p className="text-red-500 text-sm mt-1">{errors.nome.message}</p>}
+            </div>
+            <div>
+              <label htmlFor="cnpj" className="block mb-2 text-sm font-medium text-gray-800">
+                CNPJ
+              </label>
+              <input
+                {...register("cnpj", {
+                  required: "CNPJ é obrigatório",
+                  validate: validateCNPJ
+                })}
+                type="text"
+                id="cnpj"
+                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.cnpj ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'
+                  }`}
+                placeholder="Digite o CNPJ (apenas números)"
+                maxLength={18}
+              />
+              {errors.cnpj && <p className="text-red-500 text-sm mt-1">{errors.cnpj.message}</p>}
+            </div>
+            <div>
+              <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-800">
+                Email
+              </label>
+              <input
+                {...register("email", {
+                  required: "Email é obrigatório",
+                  validate: validateEmail
+                })}
+                type="email"
+                id="email"
+                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.email ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'
+                  }`}
+                placeholder="Digite o email"
+                maxLength={100}
+              />
+              {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
+            </div>
+            <div>
+              <label htmlFor="setor" className="block mb-2 text-sm font-medium text-gray-800">
+                Setor
+              </label>
+              <input
+                {...register("setor", {
+                  required: "Setor é obrigatório",
+                  maxLength: { value: 100, message: "Setor deve ter no máximo 100 caracteres" },
+                  minLength: { value: 2, message: "Setor deve ter pelo menos 2 caracteres" }
+                })}
+                type="text"
+                id="setor"
+                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.setor ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'
+                  }`}
+                placeholder="Digite o setor"
+                maxLength={100}
+              />
+              {errors.setor && <p className="text-red-500 text-sm mt-1">{errors.setor.message}</p>}
+            </div>
+          </div>
+        </fieldset>
+
+        {/* Logotipo */}
+        <fieldset className="border border-gray-300 rounded-md p-4">
+          <legend className="text-lg font-bold text-gray-700 px-2">Logotipo</legend>
+          <div className="mt-4">
+            <label htmlFor="logotipo" className="block mb-2 text-sm font-medium text-gray-800">
+              URL do Logotipo
+            </label>
+            <input
+              {...register("logotipo", {
+                required: "URL do logotipo é obrigatória",
+                validate: validateURL
+              })}
+              type="url"
+              id="logotipo"
+              className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.logotipo ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'
+                }`}
+              placeholder="Insira a URL do logotipo"
+              maxLength={255}
+            />
+            {errors.logotipo && <p className="text-red-500 text-sm mt-1">{errors.logotipo.message}</p>}
+          </div>
+        </fieldset>
+
+        <div className="flex flex-col sm:flex-row justify-between items-center mt-6 gap-4">
+          <button
+            type="submit"
+            className="bg-yellow-400 text-black font-bold rounded-md py-4 px-8 w-full sm:w-auto hover:bg-yellow-500 focus:outline-none focus:ring-4 focus:ring-yellow-300 transition-all duration-200 ease-in-out shadow-md"
+          >
+            Alterar empresa
+          </button>
+          <button
+            type="button"
+            className="bg-gray-500 text-white font-bold rounded-md py-4 px-8 w-full sm:w-auto hover:bg-gray-600 focus:outline-none focus:ring-4 focus:ring-gray-300 transition-all duration-200 ease-in-out shadow-md"
+            onClick={() =>
+              reset({
+                nome: "",
+                cnpj: "",
+                email: "",
+                senha: "",
+                setor: "",
+                logotipo: "",
+              })
+            }
+          >
+            Limpar
+          </button>
+        </div>
+      </form>
+
+      <div className="flex justify-start mt-6">
+        <Link href="/empresa">
+          <button className="bg-gray-600 text-white font-bold rounded-md py-4 px-8 w-full sm:w-auto hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-500 transition-all duration-200 ease-in-out shadow-md">
+            Voltar
+          </button>
+        </Link>
+      </div>
+    </div>
+  )
+}

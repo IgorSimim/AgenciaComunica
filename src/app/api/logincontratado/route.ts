@@ -17,18 +17,18 @@ export async function POST(
             )
         }
 
-        const empresa = await prisma.empresa.findUnique({
+        const contratado = await prisma.contratado.findUnique({
             where: { email }
         })
 
-        if (!empresa) {
+        if (!contratado) {
             return NextResponse.json(
-                { message: 'Empresa não encontrada' },
+                { message: 'Contratado não encontrado' },
                 { status: 404 }
             )
         }
 
-        const senhaValida = await bcryptjs.compare(senha, empresa.senha)
+        const senhaValida = await bcryptjs.compare(senha, contratado.senha)
         if (!senhaValida) {
             return NextResponse.json(
                 { message: 'Email ou senha incorreta' },
@@ -37,19 +37,19 @@ export async function POST(
 
         const token = jwt.sign(
             {
-                cnpj: empresa.cnpj,
-                email: empresa.email,
-                nome: empresa.nome
+                id: contratado.id,
+                email: contratado.email,
+                nome: contratado.nome
             },
             process.env.JWT_SECRET || 'your-secret-key',
             { expiresIn: '2h' }
         )
 
         // Remover a senha do objeto retornado
-        const { senha: _, ...empresaSemSenha } = empresa
+        const { senha: _, ...contratadoSemSenha } = contratado
 
         return NextResponse.json({
-            empresa: empresaSemSenha,
+            contratado: contratadoSemSenha,
             token
         })
     } catch (error) {

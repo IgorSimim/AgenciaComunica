@@ -1,6 +1,5 @@
 import { EmpresaLogin } from "@/app/types";
 import { signIn } from "next-auth/react";
-import { redirect } from "next/navigation";
 
 export default async function handlerLogin(
     _prevState: any,

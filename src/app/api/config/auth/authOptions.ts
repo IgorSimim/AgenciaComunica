@@ -1,5 +1,7 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import prisma from "@/lib/prisma";
+import bcryptjs from "bcryptjs";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -8,36 +10,51 @@ export const authOptions: NextAuthOptions = {
       credentials: {
         email: { label: "Email", type: "text" },
         senha: { label: "Senha", type: "password" },
+        type: { label: "Type", type: "text" },
       },
-      async authorize(credentias, req) {
+      async authorize(credentials, req) {
+        const { email, senha, type } = credentials || {};
+
+        if (!email || !senha || !type) {
+          throw new Error("Campos obrigatórios faltando");
+        }
+
         try {
-          const response = await fetch(
-            process.env.NEXTAUTH_URL + "/api/login",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                email: credentias?.email,
-                senha: credentias?.senha,
-              }),
+          if (type === "empresa") {
+            const empresa = await prisma.empresa.findUnique({
+              where: { email },
+            });
+
+            if (!empresa) {
+              throw new Error("Empresa não encontrada");
             }
-          );
 
-          const data = await response.json();
+            const senhaValida = await bcryptjs.compare(senha, empresa.senha);
+            if (!senhaValida) {
+              throw new Error("Email ou senha incorreta");
+            }
 
-          if (response.ok && data.empresa) {
-            (req as any).empr = data.empresa;
-            return data;
+            return { empresa };
+          } else if (type === "contratado") {
+            const contratado = await prisma.contratado.findUnique({
+              where: { email },
+            });
+
+            if (!contratado) {
+              throw new Error("Contratado não encontrado");
+            }
+
+            const senhaValida = await bcryptjs.compare(senha, contratado.senha);
+            if (!senhaValida) {
+              throw new Error("Email ou senha incorreta");
+            }
+
+            return { contratado };
+          } else {
+            throw new Error("Tipo inválido");
           }
-
-          throw new Error(data.error || "Erro ao fazer login");
         } catch (error: any) {
-          if (!error.message) {
-            throw new Error("Erro ao conectar com o servidor");
-          }
-          throw error;
+          throw new Error(error.message || "Erro ao fazer login");
         }
       },
     }),
@@ -49,11 +66,15 @@ export const authOptions: NextAuthOptions = {
 
   callbacks: {
     async jwt({ token, user }) {
-      if (user) (token as any).empresa = (user as any).empresa;
+      if (user) {
+        if ((user as any).empresa) (token as any).empresa = (user as any).empresa;
+        if ((user as any).contratado) (token as any).contratado = (user as any).contratado;
+      }
       return token;
     },
     async session({ session, token }) {
-      (session as any).empresa = (token as any).empresa;
+      if ((token as any).empresa) (session as any).empresa = (token as any).empresa;
+      if ((token as any).contratado) (session as any).contratado = (token as any).contratado;
       return session;
     },
   },

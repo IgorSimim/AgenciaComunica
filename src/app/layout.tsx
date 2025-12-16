@@ -21,7 +21,7 @@ export default function RootLayout({
       <head>
         <link rel="shortcut icon" href="/logo.png" type="image/x-icon" />
       </head>
-      <body className="bg-black text-white dark:bg-black dark:text-white">
+      <body>
         {children}
         <Toaster position="top-right" richColors />
       </body>

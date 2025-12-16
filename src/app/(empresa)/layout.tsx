@@ -10,7 +10,9 @@ export default function EmpresaLayout({
   return (
     <NextAuthSessionProvider>
       <Header />
-      {children}
+      <div className="bg-black text-white dark:bg-black dark:text-white">
+        {children}
+      </div>
       <Footer />
     </NextAuthSessionProvider>
   );

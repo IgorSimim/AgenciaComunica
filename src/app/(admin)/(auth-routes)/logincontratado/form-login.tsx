@@ -1,67 +1,93 @@
 'use client'
-import { useEffect, useState } from "react"
-import { useForm } from "react-hook-form"
-import { toast } from 'sonner'
+import { useActionState, useState, useEffect } from "react"
+import Form from "next/form"
+import { Loader2 as SpinnerIcon } from "lucide-react"
+import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
-import Cookies from 'js-cookie'
+import { alerts } from "@/lib/alerts"
 
-type Inputs = {
-  email: string
-  senha: string
+interface LoginState {
+  error?: string
+  success?: boolean
+}
+
+async function handlerContratadoLogin(prevState: LoginState | null, formData: FormData): Promise<LoginState> {
+  const email = formData.get('email') as string
+  const senha = formData.get('senha') as string
+
+  try {
+    const result = await signIn("credentials", {
+      email,
+      senha,
+      type: "contratado",
+      redirect: false,
+    });
+
+    if (result?.ok) {
+      return { success: true }
+    } else {
+      return { error: "Email ou senha incorreta" }
+    }
+  } catch (error) {
+    return { error: "Email ou senha incorreta" }
+  }
 }
 
 export default function ContratadoLoginForm() {
-  const { register, handleSubmit, setFocus } = useForm<Inputs>()
+  const [state, formAction, isPending] = useActionState(handlerContratadoLogin, null)
   const router = useRouter()
+
+  const [email, setEmail] = useState("")
+  const [senha, setSenha] = useState("")
   const [showPassword, setShowPassword] = useState(false)
+  const [lastError, setLastError] = useState<string | null>(null)
+  const [wasPending, setWasPending] = useState(false)
+  const [fieldErrors, setFieldErrors] = useState<string | null>(null)
 
-  async function verificaLogin(data: Inputs) {
-    try {
-      const response = await fetch("/api/logincontratado", {
-        method: "POST",
-        headers: { "Content-type": "Application/json" },
-        body: JSON.stringify({ email: data.email, senha: data.senha }),
-      })
+  const isFormValid = email.trim() !== "" && senha.trim() !== ""
 
-      const result = await response.json()
-
-      if (response.status === 200) {
-        Cookies.set("contr_logado_id", result.id)
-        Cookies.set("contr_logado_nome", result.nome)
-        Cookies.set("contr_logado_token", result.token)
-
-        toast.success("Login realizado com sucesso!")
-        router.push("/principal")
-      } else {
-        switch (result.id) {
-          case 1:
-            toast.error("Por favor, informe o e-mail e a senha.")
-            break
-          case 2:
-            toast.error("Funcionário não encontrado.")
-            break
-          case 4:
-            toast.error("Login ou senha inválidos.")
-            break
-          default:
-            toast.error("Erro desconhecido. Tente novamente.")
-        }
+  useEffect(() => {
+    if (wasPending && !isPending) {
+      if (state?.success) {
+        alerts.success("Login realizado com sucesso!")
+        router.push('/dashboard')
+      } else if (state?.error) {
+        setFieldErrors(state.error)
+        setLastError(state.error)
       }
-    } catch (error) {
-      console.error("Erro ao realizar login:", error)
-      toast.error("Ocorreu um problema ao conectar com o servidor.")
+    }
+    setWasPending(isPending)
+    if (!state?.error && lastError) {
+      setLastError(null)
+    }
+  }, [state, isPending, wasPending, lastError, email, senha, router])
+
+  function validateFields(): string | null {
+    if (!email.trim() || !senha.trim()) return 'Email ou senha incorreta'
+    return null
+  }
+
+  function handleFormSubmit(e: React.FormEvent<HTMLFormElement>) {
+    setFieldErrors(null)
+    const error = validateFields()
+    setFieldErrors(error)
+    if (error) {
+      e.preventDefault()
     }
   }
 
-  useEffect(() => {
-    setFocus("email")
-  }, [])
+  function handleInputChange(field: string, value: string, setter: (v: string) => void) {
+    setter(value)
+    if (fieldErrors) {
+      setFieldErrors(null)
+    }
+  }
 
   return (
-    <main className="flex flex-col items-center justify-start min-h-screen bg-gray-900">
-      <div className="bg-white rounded-full p-4 mt-10 shadow-md">
+    <main className="flex flex-col items-center justify-start bg-gray-900 pt-20 pb-10"> 
+      <div className="bg-white rounded-full p-4 shadow-md"> 
         <img
-          src="./logo2.png"
+          src="/logo2.png"
           alt="Logo Agência Comunica"
           className="w-65"
         />
@@ -70,8 +96,10 @@ export default function ContratadoLoginForm() {
         <h1 className="text-2xl font-bold text-center mb-6 text-yellow-400">
           Área Administrativa
         </h1>
-        <form onSubmit={handleSubmit(verificaLogin)} className="space-y-5">
-          <div>
+        
+        <Form action={formAction} onSubmit={handleFormSubmit}>
+          <input type="hidden" name="type" value="contratado" />
+          <div className="mb-6">
             <label
               htmlFor="email"
               className="block mb-2 text-base font-medium text-gray-300"
@@ -81,27 +109,31 @@ export default function ContratadoLoginForm() {
             <input
               type="email"
               id="email"
+              name="email"
               className="bg-gray-700 border border-gray-600 text-white text-base rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full p-2.5"
               placeholder="seuemail@exemplo.com"
               required
-              {...register("email")}
+              value={email}
+              onChange={(e) => handleInputChange('email', e.target.value, setEmail)}
             />
           </div>
 
-          <div className="relative">
+          <div className="mb-6 relative">
             <label
-              htmlFor="password"
+              htmlFor="senha"
               className="block mb-2 text-base font-medium text-gray-300"
             >
               Senha
             </label>
             <input
               type={showPassword ? "text" : "password"}
-              id="password"
+              id="senha"
+              name="senha"
               className="bg-gray-700 border border-gray-600 text-white text-base rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full p-2.5"
               placeholder="********"
               required
-              {...register("senha")}
+              value={senha}
+              onChange={(e) => handleInputChange('senha', e.target.value, setSenha)}
             />
             <button
               type="button"
@@ -132,15 +164,30 @@ export default function ContratadoLoginForm() {
                 </svg>
               )}
             </button>
+            {fieldErrors && <span className="text-red-500 text-xs mt-1 block">{fieldErrors}</span>}
           </div>
 
-          <button
-            type="submit"
-            className="w-full bg-yellow-500 text-black font-medium rounded-lg text-base px-5 py-2.5 hover:bg-yellow-600 focus:outline-none focus:ring-4 focus:ring-yellow-300 transition"
-          >
-            Entrar
-          </button>
-        </form>
+          <div className="flex justify-center mt-6">
+            <button
+              type="submit"
+              disabled={!isFormValid || isPending}
+              className={`w-full font-medium rounded-lg text-base px-5 py-2.5 focus:outline-none focus:ring-4 focus:ring-yellow-300 transition ${
+                isFormValid && !isPending
+                  ? "bg-yellow-500 text-black hover:bg-yellow-600"
+                  : "bg-gray-400 text-gray-600 cursor-not-allowed"
+              }`}
+            >
+              {isPending ? (
+                <span className="flex items-center justify-center">
+                  <SpinnerIcon className="animate-spin h-5 w-5 mr-2" />
+                  Entrando...
+                </span>
+              ) : (
+                "Entrar"
+              )}
+            </button>
+          </div>
+        </Form>
       </div>
     </main>
   );

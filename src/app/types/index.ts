@@ -1,6 +1,7 @@
 import { Cargo } from "@prisma/client";
 
 export interface TEmpresa {
+    cod: number;
     cnpj: string;
     nome: string;
     email: string;
@@ -97,6 +98,11 @@ export interface TServico {
 }
 
 export type EmpresaLogin = {
+    email: string;
+    senha: string;
+};
+
+export type ContratadoLogin = {
     email: string;
     senha: string;
 };

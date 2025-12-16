@@ -1,5 +1,4 @@
 'use client'
-
 import { useActionState, useState, useEffect } from "react"
 import Form from "next/form"
 import { Loader2 as SpinnerIcon } from "lucide-react"
@@ -18,18 +17,17 @@ async function handlerEmpresaLogin(prevState: LoginState | null, formData: FormD
   const senha = formData.get('senha') as string
 
   try {
-    const response = await fetch("/api/loginempresa", {
-      method: "POST",
-      headers: { "Content-type": "application/json" },
-      body: JSON.stringify({ email, senha }),
-    })
+    const result = await signIn("credentials", {
+      email,
+      senha,
+      type: "empresa",
+      redirect: false,
+    });
 
-    const dados = await response.json()
-
-    if (response.ok && dados.token) {
+    if (result?.ok) {
       return { success: true }
     } else {
-      return { error: dados.msg || "Erro! Email ou senha incorreta." }
+      return { error: result?.error || "Erro! Email ou senha incorreta." }
     }
   } catch (error) {
     return { error: "Erro de conexão. Tente novamente." }
@@ -45,32 +43,17 @@ export default function EmpresaLoginForm() {
   const [showPassword, setShowPassword] = useState(false)
   const [lastError, setLastError] = useState<string | null>(null)
   const [wasPending, setWasPending] = useState(false)
-  const [fieldErrors, setFieldErrors] = useState<{ [key: string]: string }>({})
+  const [fieldErrors, setFieldErrors] = useState<string | null>(null)
 
   const isFormValid = email.trim() !== "" && senha.trim() !== ""
 
   useEffect(() => {
     if (wasPending && !isPending) {
       if (state?.success) {
-        signIn('credentials', {
-          email,
-          senha,
-          redirect: false
-        }).then((result) => {
-          if (result?.ok) {
-            alerts.success("Login realizado com sucesso!")
-            router.push('/home-empresa')
-          } else {
-            setLastError("Erro no login")
-          }
-        })
+        alerts.success("Login realizado com sucesso!")
+        router.push('/home-empresa')
       } else if (state?.error) {
-        // Tratar erros
-        if (state.error.toLowerCase().includes("email")) {
-          setFieldErrors((prev) => ({ ...prev, email: state.error! }))
-        } else if (state.error.toLowerCase().includes("senha")) {
-          setFieldErrors((prev) => ({ ...prev, senha: state.error! }))
-        }
+        setFieldErrors(state.error)
         setLastError(state.error)
       }
     }
@@ -80,29 +63,26 @@ export default function EmpresaLoginForm() {
     }
   }, [state, isPending, wasPending, lastError, email, senha, router])
 
-  function validateFields() {
-    const errors: { [key: string]: string } = {}
-    if (!email.trim()) errors.email = 'O campo de Email é obrigatório.'
-    if (!senha.trim()) errors.senha = 'O campo de senha é obrigatório.'
-    return errors
+  function validateFields(): string | null {
+    if (!email.trim()) return 'O campo de Email é obrigatório.'
+    if (!senha.trim()) return 'O campo de senha é obrigatório.'
+    return null
   }
 
   function handleFormSubmit(e: React.FormEvent<HTMLFormElement>) {
-    setFieldErrors({})
-    const errors = validateFields()
-    setFieldErrors(errors)
-    if (Object.keys(errors).length > 0) {
+    setFieldErrors(null)
+    const error = validateFields()
+    setFieldErrors(error)
+    if (error) {
       e.preventDefault()
     }
   }
 
   function handleInputChange(field: string, value: string, setter: (v: string) => void) {
     setter(value)
-    setFieldErrors((prev) => {
-      if (!prev[field]) return prev
-      const { [field]: _, ...rest } = prev
-      return rest
-    })
+    if (fieldErrors) {
+      setFieldErrors(null)
+    }
   }
 
   return (
@@ -116,6 +96,7 @@ export default function EmpresaLoginForm() {
           <img src="/logo2.png" className="mx-auto mb-6" alt="Logo de login" />
 
           <Form action={formAction} onSubmit={handleFormSubmit}>
+            <input type="hidden" name="type" value="empresa" />
             <div className="mb-6">
               <input
                 type="text"
@@ -127,7 +108,6 @@ export default function EmpresaLoginForm() {
                 value={email}
                 onChange={(e) => handleInputChange('email', e.target.value, setEmail)}
               />
-              {fieldErrors.email && <span className="text-red-500 text-xs mt-1 block">{fieldErrors.email}</span>}
             </div>
 
             <div className="mb-6 relative">
@@ -156,7 +136,7 @@ export default function EmpresaLoginForm() {
                   </svg>
                 )}
               </button>
-              {fieldErrors.senha && <span className="text-red-500 text-xs mt-1 block">{fieldErrors.senha}</span>}
+              {fieldErrors && <span className="text-red-500 text-xs mt-1 block">{fieldErrors}</span>}
               <div className="text-right mt-2">
                 <p className="text-blue-700 underline cursor-pointer">Esqueceu a senha?</p>
               </div>

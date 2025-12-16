@@ -2,23 +2,23 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
-// interface Servico {
-//     nome: string;
-//     descricao: string;
-//     foto: string;
-// }
+interface Servico {
+    nome: string;
+    descricao: string;
+    foto: string;
+}
 
 export default function HomeDeslogado() {
-    // const [servicos, setServicos] = useState<Servico[]>([]);
+    const [servicos, setServicos] = useState<Servico[]>([]);
 
-    // useEffect(() => {
-    //     async function getServicos() {
-    //         const response = await fetch("http://localhost:3004/servicos");
-    //         const dados = await response.json();
-    //         setServicos(dados);
-    //     }
-    //     getServicos();
-    // }, []);
+    useEffect(() => {
+        async function getServicos() {
+            const response = await fetch("/api/servico");
+            const dados = await response.json();
+            setServicos(dados);
+        }
+        getServicos();
+    }, []);
 
     return (
         <div className="bg-yellow-400">

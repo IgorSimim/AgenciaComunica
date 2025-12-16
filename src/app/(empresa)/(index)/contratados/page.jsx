@@ -6,7 +6,7 @@ export default function Contratados() {
 
     useEffect(() => {
         async function getContratados() {
-            const response = await fetch("/api/contratados");
+            const response = await fetch("/api/contratado");
             const dados = await response.json();
             setContratados(dados);
         }
