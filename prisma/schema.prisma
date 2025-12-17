@@ -25,6 +25,9 @@ model Empresa {
   setor     String  @db.VarChar(100)
   logotipo  String  @db.VarChar(255)
   ativa     Boolean @default(true)
+  createdAt    DateTime     @default(now())
+  deletedAt    DateTime?
+  updatedAt    DateTime     @updatedAt
   feedbacks Feedback[]
   contratos Contrato[]
 }
@@ -49,6 +52,9 @@ model Contratado {
   dtnasc     DateTime @db.Date
   foto       String   @db.VarChar(255)
   cargo      Cargo
+  createdAt    DateTime     @default(now())
+  deletedAt    DateTime?
+  updatedAt    DateTime     @updatedAt
   atividades Atividade[]
   comentarios Comentario[]
 }
@@ -59,6 +65,8 @@ model Servico {
   descricao   String  @db.VarChar(255)
   preco       Float
   simbolo     String  @db.VarChar(255)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
   contratos   Contrato[]
 }
 
