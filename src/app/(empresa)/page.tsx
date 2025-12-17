@@ -1,21 +1,21 @@
 'use client'
 import { useEffect, useState } from "react";
 import Link from "next/link";
-
-interface Servico {
-    nome: string;
-    descricao: string;
-    foto: string;
-}
+import { TServico } from "@/app/types";
 
 export default function HomeDeslogado() {
-    const [servicos, setServicos] = useState<Servico[]>([]);
+    const [servicos, setServicos] = useState<TServico[]>([]);
 
     useEffect(() => {
         async function getServicos() {
+            try {
             const response = await fetch("/api/servico");
             const dados = await response.json();
-            setServicos(dados);
+                setServicos(Array.isArray(dados) ? dados : []);
+            } catch (error) {
+                console.error('Erro ao buscar serviços:', error);
+                setServicos([]);
+            }
         }
         getServicos();
     }, []);
@@ -46,21 +46,23 @@ export default function HomeDeslogado() {
                 </div>
             </div>
 
-{/*             <div className="bg-black py-12 text-center font-sans">
-                <h2 className="text-white text-5xl mb-12">Nossos serviços</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
-                    {servicos.map((servico, index) => (
-                        <div key={index} className="w-full h-[480px] bg-yellow-400 rounded-[90px] relative p-6">
-                            <img src={servico.foto} alt={servico.nome} className="absolute top-6 left-6 w-14 h-14" />
-                            <h2 className="text-center text-3xl text-black mt-16">{servico.nome}</h2>
-                            <p className="text-left text-2xl text-black mt-6">{servico.descricao}</p>
-                            <button className="absolute bottom-10 right-8 bg-orange-600 hover:bg-orange-700 text-white text-xl px-6 py-3 rounded-full flex items-center gap-3">
-                                Ver mais <span>&rarr;</span>
-                            </button>
-                        </div>
-                    ))}
+            {servicos.length > 0 && (
+                <div className="bg-black py-12 text-center font-sans">
+                    <h2 className="text-white text-5xl mb-12">Nossos serviços</h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
+                        {servicos.map((servico, index) => (
+                            <div key={index} className="w-full h-[480px] bg-yellow-400 rounded-[90px] relative p-6">
+                                <img src={servico.simbolo} alt={servico.nome} className="absolute top-6 left-6 w-14 h-14" />
+                                <h2 className="text-center text-3xl text-black mt-16">{servico.nome}</h2>
+                                <p className="text-left text-2xl text-black mt-6">{servico.descricao}</p>
+                                <button className="absolute bottom-10 right-8 bg-orange-600 hover:bg-orange-700 text-white text-xl px-6 py-3 rounded-full flex items-center gap-3">
+                                    Ver mais <span>&rarr;</span>
+                                </button>
+                            </div>
+                        ))}
+                    </div>
                 </div>
-            </div> */}
+            )}
 
 
             <div className="bg-yellow-400 py-12 text-center font-sans">
