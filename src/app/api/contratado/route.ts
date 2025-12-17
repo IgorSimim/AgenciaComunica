@@ -16,16 +16,16 @@ export async function GET() {
             )
         }
 
-        const contratado = await prisma.contratado.findUnique({
-            where: { email: session.contratado.email }
-        })
+        // const contratado = await prisma.contratado.findUnique({
+        //     where: { email: session.contratado.email }
+        // })
 
-        if (!contratado || (contratado.cargo !== "PROPRIETARIA" && contratado.cargo !== "RH")) {
-            return NextResponse.json(
-                { message: "Somente a proprietária e os contratadoes do RH" },
-                { status: 403 }
-            );
-        }
+        // if (!contratado || (contratado.cargo !== "PROPRIETARIA" && contratado.cargo !== "RH")) {
+        //     return NextResponse.json(
+        //         { message: "Somente a proprietária e os contratadoes do RH" },
+        //         { status: 403 }
+        //     );
+        // }
 
         let contratadoEncontrado: Array<{ id: number; nome: string; email: string; telefone: string; sobre: string; dtnasc: Date; foto: string; cargo: Cargo; atividades: Atividade[]; comentarios: Comentario[] }> | null = null;
         contratadoEncontrado = await prisma.contratado.findMany({
@@ -73,16 +73,16 @@ export async function POST(
             )
         }
 
-        const contratado = await prisma.contratado.findUnique({
-            where: { email: session.contratado.email },
-        })
+        // const contratado = await prisma.contratado.findUnique({
+        //     where: { email: session.contratado.email },
+        // })
 
-        if (!contratado || (contratado.cargo !== "RH" && contratado.cargo !== "PROPRIETARIA")) {
-            return NextResponse.json(
-                { message: "Acesso negado" },
-                { status: 403 }
-            )
-        }
+        // if (!contratado || (contratado.cargo !== "RH" && contratado.cargo !== "PROPRIETARIA")) {
+        //     return NextResponse.json(
+        //         { message: "Acesso negado" },
+        //         { status: 403 }
+        //     )
+        // }
 
         const data = await _request.json()
 

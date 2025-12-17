@@ -30,6 +30,19 @@ const ContratadosData: Prisma.ContratadoCreateInput[] = [
     atividades: { create: [] },
     comentarios: { create: [] },
   },
+
+  {
+    nome: 'Contratado B',
+    email: 'contratadoB@example.com',
+    senha: '-Senha123',
+    telefone: '11988888888', 
+    sobre: 'Especialista em tecnologia e desenvolvimento de software.',
+    dtnasc: new Date('1992-05-15'),
+    foto: 'http://example.com/logoB.png',
+    cargo: 'REDATORA',
+    atividades: { create: [] },
+    comentarios: { create: [] },
+  },
 ]
 
 export async function main() {

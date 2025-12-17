@@ -28,6 +28,16 @@ export default function AlteracaoEmpresa() {
     return true
   }
 
+  const formatCNPJ = (value: string) => {
+    const cleanValue = value.replace(/\D/g, '')
+    return cleanValue
+      .replace(/(\d{2})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d)/, '$1/$2')
+      .replace(/(\d{4})(\d)/, '$1-$2')
+      .replace(/(-\d{2})\d+?$/, '$1')
+  }
+
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email)) {
@@ -88,16 +98,7 @@ export default function AlteracaoEmpresa() {
         alerts.success("Empresa alterada com sucesso!")
       } else {
         const errorData = await response.json()
-
-        if (errorData.msg === "Formato de email inválido.") {
-          alerts.error("O formato do e-mail fornecido é inválido.")
-        } else if (errorData.msg === "Empresa não encontrada.") {
-          alerts.error("A empresa com o código fornecido não foi encontrada.")
-        } else if (errorData.msg === "Não foi possível atualizar a empresa.") {
-          alerts.error("Ocorreu um erro ao tentar atualizar a empresa. Tente novamente.")
-        } else {
-          alerts.error(`Erro ao alterar a empresa: ${errorData.msg || 'Tente novamente.'}`)
-        }
+        alerts.error(errorData.message || 'Erro ao alterar a empresa')
       }
     } catch (error) {
       alerts.error("Erro ao processar a alteração. Tente novamente mais tarde.")
@@ -142,13 +143,16 @@ export default function AlteracaoEmpresa() {
               <input
                 {...register("cnpj", {
                   required: "CNPJ é obrigatório",
-                  validate: validateCNPJ
+                  validate: validateCNPJ,
+                  onChange: (e) => {
+                    e.target.value = formatCNPJ(e.target.value)
+                  }
                 })}
                 type="text"
                 id="cnpj"
                 className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.cnpj ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'
                   }`}
-                placeholder="Digite o CNPJ (apenas números)"
+                placeholder="00.000.000/0000-00"
                 maxLength={18}
               />
               {errors.cnpj && <p className="text-red-500 text-sm mt-1">{errors.cnpj.message}</p>}

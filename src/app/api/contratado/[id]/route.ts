@@ -38,16 +38,16 @@ export async function PUT(
             );
         }
 
-        const contratadoLogado = await prisma.contratado.findUnique({
-            where: { email: session.contratado.email }
-        });
+        // const contratadoLogado = await prisma.contratado.findUnique({
+        //     where: { email: session.contratado.email }
+        // });
 
-        if (!contratadoLogado || contratado.cargo !== "RH") {
-            return NextResponse.json(
-                { message: "Acesso negado para atualizar os dados do contratado" },
-                { status: 403 }
-            );
-        }
+        // if (!contratadoLogado || contratado.cargo !== "RH") {
+        //     return NextResponse.json(
+        //         { message: "Acesso negado para atualizar os dados do contratado" },
+        //         { status: 403 }
+        //     );
+        // }
 
         const dadosAtualizados = await _request.json();
 
@@ -118,12 +118,12 @@ export async function DELETE(
             );
         }
 
-        if (!contratado || (contratado.cargo !== "PROPRIETARIA" && contratado.cargo !== "RH")) {
-            return NextResponse.json(
-                { message: "Acesso negado para deletar contratado" },
-                { status: 403 }
-            );
-        }
+        // if (!contratado || (contratado.cargo !== "PROPRIETARIA" && contratado.cargo !== "RH")) {
+        //     return NextResponse.json(
+        //         { message: "Acesso negado para deletar contratado" },
+        //         { status: 403 }
+        //     );
+        // }
 
         await prisma.contratado.delete({
             where: { id: parseInt(id) }
