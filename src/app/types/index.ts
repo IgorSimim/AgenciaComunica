@@ -106,3 +106,9 @@ export type ContratadoLogin = {
     email: string;
     senha: string;
 };
+
+export interface DashboardType {
+    empresas: number;
+    contratados: number;
+    servicos: number;
+}

@@ -2,29 +2,14 @@
 import React, { useEffect, useState } from 'react'
 import { Chart } from 'react-google-charts'
 import { useForm } from 'react-hook-form'
-
-interface EmpresaAtuacaoType {
-  atuacao: string
-  totalEmpresas: number
-}
-
-interface ContratadoAtuacaoType {
-  atuacao: string
-  totalContratados: number
-}
-
-interface GeralType {
-  empresas: number
-  contratados: number
-  servicos: number
-}
+import { DashboardType } from '@/app/types'
 
 const Home: React.FC = () => {
   const [dadosEmpresas, setDadosEmpresas] = useState<(string | number)[][]>([['Área de Atuação', 'Empresas']])
   const [dadosContratados, setDadosContratados] = useState<(string | number)[][]>([['Área de Atuação', 'Contratados']])
   const [coresEmpresas, setCoresEmpresas] = useState<string[]>([])
   const [coresContratados, setCoresContratados] = useState<string[]>([])
-  const [geral, setGeral] = useState<GeralType>({ empresas: 0, contratados: 0, servicos: 0 })
+  const [geral, setGeral] = useState<DashboardType>({ empresas: 0, contratados: 0, servicos: 0 })
   const { setFocus } = useForm()
 
   function generateRandomColor() {
@@ -34,51 +19,63 @@ const Home: React.FC = () => {
     return colors[Math.floor(Math.random() * colors.length)]
   }
 
-  async function fetchDados(
-    url: string,
-    setDados: React.Dispatch<React.SetStateAction<(string | number)[][]>>,
-    titulo: string,
-    setCores: React.Dispatch<React.SetStateAction<string[]>>
-  ) {
-    try {
-      const response = await fetch(url)
-      if (!response.ok) throw new Error(`Erro ao buscar dados de ${titulo}`)
-
-      const dados = await response.json()
-      const formattedData: (string | number)[][] = [[titulo, 'Quantidade']]
-      const cores: string[] = []
-
-      dados.forEach((item: EmpresaAtuacaoType | ContratadoAtuacaoType) => {
-        if (item.atuacao && typeof item.atuacao === 'string') {
-          const total = 'totalEmpresas' in item ? (item as EmpresaAtuacaoType).totalEmpresas : (item as ContratadoAtuacaoType).totalContratados
-          if (total) {
-            formattedData.push([item.atuacao, total])
-            cores.push(generateRandomColor())
-          }
-        }
-      })
-
-      setDados(formattedData)
-      setCores(cores)
-    } catch (error) {
-      console.error(`Erro ao buscar dados de ${titulo}:`, error)
-    }
-  }
-
   useEffect(() => {
     async function getDadosGerais() {
       try {
-        const response = await fetch('/api/dadosgerais')
-        if (!response.ok) throw new Error(`Erro ao buscar dados gerais: ${response.statusText}`)
-        const dados = await response.json()
-        setGeral(dados)
+        const [empresasRes, contratadosRes, servicosRes] = await Promise.all([
+          fetch('/api/empresa'),
+          fetch('/api/contratado'),
+          fetch('/api/servico')
+        ])
+
+        const empresas = empresasRes.ok ? await empresasRes.json() : []
+        const contratados = contratadosRes.ok ? await contratadosRes.json() : []
+        const servicos = servicosRes.ok ? await servicosRes.json() : []
+
+        setGeral({
+          empresas: Array.isArray(empresas) ? empresas.filter(e => e.ativa !== false).length : 0,
+          contratados: Array.isArray(contratados) ? contratados.length : 0,
+          servicos: Array.isArray(servicos) ? servicos.length : 0
+        })
+
+        if (Array.isArray(empresas)) {
+          const empresasAtivas = empresas.filter(e => e.ativa !== false)
+          const setorCount = empresasAtivas.reduce((acc, emp) => {
+            acc[emp.setor] = (acc[emp.setor] || 0) + 1
+            return acc
+          }, {})
+
+          const dadosEmpresasFormatted: (string | number)[][] = [['Setor', 'Empresas']]
+          const coresEmp: string[] = []
+          Object.entries(setorCount).forEach(([setor, count]) => {
+            dadosEmpresasFormatted.push([setor, count as number])
+            coresEmp.push(generateRandomColor())
+          })
+          setDadosEmpresas(dadosEmpresasFormatted)
+          setCoresEmpresas(coresEmp)
+        }
+
+        if (Array.isArray(contratados)) {
+          const cargoCount = contratados.reduce((acc, cont) => {
+            acc[cont.cargo] = (acc[cont.cargo] || 0) + 1
+            return acc
+          }, {})
+
+          const dadosContratadosFormatted: (string | number)[][] = [['Cargo', 'Contratados']]
+          const coresCont: string[] = []
+          Object.entries(cargoCount).forEach(([cargo, count]) => {
+            dadosContratadosFormatted.push([cargo, count as number])
+            coresCont.push(generateRandomColor())
+          })
+          setDadosContratados(dadosContratadosFormatted)
+          setCoresContratados(coresCont)
+        }
+
       } catch (error) {
-        console.error('Erro ao buscar dados gerais:', error)
+        console.error('Erro ao buscar dados:', error)
       }
     }
 
-    fetchDados('/api/empresa/atuacao', setDadosEmpresas, 'Área de Atuação', setCoresEmpresas)
-    fetchDados('/api/contratado/atuacao', setDadosContratados, 'Área de Atuação', setCoresContratados)
     getDadosGerais()
     setFocus('nome')
   }, [setFocus])
@@ -104,7 +101,7 @@ const Home: React.FC = () => {
 
       <h3 className="text-2xl font-bold text-gray-700 mt-6 mb-4 text-center">Distribuição das empresas por área de atuação</h3>
       <div className="shadow-lg p-4 rounded-lg border border-gray-200 bg-white">
-        {/* <Chart
+        <Chart
           chartType="BarChart"
           width="100%"
           height="400px"
@@ -131,12 +128,12 @@ const Home: React.FC = () => {
             bar: { groupWidth: "90%" },
             colors: coresEmpresas,
           }}
-        /> */}
+        />
       </div>
 
       <h3 className="text-2xl font-bold text-gray-700 mt-6 mb-4 text-center">Distribuição dos funcionários por área de atuação</h3>
       <div className="shadow-lg p-4 rounded-lg border border-gray-200 bg-white">
-        {/* <Chart
+        <Chart
           chartType="BarChart"
           width="100%"
           height="400px"
@@ -163,7 +160,7 @@ const Home: React.FC = () => {
             bar: { groupWidth: "70%" },
             colors: coresContratados,
           }}
-        /> */}
+        />
       </div>
     </div>
   )
