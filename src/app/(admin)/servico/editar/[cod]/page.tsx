@@ -2,31 +2,54 @@
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { useParams } from "next/navigation"
-import { toast } from "sonner"
+import { alerts } from "@/lib/alerts"
 import Link from "next/link"
 import { TServico } from "@/app/types/index"
 
 export default function AlteracaoServico() {
     const params = useParams()
-    const { register, handleSubmit, reset } = useForm<TServico>()
+    const { register, handleSubmit, reset, formState: { errors } } = useForm<TServico>({
+        mode: "onBlur"
+    })
+
+    const validateNome = (nome: string) => {
+        const nomeRegex = /^[A-Za-zÀ-ú\s]+$/
+        if (!nomeRegex.test(nome)) {
+            return "Nome não pode conter números ou caracteres especiais"
+        }
+        return true
+    }
+
+    const validateURL = (url: string) => {
+        try {
+            new URL(url)
+            if (url.length > 255) {
+                return "URL deve ter no máximo 255 caracteres"
+            }
+            return true
+        } catch {
+            return "URL deve ter um formato válido"
+        }
+    }
 
     useEffect(() => {
         async function getServico() {
             try {
-                const response = await fetch("/api/servico/pesq/" + params.cod)
+                const response = await fetch("/api/servico/" + params.cod)
                 const dado = await response.json()
 
                 if (response.ok) {
                     reset({
                         nome: dado.nome,
                         descricao: dado.descricao,
-                        simbolo: dado.simbolo
+                        simbolo: dado.simbolo,
+                        preco: dado.preco
                     })
                 } else {
-                    toast.error("Não foi possível carregar os dados do serviço")
+                    alerts.error("Não foi possível carregar os dados do serviço")
                 }
             } catch (error) {
-                toast.error("Erro ao carregar os dados do serviço")
+                alerts.error("Erro ao carregar os dados do serviço")
             }
         }
         getServico()
@@ -41,19 +64,14 @@ export default function AlteracaoServico() {
             })
 
             if (response.status === 200) {
-                toast.success("Serviço alterado com sucesso!")
+                alerts.success("Serviço alterado com sucesso!")
             } else {
                 const errorData = await response.json()
-
-                if (errorData.id === 6) {
-                    toast.error("A URL da foto fornecida não é válida.")
-                } else {
-                    toast.error(`Erro ao alterar o serviço: ${errorData.msg || 'Tente novamente.'}`)
-                }
+                alerts.error(errorData.message || "Erro ao alterar o serviço")
             }
         } catch (error) {
             console.error("Erro ao processar a alteração:", error)
-            toast.error("Erro ao processar a alteração. Tente novamente mais tarde.")
+            alerts.error("Erro ao processar a alteração. Tente novamente mais tarde.")
         }
     }
 
@@ -70,16 +88,22 @@ export default function AlteracaoServico() {
                     <div className="mt-4">
                         <div className="w-full mb-4">
                             <label htmlFor="nome" className="block mb-2 text-sm font-medium text-gray-800">
-                                Nome do serviço
+                                Nome
                             </label>
                             <input
-                                {...register("nome")}
+                                {...register("nome", {
+                                    required: "Nome é obrigatório",
+                                    maxLength: { value: 100, message: "Nome deve ter no máximo 100 caracteres" },
+                                    minLength: { value: 2, message: "Nome deve ter pelo menos 2 caracteres" },
+                                    validate: validateNome
+                                })}
                                 type="text"
                                 id="nome"
-                                className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
+                                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.nome ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
                                 placeholder="Digite o nome do serviço"
-                                required
+                                maxLength={100}
                             />
+                            {errors.nome && <p className="text-red-500 text-sm mt-1">{errors.nome.message}</p>}
                         </div>
 
                         <div className="w-full mb-4">
@@ -87,17 +111,42 @@ export default function AlteracaoServico() {
                                 Descrição
                             </label>
                             <textarea
-                                {...register("descricao")}
+                                {...register("descricao", {
+                                    required: "Descrição é obrigatória",
+                                    maxLength: { value: 500, message: "Descrição deve ter no máximo 500 caracteres" },
+                                    minLength: { value: 10, message: "Descrição deve ter pelo menos 10 caracteres" }
+                                })}
                                 id="descricao"
-                                className="border border-gray-300 rounded-md p-3 w-full h-32 focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
+                                className={`border rounded-md p-3 w-full h-32 focus:outline-none focus:ring-2 shadow-sm ${errors.descricao ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
                                 placeholder="Digite a descrição do serviço"
-                                required
+                                maxLength={500}
                             />
+                            {errors.descricao && <p className="text-red-500 text-sm mt-1">{errors.descricao.message}</p>}
+                        </div>
+
+                        <div className="w-full mb-4">
+                            <label htmlFor="preco" className="block mb-2 text-sm font-medium text-gray-800">
+                                Preço
+                            </label>
+                            <input
+                                {...register("preco", {
+                                    required: "Preço é obrigatório",
+                                    valueAsNumber: true,
+                                    min: { value: 0.01, message: "Preço deve ser maior que zero" },
+                                    max: { value: 999999.99, message: "Preço deve ser menor que R$ 999.999,99" }
+                                })}
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                id="preco"
+                                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.preco ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
+                                placeholder="Digite o preço do serviço"
+                            />
+                            {errors.preco && <p className="text-red-500 text-sm mt-1">{errors.preco.message}</p>}
                         </div>
                     </div>
                 </fieldset>
 
-                {/* Foto */}
                 <fieldset className="border border-gray-300 rounded-md p-4">
                     <legend className="text-lg font-bold text-gray-700 px-2">Símbolo</legend>
                     <div className="mt-4">
@@ -105,23 +154,26 @@ export default function AlteracaoServico() {
                             URL do símbolo
                         </label>
                         <input
-                            {...register("simbolo")}
+                            {...register("simbolo", {
+                                required: "URL do símbolo é obrigatória",
+                                validate: validateURL
+                            })}
                             type="url"
                             id="simbolo"
-                            className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
+                            className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.simbolo ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
                             placeholder="Insira a URL do símbolo"
-                            required
+                            maxLength={255}
                         />
+                        {errors.simbolo && <p className="text-red-500 text-sm mt-1">{errors.simbolo.message}</p>}
                     </div>
                 </fieldset>
 
-                {/* Ações */}
                 <div className="flex flex-col sm:flex-row justify-between items-center mt-6 gap-4">
                     <button
                         type="submit"
                         className="bg-yellow-400 text-black font-bold rounded-md py-4 px-8 w-full sm:w-auto hover:bg-yellow-500 focus:outline-none focus:ring-4 focus:ring-yellow-300 transition-all duration-200 ease-in-out shadow-md"
                     >
-                        Alterar Serviço
+                        Alterar serviço
                     </button>
                     <button
                         type="button"
@@ -131,6 +183,7 @@ export default function AlteracaoServico() {
                                 nome: "",
                                 descricao: "",
                                 simbolo: "",
+                                preco: 0
                             })
                         }
                     >
@@ -140,7 +193,7 @@ export default function AlteracaoServico() {
             </form>
 
             <div className="flex justify-start mt-6">
-                <Link href="/cadservico">
+                <Link href="/servico">
                     <button className="bg-gray-600 text-white font-bold rounded-md py-4 px-8 w-full sm:w-auto hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-500 transition-all duration-200 ease-in-out shadow-md">
                         Voltar
                     </button>

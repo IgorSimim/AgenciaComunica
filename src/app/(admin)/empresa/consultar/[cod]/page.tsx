@@ -8,7 +8,7 @@ import { TEmpresa } from "@/app/types/index"
 
 export default function ConsultaEmpresa() {
   const params = useParams()
-  const { register, reset, watch } = useForm<TEmpresa & { dataCriacao: string }>()
+  const { register, reset, watch } = useForm<TEmpresa>()
 
   const logotipo = watch("logotipo")
 
@@ -27,7 +27,7 @@ export default function ConsultaEmpresa() {
             logotipo: dado.logotipo
           })
         } else {
-          alerts.error("Não foi possível carregar os dados da empresa")
+          alerts.error(dado.message || "Não foi possível carregar os dados da empresa")
         }
       } catch (error) {
         alerts.error("Erro ao carregar os dados da empresa")

@@ -1,15 +1,35 @@
 'use client'
 import { useForm } from "react-hook-form"
-import { toast } from "sonner"
+import { alerts } from "@/lib/alerts"
 import Link from "next/link"
 import { TServico } from "@/app/types/index"
 
-type ServicoForm = Omit<TServico, 'cod'>
-
 export default function CriarServico() {
-  const { register, handleSubmit, reset } = useForm<ServicoForm>()
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<Omit<TServico, 'cod'>>({
+    mode: "onBlur"
+  })
 
-  async function criarServico(data: ServicoForm) {
+  const validateNome = (nome: string) => {
+    const nomeRegex = /^[A-Za-zÀ-ú\s]+$/
+    if (!nomeRegex.test(nome)) {
+      return "Nome não pode conter números ou caracteres especiais"
+    }
+    return true
+  }
+
+  const validateURL = (url: string) => {
+    try {
+      new URL(url)
+      if (url.length > 255) {
+        return "URL deve ter no máximo 255 caracteres"
+      }
+      return true
+    } catch {
+      return "URL deve ter um formato válido"
+    }
+  }
+
+  async function criarServico(data: Omit<TServico, 'cod'>) {
     try {
       const response = await fetch("/api/servico", {
         method: "POST",
@@ -17,15 +37,15 @@ export default function CriarServico() {
         body: JSON.stringify(data),
       })
 
-      if (response.status === 201) {
-        toast.success("Serviço criado com sucesso!")
+      if (response.ok) {
+        alerts.success("Serviço criado com sucesso!")
         reset()
       } else {
         const errorData = await response.json()
-        toast.error(`Erro ao criar o serviço: ${errorData.msg || 'Tente novamente.'}`)
+        alerts.error(errorData.message || "Erro ao criar o serviço")
       }
     } catch (error) {
-      toast.error("Erro ao processar a criação. Tente novamente mais tarde.")
+      alerts.error("Erro ao processar a criação. Tente novamente mais tarde.")
     }
   }
 
@@ -41,16 +61,22 @@ export default function CriarServico() {
           <div className="mt-4">
             <div className="w-full mb-4">
               <label htmlFor="nome" className="block mb-2 text-sm font-medium text-gray-800">
-                Nome do serviço
+                Nome
               </label>
               <input
-                {...register("nome")}
+                {...register("nome", {
+                  required: "Nome é obrigatório",
+                  maxLength: { value: 100, message: "Nome deve ter no máximo 100 caracteres" },
+                  minLength: { value: 2, message: "Nome deve ter pelo menos 2 caracteres" },
+                  validate: validateNome
+                })}
                 type="text"
                 id="nome"
-                className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
+                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.nome ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
                 placeholder="Digite o nome do serviço"
-                required
+                maxLength={100}
               />
+              {errors.nome && <p className="text-red-500 text-sm mt-1">{errors.nome.message}</p>}
             </div>
 
             <div className="w-full mb-4">
@@ -58,12 +84,38 @@ export default function CriarServico() {
                 Descrição
               </label>
               <textarea
-                {...register("descricao")}
+                {...register("descricao", {
+                  required: "Descrição é obrigatória",
+                  maxLength: { value: 500, message: "Descrição deve ter no máximo 500 caracteres" },
+                  minLength: { value: 10, message: "Descrição deve ter pelo menos 10 caracteres" }
+                })}
                 id="descricao"
-                className="border border-gray-300 rounded-md p-3 w-full h-32 focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
+                className={`border rounded-md p-3 w-full h-32 focus:outline-none focus:ring-2 shadow-sm ${errors.descricao ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
                 placeholder="Digite a descrição do serviço"
-                required
+                maxLength={500}
               />
+              {errors.descricao && <p className="text-red-500 text-sm mt-1">{errors.descricao.message}</p>}
+            </div>
+
+            <div className="w-full mb-4">
+              <label htmlFor="preco" className="block mb-2 text-sm font-medium text-gray-800">
+                Preço
+              </label>
+              <input
+                {...register("preco", {
+                  required: "Preço é obrigatório",
+                  valueAsNumber: true,
+                  min: { value: 0.01, message: "Preço deve ser maior que zero" },
+                  max: { value: 999999.99, message: "Preço deve ser menor que R$ 999.999,99" }
+                })}
+                type="number"
+                step="0.01"
+                min="0"
+                id="preco"
+                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.preco ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
+                placeholder="Digite o preço do serviço"
+              />
+              {errors.preco && <p className="text-red-500 text-sm mt-1">{errors.preco.message}</p>}
             </div>
           </div>
         </fieldset>
@@ -75,13 +127,17 @@ export default function CriarServico() {
               URL do símbolo
             </label>
             <input
-              {...register("simbolo")}
+              {...register("simbolo", {
+                required: "URL do símbolo é obrigatória",
+                validate: validateURL
+              })}
               type="url"
               id="simbolo"
-              className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
+              className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.simbolo ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
               placeholder="Insira a URL do símbolo"
-              required
+              maxLength={255}
             />
+            {errors.simbolo && <p className="text-red-500 text-sm mt-1">{errors.simbolo.message}</p>}
           </div>
         </fieldset>
 
@@ -90,7 +146,7 @@ export default function CriarServico() {
             type="submit"
             className="bg-yellow-400 text-black font-bold rounded-md py-4 px-8 w-full sm:w-auto hover:bg-yellow-500 focus:outline-none focus:ring-4 focus:ring-yellow-300 transition-all duration-200 ease-in-out shadow-md"
           >
-            Criar Ssrviço
+            Criar Serviço
           </button>
           <button
             type="button"

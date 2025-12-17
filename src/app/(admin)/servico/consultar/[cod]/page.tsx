@@ -2,15 +2,16 @@
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { useParams } from "next/navigation"
-import { toast } from "sonner"
 import Link from "next/link"
 import { TServico } from "@/app/types/index"
+import { alerts } from "@/lib/alerts"
 
 export default function ConsultaServico() {
   const params = useParams()
   const { register, reset, watch } = useForm<TServico>()
 
   const simbolo = watch("simbolo")
+  const preco = watch("preco")
 
   useEffect(() => {
     async function getServico() {
@@ -19,20 +20,17 @@ export default function ConsultaServico() {
         const dado = await response.json()
 
         if (response.ok) {
-          const dataCriacao = new Date(dado.createdAt)
-          const formattedDate = `${dataCriacao.getUTCDate().toString().padStart(2, '0')}/${(dataCriacao.getUTCMonth() + 1).toString().padStart(2, '0')}/${dataCriacao.getUTCFullYear()}`
-
           reset({
             nome: dado.nome,
             descricao: dado.descricao,
             simbolo: dado.simbolo,
-            dataCriacao: formattedDate
+            preco: dado.preco
           })
         } else {
-          toast.error("Não foi possível carregar os dados do serviço")
+          alerts.error(dado.message || "Não foi possível carregar os dados do serviço")
         }
       } catch (error) {
-        toast.error("Erro ao carregar os dados do serviço")
+        alerts.error("Erro ao carregar os dados do serviço")
       }
     }
 
@@ -45,7 +43,7 @@ export default function ConsultaServico() {
 
       <div className="grid grid-cols-1 gap-6 max-w-4xl mx-auto bg-gray-100 p-6 rounded-lg shadow-lg">
         <fieldset className="border border-gray-300 rounded-md p-4">
-          <legend className="text-lg font-bold text-gray-700 px-2">Informações do serviço</legend>
+          <legend className="text-lg font-bold text-gray-700 px-2">Informações básicas</legend>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4">
             <div className="sm:col-span-1">
               <label htmlFor="nome" className="block mb-2 text-sm font-medium text-gray-800">Nome</label>
@@ -69,6 +67,17 @@ export default function ConsultaServico() {
                 readOnly
               />
             </div>
+            <div className="sm:col-span-1">
+              <label htmlFor="preco" className="block mb-2 text-sm font-medium text-gray-800">Preço</label>
+              <input
+                value={preco ? `R$ ${preco.toFixed(2).replace('.', ',')}` : ''}
+                type="text"
+                id="preco"
+                className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
+                placeholder="Preço do serviço"
+                readOnly
+              />
+            </div>
           </div>
         </fieldset>
 
@@ -87,7 +96,7 @@ export default function ConsultaServico() {
               </div>
             </div>
 
-            <div className="sm:col-span-1">
+            {/* <div className="sm:col-span-1">
               <label htmlFor="dataCriacao" className="block mb-2 text-sm font-medium text-gray-800">Data de Criação</label>
               <input
                 {...register("dataCriacao")}
@@ -97,13 +106,13 @@ export default function ConsultaServico() {
                 placeholder="Data de criação"
                 readOnly
               />
-            </div>
+            </div> */}
           </div>
         </fieldset>
       </div>
 
       <div className="flex justify-start mt-6">
-        <Link href="/cadservico">
+        <Link href="/servico">
           <button className="bg-gray-600 text-white font-bold rounded-md py-4 px-8 w-full sm:w-auto hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-500 transition-all duration-200 ease-in-out shadow-md">
             Voltar
           </button>

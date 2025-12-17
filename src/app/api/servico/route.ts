@@ -41,21 +41,21 @@ export async function POST(
             )
         }
 
-        const contratado = await prisma.contratado.findUnique({
-            where: { email: session.contratado.email },
-        })
+        // const contratado = await prisma.contratado.findUnique({
+        //     where: { email: session.contratado.email },
+        // })
 
-        if (!contratado || (contratado.cargo !== "REDATORA" && contratado.cargo !== "PROPRIETARIA")) {
-            return NextResponse.json(
-                { message: "Acesso negado" },
-                { status: 403 }
-            )
-        }
+        // if (!contratado || (contratado.cargo !== "REDATORA" && contratado.cargo !== "PROPRIETARIA")) {
+        //     return NextResponse.json(
+        //         { message: "Acesso negado" },
+        //         { status: 403 }
+        //     )
+        // }
 
         const data = await _request.json()
 
-        const { cod, nome, descricao, preco, simbolo } = data
-        if (!cod || !nome || !descricao || !preco || !simbolo) {
+        const { nome, descricao, preco, simbolo } = data
+        if (!nome || !descricao || preco === undefined || !simbolo) {
             return NextResponse.json(
                 { message: "Todos os campos são obrigatórios" },
                 { status: 400 }
@@ -75,10 +75,9 @@ export async function POST(
 
         const newServico = await prisma.servico.create({
             data: {
-                cod,
                 nome,
                 descricao,
-                preco,
+                preco: parseFloat(preco),
                 simbolo
             },
         })

@@ -2,7 +2,7 @@
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { useParams } from "next/navigation"
-import { toast } from "sonner"
+import { alerts } from "@/lib/alerts"
 import Link from "next/link"
 import { TContratado } from "@/app/types/index"
 
@@ -29,10 +29,10 @@ export default function ConsultaContratado() {
             foto: dado.foto
           })
         } else {
-          toast.error("Não foi possível carregar os dados do contratado")
+          alerts.error(dado.message ||"Não foi possível carregar os dados do contratado")
         }
       } catch (error) {
-        toast.error("Erro ao carregar os dados do contratado")
+        alerts.error("Erro ao carregar os dados do contratado")
       }
     }
     getContratado()

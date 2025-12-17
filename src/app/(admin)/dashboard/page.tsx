@@ -30,12 +30,12 @@ const Home: React.FC = () => {
 
         const empresas = empresasRes.ok ? await empresasRes.json() : []
         const contratados = contratadosRes.ok ? await contratadosRes.json() : []
-        const servicos = servicosRes.ok ? await servicosRes.json() : []
+        const servicosData = servicosRes.ok ? await servicosRes.json() : { servicos: [] }
 
         setGeral({
           empresas: Array.isArray(empresas) ? empresas.filter(e => e.ativa !== false).length : 0,
           contratados: Array.isArray(contratados) ? contratados.length : 0,
-          servicos: Array.isArray(servicos) ? servicos.length : 0
+          servicos: Array.isArray(servicosData.servicos) ? servicosData.servicos.length : 0
         })
 
         if (Array.isArray(empresas)) {
