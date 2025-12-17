@@ -8,7 +8,7 @@ import Swal from 'sweetalert2'
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import axios from 'axios'
-import { TServico } from '@/app/types'
+import { TServico } from '@/app/types/index'
 
 type ServicoInputs = {
   nome: string
@@ -167,7 +167,7 @@ function CadServicos() {
             <label htmlFor="simbolo" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">URL do símbolo</label>
             <input type="url" id="simbolo" placeholder="Insira a URL do símbolo" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500" required {...register("simbolo")} />
           </div>
-          <button type="submit" className="text-white bg-green-700 hover:bg-green-800 shadow-md hover:shadow-lg focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Cadastrar Serviço</button>
+          <button type="submit" className="text-white bg-green-700 hover:bg-green-800 shadow-md hover:shadow-lg focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Cadastrar serviço</button>
         </form>
       </Modal>
 

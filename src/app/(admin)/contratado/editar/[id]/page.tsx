@@ -2,18 +2,67 @@
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { useParams } from "next/navigation"
-import { toast } from "sonner"
+import { alerts } from "@/lib/alerts"
 import Link from "next/link"
-import { TContratado } from "@/app/types"
+import { TContratado } from "@/app/types/index"
 
 type ContratadoForm = Omit<TContratado, 'cargo' | 'dtnasc'> & {
   cargo: string
   dtnasc: string
 }
 
+const validateNome = (nome: string) => {
+  const nomeRegex = /^[A-Za-zÀ-ú\s]+$/
+  if (!nomeRegex.test(nome)) {
+    return "Nome não pode conter números ou caracteres especiais"
+  }
+  return true
+}
+
+const validateEmail = (email: string) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  if (!emailRegex.test(email)) {
+    return "Email deve ter um formato válido"
+  }
+  if (email.length > 100) {
+    return "Email deve ter no máximo 100 caracteres"
+  }
+  return true
+}
+
+const validateTelefone = (telefone: string) => {
+  const cleanTelefone = telefone.replace(/\D/g, '')
+  if (cleanTelefone.length !== 11) {
+    return "Telefone deve ter 11 dígitos"
+  }
+  return true
+}
+
+const formatTelefone = (value: string) => {
+  const cleanValue = value.replace(/\D/g, '')
+  return cleanValue
+    .replace(/(\d{2})(\d)/, '($1) $2')
+    .replace(/(\d{5})(\d)/, '$1-$2')
+    .replace(/(-\d{4})\d+?$/, '$1')
+}
+
+const validateURL = (url: string) => {
+  try {
+    new URL(url)
+    if (url.length > 255) {
+      return "URL deve ter no máximo 255 caracteres"
+    }
+    return true
+  } catch {
+    return "URL deve ter um formato válido"
+  }
+}
+
 export default function AlteracaoContratado() {
   const params = useParams()
-  const { register, reset, handleSubmit } = useForm<ContratadoForm>()
+  const { register, reset, handleSubmit, formState: { errors } } = useForm<ContratadoForm>({
+    mode: "onBlur"
+  })
 
   useEffect(() => {
     async function getContratado() {
@@ -26,16 +75,17 @@ export default function AlteracaoContratado() {
             nome: dado.nome,
             email: dado.email,
             senha: dado.senha,
+            telefone: dado.telefone,
             cargo: dado.cargo,
             dtnasc: dado.dtnasc ? dado.dtnasc.split('T')[0] : "",
             sobre: dado.sobre,
             foto: dado.foto
           })
         } else {
-          toast.error("Não foi possível carregar os dados do contratado")
+          alerts.error("Não foi possível carregar os dados do contratado")
         }
       } catch (error) {
-        toast.error("Erro ao carregar os dados do contratado")
+        alerts.error("Erro ao carregar os dados do contratado")
       }
     }
     getContratado()
@@ -50,20 +100,13 @@ export default function AlteracaoContratado() {
       })
 
       if (response.status === 200) {
-        toast.success("Contratado alterado com sucesso!")
+        alerts.success("Contratado alterado com sucesso!")
       } else {
         const errorData = await response.json()
-
-        if (errorData.id === 3) {
-          toast.error("O e-mail fornecido é inválido.")
-        } else if (errorData.id === 6) {
-          toast.error("A URL da foto não é válida.")
-        } else {
-          toast.error(`Erro ao alterar o contratado: ${errorData.msg || 'Tente novamente.'}`)
-        }
+        alerts.error(errorData.message || 'Erro ao alterar o contratado')
       }
     } catch (error) {
-      toast.error("Erro ao processar a alteração. Tente novamente mais tarde.")
+      alerts.error("Erro ao processar a alteração. Tente novamente mais tarde.")
     }
   }
 
@@ -83,52 +126,89 @@ export default function AlteracaoContratado() {
                 Nome
               </label>
               <input
-                {...register("nome")}
+                {...register("nome", {
+                  required: "Nome é obrigatório",
+                  maxLength: { value: 100, message: "Nome deve ter no máximo 100 caracteres" },
+                  minLength: { value: 2, message: "Nome deve ter pelo menos 2 caracteres" },
+                  validate: validateNome
+                })}
                 type="text"
                 id="nome"
-                className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
+                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.nome ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
                 placeholder="Digite o nome completo"
-                required
+                maxLength={100}
               />
+              {errors.nome && <p className="text-red-500 text-sm mt-1">{errors.nome.message}</p>}
             </div>
             <div className="sm:col-span-1">
               <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-800">
                 Email
               </label>
               <input
-                {...register("email")}
+                {...register("email", {
+                  required: "Email é obrigatório",
+                  validate: validateEmail
+                })}
                 type="email"
                 id="email"
-                className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
+                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.email ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
                 placeholder="Digite o email"
-                required
+                maxLength={100}
               />
+              {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
             </div>
 
-            <div className="sm:col-span-1 lg:col-span-2">
+            <div className="sm:col-span-1">
+              <label htmlFor="telefone" className="block mb-2 text-sm font-medium text-gray-800">
+                Telefone
+              </label>
+              <input
+                {...register("telefone", {
+                  required: "Telefone é obrigatório",
+                  validate: validateTelefone,
+                  onChange: (e) => {
+                    e.target.value = formatTelefone(e.target.value)
+                  }
+                })}
+                type="text"
+                id="telefone"
+                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.telefone ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
+                placeholder="(11) 99999-9999"
+                maxLength={15}
+              />
+              {errors.telefone && <p className="text-red-500 text-sm mt-1">{errors.telefone.message}</p>}
+            </div>
+            <div className="sm:col-span-1">
               <label htmlFor="cargo" className="block mb-2 text-sm font-medium text-gray-800">
                 Cargo
               </label>
               <input
-                {...register("cargo")}
+                {...register("cargo", {
+                  required: "Cargo é obrigatório",
+                  maxLength: { value: 50, message: "Cargo deve ter no máximo 50 caracteres" },
+                  minLength: { value: 2, message: "Cargo deve ter pelo menos 2 caracteres" }
+                })}
                 type="text"
                 id="cargo"
-                className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
+                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.cargo ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
                 placeholder="Digite o cargo"
-                required
+                maxLength={50}
               />
+              {errors.cargo && <p className="text-red-500 text-sm mt-1">{errors.cargo.message}</p>}
             </div>
             <div className="sm:col-span-1 lg:col-span-1">
               <label htmlFor="dtnasc" className="block mb-2 text-sm font-medium text-gray-800">
                 Data de nascimento
               </label>
               <input
-                {...register("dtnasc")}
+                {...register("dtnasc", {
+                  required: "Data de nascimento é obrigatória"
+                })}
                 type="date"
                 id="dtnasc"
-                className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
-                required
+                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.dtnasc ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
               />
+              {errors.dtnasc && <p className="text-red-500 text-sm mt-1">{errors.dtnasc.message}</p>}
             </div>
           </div>
         </fieldset>
@@ -140,13 +220,17 @@ export default function AlteracaoContratado() {
               URL da foto
             </label>
             <input
-              {...register("foto")}
+              {...register("foto", {
+                required: "URL da foto é obrigatória",
+                validate: validateURL
+              })}
               type="url"
               id="foto"
-              className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
+              className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.foto ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
               placeholder="Insira a URL da foto"
-              required
+              maxLength={255}
             />
+            {errors.foto && <p className="text-red-500 text-sm mt-1">{errors.foto.message}</p>}
           </div>
         </fieldset>
 
@@ -157,12 +241,17 @@ export default function AlteracaoContratado() {
               Sobre
             </label>
             <textarea
-              {...register("sobre")}
+              {...register("sobre", {
+                required: "Descrição é obrigatória",
+                maxLength: { value: 500, message: "Descrição deve ter no máximo 500 caracteres" },
+                minLength: { value: 10, message: "Descrição deve ter pelo menos 10 caracteres" }
+              })}
               id="sobre"
-              className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
+              className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.sobre ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
               placeholder="Escreva uma breve descrição sobre o contratado"
-              required
+              maxLength={500}
             />
+            {errors.sobre && <p className="text-red-500 text-sm mt-1">{errors.sobre.message}</p>}
           </div>
         </fieldset>
 
@@ -180,6 +269,7 @@ export default function AlteracaoContratado() {
               reset({
                 nome: "",
                 email: "",
+                telefone: "",
                 cargo: "",
                 dtnasc: "",
                 sobre: "",

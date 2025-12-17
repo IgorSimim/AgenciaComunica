@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import { Chart } from 'react-google-charts'
 import { useForm } from 'react-hook-form'
-import { DashboardType } from '@/app/types'
+import { DashboardType } from '@/app/types/index'
 
 const Home: React.FC = () => {
   const [dadosEmpresas, setDadosEmpresas] = useState<(string | number)[][]>([['Área de Atuação', 'Empresas']])
@@ -91,11 +91,11 @@ const Home: React.FC = () => {
         </div>
         <div className="shadow-lg p-6 rounded-lg border border-blue-200 bg-blue-50 text-center">
           <h3 className="text-5xl font-bold text-blue-600">{geral.empresas}</h3>
-          <p className="text-lg font-medium mt-2">Empresas cadastradas</p>
+          <p className="text-lg font-medium mt-2">Empresas ativas</p>
         </div>
         <div className="shadow-lg p-6 rounded-lg border border-red-200 bg-red-50 text-center">
           <h3 className="text-5xl font-bold text-red-600">{geral.contratados}</h3>
-          <p className="text-lg font-medium mt-2">Funcionários cadastrados</p>
+          <p className="text-lg font-medium mt-2">Funcionários ativos</p>
         </div>
       </div>
 
@@ -107,15 +107,15 @@ const Home: React.FC = () => {
           height="400px"
           data={dadosEmpresas}
           options={{
-            title: 'Distribuição das empresas por área de atuação',
+            title: 'Distribuição das empresas por setor',
             chartArea: { width: '60%' },
             hAxis: {
-              title: 'Empresas cadastradas',
+              title: 'Empresas ativas',
               textStyle: { fontSize: 14 },
               format: '0',
             },
             vAxis: {
-              title: 'Área de atuação',
+              title: 'Setor',
               textStyle: { fontSize: 14 },
             },
             legend: { position: 'none' },
@@ -139,15 +139,15 @@ const Home: React.FC = () => {
           height="400px"
           data={dadosContratados}
           options={{
-            title: 'Distribuição dos funcionários por área de atuação',
+            title: 'Distribuição dos funcionários por cargo',
             chartArea: { width: '60%' },
             hAxis: {
-              title: 'Funcionários cadastrados',
+              title: 'Funcionários ativos',
               textStyle: { fontSize: 14 },
               format: '0',
             },
             vAxis: {
-              title: 'Área de atuação',
+              title: 'Cargo',
               textStyle: { fontSize: 14 },
             },
             legend: { position: 'none' },

@@ -4,15 +4,10 @@ import { sendGTMEvent } from '@next/third-parties/google'
 import { stringify } from 'querystring'
 import { useState, FormEvent } from 'react'
 import { alerts } from '@/lib/alerts'
-
-type FormData = {
-    nome: string
-    email: string
-    mensagem: string
-}
+import { ContatoForm } from '@/app/types/index'
 
 export default function Contato() {
-    const [formData, setFormData] = useState<FormData>({
+    const [formData, setFormData] = useState<ContatoForm>({
         nome: '',
         email: '',
         mensagem: ''
@@ -24,7 +19,6 @@ export default function Contato() {
         const { name, value } = e.target
 
         if (name === 'nome') {
-            // Aceita apenas letras (maiúsculas/minúsculas), acentos e espaços
             const somenteLetras = value.replace(/[^A-Za-zÀ-ÿ\s]/g, '')
             setFormData(prev => ({ ...prev, [name]: somenteLetras }))
         } else {
@@ -35,7 +29,6 @@ export default function Contato() {
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault()
 
-        // Validação simples de Email
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
         if (!emailRegex.test(formData.email)) {
             alerts.warning('Por favor, informe um Email válido.')

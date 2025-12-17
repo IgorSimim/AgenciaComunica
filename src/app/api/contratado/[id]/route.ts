@@ -6,13 +6,21 @@ import { authOptions } from "@/app/api/config/auth/authOptions";
 // PUT /api/contratado/:id
 export async function PUT(
     _request: NextRequest,
-    { params }: { params: Promise<{ id: number }> }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        const id = await params?.then((c) => c.id);
-        if (!id) {
+        const idStr = await params?.then((c) => c.id);
+        if (!idStr) {
             return NextResponse.json(
-                { error: "id do contratado é obrigatório" },
+                { message: "id do contratado é obrigatório" },
+                { status: 400 }
+            );
+        }
+
+        const id = parseInt(idStr, 10);
+        if (isNaN(id)) {
+            return NextResponse.json(
+                { message: "ID deve ser um número válido" },
                 { status: 400 }
             );
         }
@@ -25,7 +33,7 @@ export async function PUT(
 
         if (!contratado) {
             return NextResponse.json(
-                { error: "Contratado não encontrado" },
+                { message: "Contratado não encontrado" },
                 { status: 404 }
             );
         }
@@ -54,7 +62,7 @@ export async function PUT(
         const { nome, email, telefone, sobre, foto, cargo } = dadosAtualizados;
         if (!nome || !email || !telefone || !sobre || !foto || !cargo) {
             return NextResponse.json(
-                { error: "Todos os campos são obrigatórios" },
+                { message: "Todos os campos são obrigatórios" },
                 { status: 400 }
             );
         }
@@ -92,7 +100,7 @@ export async function DELETE(
         const id = await params?.then((c) => c.id);
         if (!id) {
             return NextResponse.json(
-                { error: "ID do contratado é obrigatório" },
+                { message: "ID do contratado é obrigatório" },
                 { status: 400 }
             );
         }
@@ -105,7 +113,7 @@ export async function DELETE(
 
         if (!contratado) {
             return NextResponse.json(
-                { error: "Contratado não encontrado" },
+                { message: "Contratado não encontrado" },
                 { status: 404 }
             );
         }
@@ -150,7 +158,7 @@ export async function GET(
         const idStr = await params?.then((e) => e.id);
         if (!idStr) {
             return NextResponse.json(
-                { error: "ID da contratado é obrigatório" },
+                { message: "ID da contratado é obrigatório" },
                 { status: 400 }
             );
         }
@@ -158,7 +166,7 @@ export async function GET(
         const id = parseInt(idStr, 10);
         if (isNaN(id)) {
             return NextResponse.json(
-                { error: "ID da contratado deve ser um número válido" },
+                { message: "ID da contratado deve ser um número válido" },
                 { status: 400 }
             );
         }
@@ -171,7 +179,7 @@ export async function GET(
 
         if (!contratado) {
             return NextResponse.json(
-                { error: "Contratado não encontrado" },
+                { message: "Contratado não encontrado" },
                 { status: 404 }
             );
         }

@@ -12,7 +12,7 @@ export async function PUT(
         const cod = await params?.then((c) => c.cod);
         if (!cod) {
             return NextResponse.json(
-                { error: "Código do serviço é obrigatório" },
+                { message: "Código do serviço é obrigatório" },
                 { status: 400 }
             );
         }
@@ -25,7 +25,7 @@ export async function PUT(
 
         if (!servico) {
             return NextResponse.json(
-                { error: "Serviço não encontrado" },
+                { message: "Serviço não encontrado" },
                 { status: 404 }
             );
         }
@@ -54,7 +54,7 @@ export async function PUT(
         const { nome, descricao, preco, simbolo } = dadosAtualizados;
         if (!nome || !descricao || !preco || !simbolo) {
             return NextResponse.json(
-                { error: "Todos os campos são obrigatórios" },
+                { message: "Todos os campos são obrigatórios" },
                 { status: 400 }
             );
         }
@@ -90,7 +90,7 @@ export async function DELETE(
         const cod = await params?.then((s) => s.cod);
         if (!cod) {
             return NextResponse.json(
-                { error: "Código do serviço é obrigatório" },
+                { message: "Código do serviço é obrigatório" },
                 { status: 400 }
             );
         }
@@ -103,7 +103,7 @@ export async function DELETE(
 
         if (!servico) {
             return NextResponse.json(
-                { error: "Serviço não encontrado" },
+                { message: "Serviço não encontrado" },
                 { status: 404 }
             );
         }

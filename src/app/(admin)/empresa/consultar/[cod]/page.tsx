@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form"
 import { useParams } from "next/navigation"
 import { alerts } from "@/lib/alerts"
 import Link from "next/link"
-import { TEmpresa } from "@/app/types"
+import { TEmpresa } from "@/app/types/index"
 
 export default function ConsultaEmpresa() {
   const params = useParams()

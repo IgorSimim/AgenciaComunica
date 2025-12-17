@@ -1,4 +1,4 @@
-import { EmpresaLogin } from "@/app/types";
+import { EmpresaLogin } from "@/app/types/auth";
 import { signIn } from "next-auth/react";
 
 export default async function handlerLogin(

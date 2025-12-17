@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form"
 import { useParams } from "next/navigation"
 import { toast } from "sonner"
 import Link from "next/link"
-import { TContratado } from "@/app/types"
+import { TContratado } from "@/app/types/index"
 
 type ContratadoConsulta = Omit<TContratado, 'dtnasc'> & {
   dtnasc: string
@@ -33,6 +33,7 @@ export default function ConsultaContratado() {
           reset({
             nome: dado.nome,
             email: dado.email,
+            telefone: dado.telefone,
             cargo: dado.cargo,
             dtnasc: formattedDatedtnasc,
             sobre: dado.sobre,
@@ -77,6 +78,18 @@ export default function ConsultaContratado() {
                 id="email"
                 className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
                 placeholder="Email do contratado"
+                readOnly
+              />
+            </div>
+
+            <div className="sm:col-span-1">
+              <label htmlFor="telefone" className="block mb-2 text-sm font-medium text-gray-800">Telefone</label>
+              <input
+                {...register("telefone")}
+                type="text"
+                id="telefone"
+                className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
+                placeholder="Telefone do contratado"
                 readOnly
               />
             </div>

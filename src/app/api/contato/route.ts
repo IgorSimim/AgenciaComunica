@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
 
     if (!nome || !email || !mensagem) {
       return NextResponse.json(
-        { ok: false, error: 'Todos os campos são obrigatórios.' },
+        { ok: false, message: 'Todos os campos são obrigatórios.' },
         { status: 400 }
       )
     }
@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email)) {
       return NextResponse.json(
-        { ok: false, error: 'Email inválido.' },
+        { ok: false, message: 'Email inválido.' },
         { status: 400 }
       )
     }
@@ -97,9 +97,8 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ ok: true })
   } catch (error) {
-    console.error('Erro ao enviar email:', error)
     return NextResponse.json(
-      { ok: false, error: error instanceof Error ? error.message : 'Erro desconhecido' },
+      { ok: false, message: error instanceof Error ? error.message : 'Erro desconhecido' },
       { status: 500 }
     )
   }

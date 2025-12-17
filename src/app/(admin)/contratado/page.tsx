@@ -2,10 +2,10 @@
 import 'react-responsive-modal/styles.css'
 import { useEffect, useState } from "react"
 import { HiOutlineXCircle, HiOutlineEye, HiOutlinePencilAlt } from "react-icons/hi"
-import Swal from 'sweetalert2'
+import { alerts } from "@/lib/alerts"
 import { useRouter } from "next/navigation"
 import axios from 'axios'
-import { TContratado } from "@/app/types"
+import { TContratado } from "@/app/types/index"
 
 function Contratados() {
   const [contratados, setContratados] = useState<TContratado[]>([])
@@ -23,39 +23,24 @@ function Contratados() {
   const router = useRouter()
 
   async function excluirContratado(contratado: TContratado) {
-    const result = await Swal.fire({
-      title: contratado.nome,
-      text: `Confirmar a Exclusão do ${contratado.nome}?`,
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Sim, excluir",
-      cancelButtonText: "Cancelar"
-    })
-
-    if (result.isConfirmed) {
-      const response = await fetch(`/api/contratado/${contratado.id}`, {
-        method: "DELETE",
-        headers: { "Content-type": "application/json" },
-      })
-
-      if (response.status == 200) {
-        const contratados2 = contratados.filter(x => x.id != contratado.id)
-        setContratados(contratados2)
-        Swal.fire({
-          title: "Funcionário Excluído com Sucesso",
-          text: contratado.nome,
-          icon: "success"
+    await alerts.delete(
+      contratado.nome,
+      `Confirmar a exclusão do ${contratado.nome}?`,
+      async () => {
+        const response = await fetch(`/api/contratado/${contratado.id}`, {
+          method: "DELETE",
+          headers: { "Content-type": "application/json" },
         })
-      } else {
-        Swal.fire({
-          title: "Erro... Funcionário Não Excluído",
-          text: "Pode haver comentários para este funcionário",
-          icon: "error"
-        })
+
+        if (response.status == 200) {
+          const contratados2 = contratados.filter(x => x.id != contratado.id)
+          setContratados(contratados2)
+        } else {
+          const errorData = await response.json()
+          throw new Error(errorData.message || "Erro ao excluir contratado")
+        }
       }
-    }
+    )
   }
 
   const listaContratados = contratados.map((contratado: TContratado) => (

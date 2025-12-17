@@ -12,7 +12,7 @@ export async function PUT(
         const codStr = await params?.then((e) => e.cod);
         if (!codStr) {
             return NextResponse.json(
-                { error: "Código da empresa é obrigatório" },
+                { message: "Código da empresa é obrigatório" },
                 { status: 400 }
             );
         }
@@ -20,7 +20,7 @@ export async function PUT(
         const cod = parseInt(codStr, 10);
         if (isNaN(cod)) {
             return NextResponse.json(
-                { error: "Código da empresa deve ser um número válido" },
+                { message: "Código da empresa deve ser um número válido" },
                 { status: 400 }
             );
         }
@@ -33,7 +33,7 @@ export async function PUT(
 
         if (!empresa) {
             return NextResponse.json(
-                { error: "Empresa não encontrada" },
+                { message: "Empresa não encontrada" },
                 { status: 404 }
             );
         }
@@ -62,7 +62,7 @@ export async function PUT(
         const { nome, email, setor, logotipo, ativa } = dadosAtualizados;
         if (!nome || !email || !setor || !logotipo) {
             return NextResponse.json(
-                { error: "Todos os campos são obrigatórios" },
+                { message: "Todos os campos são obrigatórios" },
                 { status: 400 }
             );
         }
@@ -99,7 +99,7 @@ export async function PUT(
 //         const codStr = await params?.then((e) => e.cod);
 //         if (!codStr) {
 //             return NextResponse.json(
-//                 { error: "Código da empresa é obrigatório" },
+//                 { message: "Código da empresa é obrigatório" },
 //                 { status: 400 }
 //             );
 //         }
@@ -107,7 +107,7 @@ export async function PUT(
 //         const cod = parseInt(codStr, 10);
 //         if (isNaN(cod)) {
 //             return NextResponse.json(
-//                 { error: "Código da empresa deve ser um número válido" },
+//                 { message: "Código da empresa deve ser um número válido" },
 //                 { status: 400 }
 //             );
 //         }
@@ -120,7 +120,7 @@ export async function PUT(
 
 //         if (!empresa) {
 //             return NextResponse.json(
-//                 { error: "Empresa não encontrada" },
+//                 { message: "Empresa não encontrada" },
 //                 { status: 404 }
 //             );
 //         }
@@ -172,7 +172,7 @@ export async function GET(
         const codStr = await params?.then((e) => e.cod);
         if (!codStr) {
             return NextResponse.json(
-                { error: "Código da empresa é obrigatório" },
+                { message: "Código da empresa é obrigatório" },
                 { status: 400 }
             );
         }
@@ -180,7 +180,7 @@ export async function GET(
         const cod = parseInt(codStr, 10);
         if (isNaN(cod)) {
             return NextResponse.json(
-                { error: "Código da empresa deve ser um número válido" },
+                { message: "Código da empresa deve ser um número válido" },
                 { status: 400 }
             );
         }
@@ -193,7 +193,7 @@ export async function GET(
 
         if (!empresa) {
             return NextResponse.json(
-                { error: "Empresa não encontrada" },
+                { message: "Empresa não encontrada" },
                 { status: 404 }
             );
         }

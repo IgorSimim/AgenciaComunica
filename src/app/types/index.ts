@@ -97,15 +97,11 @@ export interface TServico {
     }[] | null;
 }
 
-export type EmpresaLogin = {
+export interface ContatoForm {
+    nome: string;
     email: string;
-    senha: string;
-};
-
-export type ContratadoLogin = {
-    email: string;
-    senha: string;
-};
+    mensagem: string;
+}
 
 export interface DashboardType {
     empresas: number;

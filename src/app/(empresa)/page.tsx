@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { TServico } from "@/app/types";
+import { TServico } from "@/app/types/index";
 
 export default function HomeDeslogado() {
     const [servicos, setServicos] = useState<TServico[]>([]);

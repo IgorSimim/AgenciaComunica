@@ -1,4 +1,4 @@
-import { ContratadoLogin } from "@/app/types";
+import { ContratadoLogin } from "@/app/types/auth";
 import { signIn } from "next-auth/react";
 
 export default async function handlerLogin(

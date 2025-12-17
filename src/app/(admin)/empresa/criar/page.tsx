@@ -2,7 +2,7 @@
 import { useForm } from "react-hook-form"
 import { alerts } from "@/lib/alerts"
 import Link from "next/link"
-import { TEmpresa } from "@/app/types"
+import { TEmpresa } from "@/app/types/index"
 
 type EmpresaForm = Omit<TEmpresa, 'cod'> & {
   atuacao: string
@@ -94,8 +94,7 @@ export default function CriarEmpresa() {
         reset()
       } else {
         const errorData = await response.json()
-        console.log('Erro da API:', errorData)
-        alerts.error(`Erro ao criar a empresa: ${errorData.msg || errorData.message || 'Tente novamente.'}`)
+        alerts.error(`Erro ao criar a empresa: ${errorData.message || 'Tente novamente.'}`)
       }
     } catch (error) {
       console.error('Erro na requisição:', error)

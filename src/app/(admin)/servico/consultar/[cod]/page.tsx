@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form"
 import { useParams } from "next/navigation"
 import { toast } from "sonner"
 import Link from "next/link"
-import { TServico } from "@/app/types"
+import { TServico } from "@/app/types/index"
 
 export default function ConsultaServico() {
   const params = useParams()

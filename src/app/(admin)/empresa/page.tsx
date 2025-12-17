@@ -4,7 +4,7 @@ import { HiOutlinePencilAlt, HiOutlineEye, HiOutlineCheckCircle, HiOutlineBan } 
 import { alerts } from "@/lib/alerts"
 import { useRouter } from "next/navigation"
 import axios from 'axios'
-import { TEmpresa } from '@/app/types'
+import { TEmpresa } from '@/app/types/index'
 import Link from "next/link"
 
 function Empresas() {
