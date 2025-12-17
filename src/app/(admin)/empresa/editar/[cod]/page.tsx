@@ -115,7 +115,7 @@ export default function AlteracaoEmpresa() {
       >
         <fieldset className="border border-gray-300 rounded-md p-4">
           <legend className="text-lg font-bold text-gray-700 px-2">Informações básicas</legend>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4">
             <div>
               <label htmlFor="nome" className="block mb-2 text-sm font-medium text-gray-800">
                 Nome
@@ -189,7 +189,7 @@ export default function AlteracaoEmpresa() {
                 id="setor"
                 className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.setor ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'
                   }`}
-                placeholder="Digite o setor"
+                placeholder="Setor de atuação da empresa"
                 maxLength={100}
               />
               {errors.setor && <p className="text-red-500 text-sm mt-1">{errors.setor.message}</p>}

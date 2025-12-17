@@ -4,75 +4,56 @@ import { Modal } from 'react-responsive-modal'
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { HiOutlineXCircle, HiOutlinePencilAlt, HiOutlineEye } from "react-icons/hi"
-import Swal from 'sweetalert2'
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import axios from 'axios'
+import { alerts } from '@/lib/alerts'
 import { TServico } from '@/app/types/index'
-
-type ServicoInputs = {
-  nome: string
-  descricao: string
-  simbolo: string
-}
 
 function CadServicos() {
   const [servicos, setServicos] = useState<TServico[]>([])
   const [open, setOpen] = useState<boolean>(false)
   const router = useRouter()
-  const { register, handleSubmit, reset, setFocus } = useForm<ServicoInputs>()
+  const { register, handleSubmit, reset, setFocus } = useForm<TServico>()
 
   useEffect(() => {
     async function getServicos() {
       const response = await fetch("/api/servico")
       const dados = await response.json()
-      setServicos(dados.servicos)
+      setServicos(dados)
     }
     getServicos()
   }, [])
 
   async function excluirServico(servico: TServico) {
-    const result = await Swal.fire({
-      title: servico.nome,
-      text: `Confirmar a exclusão do serviço ${servico.nome}?`,
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Sim, excluir",
-      cancelButtonText: "Cancelar"
-    })
-
-    if (result.isConfirmed) {
-      const response = await fetch(`/api/servico/${servico.cod}`, {
-        method: "DELETE",
-        headers: { "Content-type": "application/json" },
-      })
-
-      if (response.status == 200) {
-        const servicos2 = servicos.filter(x => x.cod != servico.cod)
-        setServicos(servicos2)
-        Swal.fire({
-          title: "Serviço excluído com sucesso",
-          text: servico.nome,
-          icon: "success"
+    await alerts.delete(
+      servico.nome,
+      `Confirmar a exclusão do serviço ${servico.nome}?`,
+      async () => {
+        const response = await fetch(`/api/servico/${servico.cod}`, {
+          method: "DELETE",
+          headers: { "Content-type": "application/json" },
         })
-      } else {
-        Swal.fire({
-          title: "Erro... Serviço não excluído",
-          text: "Pode haver comentários para este serviço",
-          icon: "error"
-        })
+
+        if (response.status == 200) {
+          const servicos2 = servicos.filter(x => x.cod != servico.cod)
+          setServicos(servicos2)
+        } else {
+          const errorData = await response.json()
+          throw new Error(errorData.message || "Erro ao excluir serviço")
+        }
       }
-    }
+    )
   }
 
-  async function incluirServico(data: ServicoInputs) {
+  async function incluirServico(data: TServico) {
     const novoServico: TServico = {
       cod: 0,
       nome: data.nome,
       descricao: data.descricao,
-      simbolo: data.simbolo
+      simbolo: data.simbolo,
+      preco: 0,
+      contratos: []
     }
 
     try {

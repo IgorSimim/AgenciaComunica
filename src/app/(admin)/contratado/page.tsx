@@ -6,6 +6,7 @@ import { alerts } from "@/lib/alerts"
 import { useRouter } from "next/navigation"
 import axios from 'axios'
 import { TContratado } from "@/app/types/index"
+import Link from "next/link"
 
 function Contratados() {
   const [contratados, setContratados] = useState<TContratado[]>([])
@@ -83,6 +84,12 @@ function Contratados() {
     <div className="m-4">
 
       <div className="flex justify-end gap-4 mb-4">
+        <Link href="/contratado/criar">
+          <button type="button" className="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-300 font-bold rounded-lg text-md px-5 py-2.5 dark:bg-green-700 dark:hover:bg-green-800 focus:outline-none dark:focus:ring-green-900">
+            Novo cadastro
+          </button>
+        </Link>
+
         <button
           type="button"
           className="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-bold rounded-lg text-md px-5 py-2.5 dark:bg-blue-700 dark:hover:bg-blue-800 focus:outline-none dark:focus:ring-blue-900"

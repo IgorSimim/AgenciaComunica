@@ -4,12 +4,8 @@ import { alerts } from "@/lib/alerts"
 import Link from "next/link"
 import { TEmpresa } from "@/app/types/index"
 
-type EmpresaForm = Omit<TEmpresa, 'cod'> & {
-  atuacao: string
-}
-
 export default function CriarEmpresa() {
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<EmpresaForm>({
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<TEmpresa>({
     mode: "onBlur"
   })
 
@@ -72,13 +68,13 @@ export default function CriarEmpresa() {
     }
   }
 
-  async function criarEmpresa(data: EmpresaForm) {
+  async function criarEmpresa(data: TEmpresa) {
     const novaEmpresa = {
       nome: data.nome,
       cnpj: data.cnpj,
       email: data.email,
       senha: data.senha,
-      setor: data.atuacao,
+      setor: data.setor,
       logotipo: data.logotipo
     }
 
@@ -183,21 +179,21 @@ export default function CriarEmpresa() {
               {errors.senha && <p className="text-red-500 text-sm mt-1">{errors.senha.message}</p>}
             </div>
             <div>
-              <label htmlFor="atuacao" className="block mb-2 text-sm font-medium text-gray-800">Setor</label>
+              <label htmlFor="setor" className="block mb-2 text-sm font-medium text-gray-800">Setor</label>
               <input
-                {...register("atuacao", {
+                {...register("setor", {
                   required: "Setor é obrigatório",
                   maxLength: { value: 100, message: "Setor deve ter no máximo 100 caracteres" },
                   minLength: { value: 2, message: "Setor deve ter pelo menos 2 caracteres" }
                 })}
                 type="text"
-                id="atuacao"
-                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.atuacao ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'
+                id="setor"
+                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.setor ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'
                   }`}
-                placeholder="Digite o setor"
+                placeholder="Setor de atuação da empresa"
                 maxLength={100}
               />
-              {errors.atuacao && <p className="text-red-500 text-sm mt-1">{errors.atuacao.message}</p>}
+              {errors.setor && <p className="text-red-500 text-sm mt-1">{errors.setor.message}</p>}
             </div>
           </div>
         </fieldset>
@@ -224,7 +220,7 @@ export default function CriarEmpresa() {
 
         <div className="flex flex-col sm:flex-row justify-between items-center mt-6 gap-4">
           <button type="submit" className="bg-yellow-400 text-black font-bold rounded-md py-4 px-8 w-full sm:w-auto hover:bg-yellow-500 focus:outline-none focus:ring-4 focus:ring-yellow-300 transition-all duration-200 ease-in-out shadow-md">
-            Criar empresa
+            Cadastrar empresa
           </button>
           <button type="button" className="bg-gray-500 text-white font-bold rounded-md py-4 px-8 w-full sm:w-auto hover:bg-gray-600 focus:outline-none focus:ring-4 focus:ring-gray-300 transition-all duration-200 ease-in-out shadow-md" onClick={() => reset()}>
             Limpar

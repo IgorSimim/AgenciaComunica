@@ -6,11 +6,6 @@ import { alerts } from "@/lib/alerts"
 import Link from "next/link"
 import { TContratado } from "@/app/types/index"
 
-type ContratadoForm = Omit<TContratado, 'cargo' | 'dtnasc'> & {
-  cargo: string
-  dtnasc: string
-}
-
 const validateNome = (nome: string) => {
   const nomeRegex = /^[A-Za-zÀ-ú\s]+$/
   if (!nomeRegex.test(nome)) {
@@ -60,7 +55,7 @@ const validateURL = (url: string) => {
 
 export default function AlteracaoContratado() {
   const params = useParams()
-  const { register, reset, handleSubmit, formState: { errors } } = useForm<ContratadoForm>({
+  const { register, reset, handleSubmit, formState: { errors } } = useForm<TContratado>({
     mode: "onBlur"
   })
 
@@ -77,7 +72,6 @@ export default function AlteracaoContratado() {
             senha: dado.senha,
             telefone: dado.telefone,
             cargo: dado.cargo,
-            dtnasc: dado.dtnasc ? dado.dtnasc.split('T')[0] : "",
             sobre: dado.sobre,
             foto: dado.foto
           })
@@ -91,7 +85,7 @@ export default function AlteracaoContratado() {
     getContratado()
   }, [params.id])
 
-  async function alteraDados(data: ContratadoForm) {
+  async function alteraDados(data: TContratado) {
     try {
       const response = await fetch("/api/contratado/" + params.id, {
         method: "PUT",
@@ -196,20 +190,6 @@ export default function AlteracaoContratado() {
               />
               {errors.cargo && <p className="text-red-500 text-sm mt-1">{errors.cargo.message}</p>}
             </div>
-            <div className="sm:col-span-1 lg:col-span-1">
-              <label htmlFor="dtnasc" className="block mb-2 text-sm font-medium text-gray-800">
-                Data de nascimento
-              </label>
-              <input
-                {...register("dtnasc", {
-                  required: "Data de nascimento é obrigatória"
-                })}
-                type="date"
-                id="dtnasc"
-                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.dtnasc ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
-              />
-              {errors.dtnasc && <p className="text-red-500 text-sm mt-1">{errors.dtnasc.message}</p>}
-            </div>
           </div>
         </fieldset>
 
@@ -235,7 +215,7 @@ export default function AlteracaoContratado() {
         </fieldset>
 
         <fieldset className="border border-gray-300 rounded-md p-4">
-          <legend className="text-lg font-bold text-gray-700 px-2">Sobre o Contratado</legend>
+          <legend className="text-lg font-bold text-gray-700 px-2">Sobre o funcionário</legend>
           <div className="mt-4">
             <label htmlFor="sobre" className="block mb-2 text-sm font-medium text-gray-800">
               Sobre
@@ -248,7 +228,7 @@ export default function AlteracaoContratado() {
               })}
               id="sobre"
               className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.sobre ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
-              placeholder="Escreva uma breve descrição sobre o contratado"
+              placeholder="Escreva uma breve descrição sobre a pessoa contratada"
               maxLength={500}
             />
             {errors.sobre && <p className="text-red-500 text-sm mt-1">{errors.sobre.message}</p>}
@@ -260,22 +240,19 @@ export default function AlteracaoContratado() {
             type="submit"
             className="bg-yellow-400 text-black font-bold rounded-md py-4 px-8 w-full sm:w-auto hover:bg-yellow-500 focus:outline-none focus:ring-4 focus:ring-yellow-300 transition-all duration-200 ease-in-out shadow-md"
           >
-            Alterar contratado
+            Alterar funcionário
           </button>
           <button
             type="button"
             className="bg-gray-500 text-white font-bold rounded-md py-4 px-8 w-full sm:w-auto hover:bg-gray-600 focus:outline-none focus:ring-4 focus:ring-gray-300 transition-all duration-200 ease-in-out shadow-md"
-            onClick={() =>
-              reset({
-                nome: "",
-                email: "",
-                telefone: "",
-                cargo: "",
-                dtnasc: "",
-                sobre: "",
-                foto: "",
-              })
-            }
+            onClick={() => reset({
+              nome: "",
+              email: "",
+              telefone: "",
+              cargo: undefined,
+              sobre: "",
+              foto: ""
+            })}
           >
             Limpar
           </button>

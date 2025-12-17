@@ -6,14 +6,9 @@ import { toast } from "sonner"
 import Link from "next/link"
 import { TContratado } from "@/app/types/index"
 
-type ContratadoConsulta = Omit<TContratado, 'dtnasc'> & {
-  dtnasc: string
-  dataCriacao: string
-}
-
 export default function ConsultaContratado() {
   const params = useParams()
-  const { register, reset, watch } = useForm<ContratadoConsulta>()
+  const { register, reset, watch } = useForm<TContratado>()
 
   const foto = watch("foto")
 
@@ -24,21 +19,14 @@ export default function ConsultaContratado() {
         const dado = await response.json()
 
         if (response.ok) {
-          const dtnasc = new Date(dado.dtnasc)
-          const formattedDatedtnasc = `${dtnasc.getUTCDate().toString().padStart(2, '0')}/${(dtnasc.getUTCMonth() + 1).toString().padStart(2, '0')}/${dtnasc.getUTCFullYear()}`
-
-          const dataCriacao = new Date(dado.createdAt)
-          const formattedDatedataCriacao = `${dataCriacao.getDate().toString().padStart(2, '0')}/${(dataCriacao.getMonth() + 1).toString().padStart(2, '0')}/${dataCriacao.getFullYear()}`
-
           reset({
             nome: dado.nome,
             email: dado.email,
             telefone: dado.telefone,
             cargo: dado.cargo,
-            dtnasc: formattedDatedtnasc,
+            dtnasc: new Date(dado.dtnasc),
             sobre: dado.sobre,
-            foto: dado.foto,
-            dataCriacao: formattedDatedataCriacao
+            foto: dado.foto
           })
         } else {
           toast.error("Não foi possível carregar os dados do contratado")
@@ -56,7 +44,7 @@ export default function ConsultaContratado() {
 
       <div className="grid grid-cols-1 gap-6 max-w-4xl mx-auto bg-gray-100 p-6 rounded-lg shadow-lg">
         <fieldset className="border border-gray-300 rounded-md p-4">
-          <legend className="text-lg font-bold text-gray-700 px-2">Informações da pessoa contratada</legend>
+          <legend className="text-lg font-bold text-gray-700 px-2">Informações básicas</legend>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4">
             <div className="sm:col-span-1">
               <label htmlFor="nome" className="block mb-2 text-sm font-medium text-gray-800">Nome</label>
@@ -109,32 +97,44 @@ export default function ConsultaContratado() {
             <div className="sm:col-span-1">
               <label htmlFor="dtnasc" className="block mb-2 text-sm font-medium text-gray-800">Data de nascimento</label>
               <input
-                {...register("dtnasc")}
                 type="text"
                 id="dtnasc"
                 className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
                 placeholder="Data de nascimento"
+                value={watch("dtnasc") ? new Date(watch("dtnasc")).toLocaleDateString('pt-BR') : ''}
                 readOnly
               />
             </div>
 
-            <div className="sm:col-span-1">
+            {/* <div className="sm:col-span-1">
               <label htmlFor="dataCriacao" className="block mb-2 text-sm font-medium text-gray-800">Data de admissão</label>
               <input
-                {...register("dataCriacao")}
                 type="text"
                 id="dataCriacao"
                 className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
                 placeholder="Data de admissão"
+                value={formattedDatedataCriacao}
                 readOnly
               />
-            </div>
+            </div> */}
           </div>
         </fieldset>
 
         <fieldset className="border border-gray-300 rounded-md p-4">
           <legend className="text-lg font-bold text-gray-700 px-2">Informações adicionais</legend>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4">
+            <div className="sm:col-span-1">
+              <label htmlFor="sobre" className="block mb-2 text-sm font-medium text-gray-800">Descrição sobre o funcionário</label>
+              <textarea
+                {...register("sobre")}
+                id="sobre"
+                className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
+                placeholder="Descrição sobre o funcionário"
+                rows={6}
+                readOnly
+              />
+            </div>
+            
             <div className="sm:col-span-1">
               <label htmlFor="foto" className="block mb-2 text-sm font-medium text-gray-800">Foto</label>
               <div className="w-full h-56">
@@ -144,18 +144,6 @@ export default function ConsultaContratado() {
                   className="w-full h-full object-contain rounded-lg"
                 />
               </div>
-            </div>
-
-            <div className="sm:col-span-1">
-              <label htmlFor="sobre" className="block mb-2 text-sm font-medium text-gray-800">Descrição sobre o contratado</label>
-              <textarea
-                {...register("sobre")}
-                id="sobre"
-                className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
-                placeholder="Descrição sobre o contratado"
-                rows={6}
-                readOnly
-              />
             </div>
           </div>
         </fieldset>

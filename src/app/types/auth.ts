@@ -1,4 +1,4 @@
-export type ContratadoCargo = 'PROPRIETARIA' | 'RH' | 'DESIGNER' | 'REDATORA' | 'VIDEOMAKER' | 'GESTORTRAFEGO';
+import { Cargo } from "@prisma/client";
 
 export type EmpresaLogin = {
     email: string;
@@ -10,15 +10,17 @@ export type ContratadoLogin = {
     senha: string;
 }
 
-export interface Empresa {
+export interface EmpresaSession {
+    cod: number;
     cnpj: string;
+    nome: string;
     email: string;
-    senha: string;
+    logotipo: string;
 }
 
-export interface Contratado {
+export interface ContratadoSession {
     id: number;
+    nome: string;
     email: string;
-    senha: string;
-    cargo: ContratadoCargo;
+    cargo: Cargo;
 }

@@ -19,16 +19,12 @@ export default function ConsultaEmpresa() {
         const dado = await response.json()
 
         if (response.ok) {
-          const dataCriacao = new Date(dado.createdAt)
-          const formattedDate = `${dataCriacao.getDate().toString().padStart(2, '0')}/${(dataCriacao.getMonth() + 1).toString().padStart(2, '0')}/${dataCriacao.getFullYear()}`
-
           reset({
             nome: dado.nome,
             cnpj: dado.cnpj,
             email: dado.email,
-            setor: dado.setor, 
-            logotipo: dado.logotipo,
-            dataCriacao: formattedDate
+            setor: dado.setor,
+            logotipo: dado.logotipo
           })
         } else {
           alerts.error("Não foi possível carregar os dados da empresa")
@@ -46,7 +42,7 @@ export default function ConsultaEmpresa() {
 
       <div className="grid grid-cols-1 gap-6 max-w-4xl mx-auto bg-gray-100 p-6 rounded-lg shadow-lg">
         <fieldset className="border border-gray-300 rounded-md p-4">
-          <legend className="text-lg font-bold text-gray-700 px-2">Informações da empresa</legend>
+          <legend className="text-lg font-bold text-gray-700 px-2">Informações básicas</legend>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4">
             <div className="sm:col-span-1">
               <label htmlFor="nome" className="block mb-2 text-sm font-medium text-gray-800">
@@ -91,6 +87,24 @@ export default function ConsultaEmpresa() {
             </div>
 
             <div className="sm:col-span-1">
+              <label htmlFor="setor" className="block mb-2 text-sm font-medium text-gray-800">
+                Setor
+              </label>
+              <input
+                {...register("setor")}
+                type="text"
+                id="setor"
+                className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
+                placeholder="Setor de atuação da empresa"
+                readOnly
+              />
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset className="border border-gray-300 rounded-md p-4">
+          <legend className="text-lg font-bold text-gray-700 px-2">Informações adicionais</legend>
+          {/* <div className="sm:col-span-1">
               <label htmlFor="dataCriacao" className="block mb-2 text-sm font-medium text-gray-800">
                 Data de cadastro
               </label>
@@ -102,27 +116,9 @@ export default function ConsultaEmpresa() {
                 placeholder="Data de cadastro"
                 readOnly
               />
-            </div>
-          </div>
-        </fieldset>
+            </div> */}
 
-        <fieldset className="border border-gray-300 rounded-md p-4">
-          <legend className="text-lg font-bold text-gray-700 px-2">Informações adicionais</legend>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4">
-            <div className="sm:col-span-1">
-              <label htmlFor="setor" className="block mb-2 text-sm font-medium text-gray-800">
-                Área de atuação
-              </label>
-              <input
-                {...register("setor")}
-                type="text"
-                id="setor"
-                className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
-                placeholder="Área de atuação"
-                readOnly
-              />
-            </div>
-
             <div className="sm:col-span-1">
               <label htmlFor="logotipo" className="block mb-2 text-sm font-medium text-gray-800">
                 Logotipo

@@ -2,7 +2,7 @@
 import Link from "next/link"
 import { FaUserAlt } from "react-icons/fa"
 import { HiOutlineChartBar } from 'react-icons/hi'
-import { FaStore, FaUserPlus, FaUsers, FaHandHolding } from "react-icons/fa"
+import { FaStore, FaUsers, FaHandHolding } from "react-icons/fa"
 import { FiLogOut } from 'react-icons/fi'
 import { useSession, signOut } from "next-auth/react"
 import { useRouter } from "next/navigation"
@@ -68,15 +68,6 @@ function MenuLateral() {
             >
               <FaUsers className="w-6 h-6 mr-3 text-yellow-400 group-hover:text-black" />
               <span className="text-lg">Funcionários</span>
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/contratado/criar"
-              className="flex items-center p-3 rounded-lg hover:bg-yellow-500 hover:text-black transition-all group"
-            >
-              <FaUserPlus className="w-6 h-6 mr-3 text-yellow-400 group-hover:text-black" />
-              <span className="text-lg">Cadastro do funcionário</span>
             </Link>
           </li>
         </ul>

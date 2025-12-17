@@ -9,6 +9,9 @@ export interface TEmpresa {
     setor: string;
     logotipo: string;
     ativa: boolean;
+    createdAt: Date;
+    deletedAt: Date | null;
+    updatedAt: Date;
     feedbacks: {
         id: number;
         empresaCnpj: string;
@@ -27,13 +30,6 @@ export interface TEmpresa {
         valorTotal: number;
         servico: TServico;
     }[];
-}
-
-export interface EmpresaSession {
-    cnpj: string;
-    nome: string;
-    email: string;
-    logotipo: string;
 }
 
 export interface TFeedback {
@@ -55,6 +51,9 @@ export interface TContratado {
     dtnasc: Date;
     foto: string;
     cargo: Cargo;
+    createdAt: Date;
+    deletedAt: Date | null;
+    updatedAt: Date;
     atividades: {
         id: number;
         contratadoId: number;
