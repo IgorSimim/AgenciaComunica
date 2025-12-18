@@ -164,10 +164,10 @@ export async function PUT(
 // GET /api/empresa/:cod
 export async function GET(
     _request: NextRequest,
-    { params }: { params: { cod: string } }
+    { params }: { params: Promise<{ cod: string }> }
 ) {
     try {
-        const { cod: codStr } = params;
+        const { cod: codStr } = await params;
         if (!codStr) {
             return NextResponse.json(
                 { message: "Código da empresa é obrigatório" },

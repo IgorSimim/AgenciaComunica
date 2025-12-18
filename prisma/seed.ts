@@ -30,7 +30,7 @@ const ServicosData = [
   },
 ]
 
-const ContratadosData: Prisma.ContratadoCreateInput[] = [
+const ContratadosData = [
   {
     nome: 'Contratado A',
     email: 'contratadoA@example.com',
@@ -39,9 +39,7 @@ const ContratadosData: Prisma.ContratadoCreateInput[] = [
     sobre: 'Profissional experiente em diversas áreas.',
     dtnasc: new Date('1990-01-01'),
     foto: 'http://example.com/logoA.png',
-    cargo: 'RH',
-    atividades: { create: [] },
-    comentarios: { create: [] },
+    cargo: 'RH' as const,
   },
 
   {
@@ -52,9 +50,7 @@ const ContratadosData: Prisma.ContratadoCreateInput[] = [
     sobre: 'Especialista em tecnologia e desenvolvimento de software.',
     dtnasc: new Date('1992-05-15'),
     foto: 'http://example.com/logoB.png',
-    cargo: 'REDATORA',
-    atividades: { create: [] },
-    comentarios: { create: [] },
+    cargo: 'REDATORA' as const,
   },
 ]
 

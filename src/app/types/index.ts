@@ -87,6 +87,8 @@ export interface TServico {
     descricao: string;
     preco: number;
     simbolo: string;
+    createdAt: Date;
+    updatedAt: Date;
     contratos: {
         id: number;
         empresaCnpj: string;

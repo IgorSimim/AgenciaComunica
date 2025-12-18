@@ -26,10 +26,11 @@ export default function ConsultaContratado() {
             cargo: dado.cargo,
             dtnasc: new Date(dado.dtnasc),
             sobre: dado.sobre,
-            foto: dado.foto
+            foto: dado.foto,
+            createdAt: dado.createdAt
           })
         } else {
-          alerts.error(dado.message ||"Não foi possível carregar os dados do contratado")
+          alerts.error(dado.message || "Não foi possível carregar os dados do contratado")
         }
       } catch (error) {
         alerts.error("Erro ao carregar os dados do contratado")
@@ -106,17 +107,17 @@ export default function ConsultaContratado() {
               />
             </div>
 
-            {/* <div className="sm:col-span-1">
-              <label htmlFor="dataCriacao" className="block mb-2 text-sm font-medium text-gray-800">Data de admissão</label>
+            <div className="sm:col-span-1">
+              <label htmlFor="createdAt" className="block mb-2 text-sm font-medium text-gray-800">Data de admissão</label>
               <input
                 type="text"
-                id="dataCriacao"
+                id="createdAt"
                 className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
                 placeholder="Data de admissão"
-                value={formattedDatedataCriacao}
+                value={watch("createdAt") ? new Date(watch("createdAt")).toLocaleDateString('pt-BR') : ''}
                 readOnly
               />
-            </div> */}
+            </div>
           </div>
         </fieldset>
 
@@ -134,7 +135,7 @@ export default function ConsultaContratado() {
                 readOnly
               />
             </div>
-            
+
             <div className="sm:col-span-1">
               <label htmlFor="foto" className="block mb-2 text-sm font-medium text-gray-800">Foto</label>
               <div className="w-full h-56">

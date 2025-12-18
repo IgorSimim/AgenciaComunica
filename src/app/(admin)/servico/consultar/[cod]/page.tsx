@@ -24,7 +24,9 @@ export default function ConsultaServico() {
             nome: dado.nome,
             descricao: dado.descricao,
             simbolo: dado.simbolo,
-            preco: dado.preco
+            preco: dado.preco,
+            createdAt: dado.createdAt,
+            updatedAt: dado.updatedAt
           })
         } else {
           alerts.error(dado.message || "Não foi possível carregar os dados do serviço")
@@ -81,10 +83,37 @@ export default function ConsultaServico() {
           </div>
         </fieldset>
 
-        {/* Foto e Data de Criação do Serviço */}
         <fieldset className="border border-gray-300 rounded-md p-4">
           <legend className="text-lg font-bold text-gray-700 px-2">Informações adicionais</legend>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4">
+            <div className="sm:col-span-1">
+              <label htmlFor="createdAt" className="block mb-2 text-sm font-medium text-gray-800">
+                Data de cadastro
+              </label>
+              <input
+                type="text"
+                id="createdAt"
+                className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
+                placeholder="Data de cadastro"
+                value={watch("createdAt") ? new Date(watch("createdAt")).toLocaleDateString('pt-BR') : ''}
+                readOnly
+              />
+            </div>
+
+            <div className="sm:col-span-1">
+              <label htmlFor="updatedAt" className="block mb-2 text-sm font-medium text-gray-800">
+                Data da última atualização
+              </label>
+              <input
+                type="text"
+                id="updatedAt"
+                className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
+                placeholder="Data da última atualização"
+                value={watch("updatedAt") ? new Date(watch("updatedAt")).toLocaleDateString('pt-BR') : ''}
+                readOnly
+              />
+            </div>
+
             <div className="sm:col-span-1">
               <label htmlFor="simbolo" className="block mb-2 text-sm font-medium text-gray-800">Símbolo</label>
               <div className="w-full h-56">
@@ -95,18 +124,6 @@ export default function ConsultaServico() {
                 />
               </div>
             </div>
-
-            {/* <div className="sm:col-span-1">
-              <label htmlFor="dataCriacao" className="block mb-2 text-sm font-medium text-gray-800">Data de Criação</label>
-              <input
-                {...register("dataCriacao")}
-                type="text"
-                id="dataCriacao"
-                className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
-                placeholder="Data de criação"
-                readOnly
-              />
-            </div> */}
           </div>
         </fieldset>
       </div>
