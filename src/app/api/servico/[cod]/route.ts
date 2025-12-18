@@ -90,9 +90,9 @@ export async function PUT(
             );
         }
 
-        // const contratado = await prisma.contratado.findUnique({
-        //     where: { email: session.contratado.email }
-        // });
+        const contratado = await prisma.contratado.findUnique({
+            where: { email: session.contratado.email }
+        });
 
         // if (!contratado || (contratado.cargo !== "PROPRIETARIA" && contratado.cargo !== "REDATORA")) {
         //     return NextResponse.json(
@@ -176,9 +176,9 @@ export async function DELETE(
             );
         }
 
-        // const contratado = await prisma.contratado.findUnique({
-        //     where: { email: session.contratado.email }
-        // });
+        const contratado = await prisma.contratado.findUnique({
+            where: { email: session.contratado.email }
+        });
 
         // if (!contratado || (contratado.cargo !== "PROPRIETARIA" && contratado.cargo !== "REDATORA")) {
         //     return NextResponse.json(

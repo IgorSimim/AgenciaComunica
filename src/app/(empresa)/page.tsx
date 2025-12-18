@@ -13,7 +13,6 @@ export default function HomeDeslogado() {
             const dados = await response.json();
                 setServicos(Array.isArray(dados) ? dados : []);
             } catch (error) {
-                console.error('Erro ao buscar serviços:', error);
                 setServicos([]);
             }
         }

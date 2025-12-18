@@ -41,9 +41,9 @@ export async function POST(
             )
         }
 
-        // const contratado = await prisma.contratado.findUnique({
-        //     where: { email: session.contratado.email },
-        // })
+        const contratado = await prisma.contratado.findUnique({
+            where: { email: session.contratado.email },
+        })
 
         // if (!contratado || (contratado.cargo !== "REDATORA" && contratado.cargo !== "PROPRIETARIA")) {
         //     return NextResponse.json(
@@ -75,6 +75,7 @@ export async function POST(
 
         const newServico = await prisma.servico.create({
             data: {
+                contratado_id: contratado.id,
                 nome,
                 descricao,
                 preco: parseFloat(preco),

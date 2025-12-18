@@ -82,12 +82,12 @@ export async function POST(
             where: { email: session.contratado.email },
         })
 
-        if (!contratado || (contratado.cargo !== "REDATORA" && contratado.cargo !== "PROPRIETARIA")) {
-            return NextResponse.json(
-                { message: "Acesso negado" },
-                { status: 403 }
-            )
-        }
+        // if (!contratado || (contratado.cargo !== "REDATORA" && contratado.cargo !== "PROPRIETARIA")) {
+        //     return NextResponse.json(
+        //         { message: "Acesso negado" },
+        //         { status: 403 }
+        //     )
+        // }
 
         const data = await _request.json()
 
@@ -125,6 +125,7 @@ export async function POST(
 
         const newEmpresa = await prisma.empresa.create({
             data: {
+                contratado_id: contratado.id,
                 cnpj,
                 nome,
                 email,

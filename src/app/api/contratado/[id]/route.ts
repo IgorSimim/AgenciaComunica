@@ -46,9 +46,9 @@ export async function PUT(
             );
         }
 
-        // const contratadoLogado = await prisma.contratado.findUnique({
-        //     where: { email: session.contratado.email }
-        // });
+        const contratadoLogado = await prisma.contratado.findUnique({
+            where: { email: session.contratado.email }
+        });
 
         // if (!contratadoLogado || contratado.cargo !== "RH") {
         //     return NextResponse.json(

@@ -18,6 +18,7 @@ enum Cargo {
 
 model Empresa {
   cod       Int     @id @default(autoincrement())
+  contratado_id Int
   cnpj      String  @unique @db.VarChar(18)
   nome      String  @db.VarChar(100)
   email     String  @unique @db.VarChar(100)
@@ -28,6 +29,7 @@ model Empresa {
   createdAt    DateTime     @default(now())
   deletedAt    DateTime?
   updatedAt    DateTime     @updatedAt
+  contratado   Contratado @relation(fields: [contratado_id], references: [id])
   feedbacks Feedback[]
   contratos Contrato[]
 }
@@ -57,16 +59,20 @@ model Contratado {
   updatedAt    DateTime     @updatedAt
   atividades Atividade[]
   comentarios Comentario[]
+  empresas   Empresa[]
+  servicos   Servico[]
 }
 
 model Servico {
   cod         Int     @id @default(autoincrement())
+  contratado_id     Int
   nome        String  @unique @db.VarChar(100)
   descricao   String  @db.VarChar(255)
   preco       Float
   simbolo     String  @db.VarChar(255)
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
+  contratado   Contratado @relation(fields: [contratado_id], references: [id])
   contratos   Contrato[]
 }
 

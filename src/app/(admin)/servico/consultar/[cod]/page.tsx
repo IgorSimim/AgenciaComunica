@@ -2,9 +2,9 @@
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { useParams } from "next/navigation"
+import { alerts } from "@/lib/alerts"
 import Link from "next/link"
 import { TServico } from "@/app/types/index"
-import { alerts } from "@/lib/alerts"
 
 export default function ConsultaServico() {
   const params = useParams()

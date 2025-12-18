@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
-const EmpresasData: Prisma.EmpresaCreateInput[] = [
+const EmpresasData = [
   {
     cnpj: '12.345.678/0001-90',
     nome: 'Empresa A',
@@ -12,8 +12,21 @@ const EmpresasData: Prisma.EmpresaCreateInput[] = [
     setor: 'Comércio',
     logotipo: 'http://example.com/logoA.png',
     ativa: true,
-    feedbacks: { create: [] },
-    contratos: { create: [] },
+  },
+]
+
+const ServicosData = [
+  {
+    nome: 'Marketing Digital',
+    descricao: 'Serviços completos de marketing digital',
+    preco: 1500.00,
+    simbolo: 'http://example.com/logoA.png',
+  },
+  {
+    nome: 'Design Gráfico',
+    descricao: 'Criação de materiais visuais',
+    preco: 800.00,
+    simbolo: 'http://example.com/logoA.png',
   },
 ]
 
@@ -46,22 +59,34 @@ const ContratadosData: Prisma.ContratadoCreateInput[] = [
 ]
 
 export async function main() {
+  const contratados = []
+  for (const c of ContratadosData) {
+    const hashedPassword = await bcrypt.hash(c.senha, 10);
+    const contratado = await prisma.contratado.create({
+      data: {
+        ...c,
+        senha: hashedPassword,
+      },
+    })
+    contratados.push(contratado)
+  }
+
   for (const e of EmpresasData) {
     const hashedPassword = await bcrypt.hash(e.senha, 10);
     await prisma.empresa.create({
       data: {
         ...e,
         senha: hashedPassword,
+        contratado_id: contratados[0].id, 
       },
     })
   }
 
-  for (const c of ContratadosData) {
-    const hashedPassword = await bcrypt.hash(c.senha, 10);
-    await prisma.contratado.create({
+  for (const s of ServicosData) {
+    await prisma.servico.create({
       data: {
-        ...c,
-        senha: hashedPassword,
+        ...s,
+        contratado_id: contratados[1].id, 
       },
     })
   }
