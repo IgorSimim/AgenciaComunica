@@ -82,7 +82,7 @@ export async function POST(
             where: { email: session.contratado.email },
         })
 
-        // if (!contratado || (contratado.cargo !== "RH" && contratado.cargo !== "PROPRIETARIA")) {
+        // if (!contratado || (contratado.cargo !== "PROPRIETARIA" && contratado.cargo !== "RH")) {
         //     return NextResponse.json(
         //         { message: "Acesso negado" },
         //         { status: 403 }

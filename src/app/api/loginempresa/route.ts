@@ -37,6 +37,7 @@ export async function POST(
 
         const token = jwt.sign(
             {
+                cod: empresa.cod,
                 cnpj: empresa.cnpj,
                 email: empresa.email,
                 nome: empresa.nome

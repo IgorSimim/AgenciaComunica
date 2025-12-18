@@ -54,7 +54,7 @@ export async function POST(
             )
         }
 
-        // if (contratado.cargo !== "REDATORA" && contratado.cargo !== "PROPRIETARIA") {
+        // if (contratado.cargo !== "PROPRIETARIA" && contratado.cargo !== "REDATORA") {
         //     return NextResponse.json(
         //         { message: "Acesso negado" },
         //         { status: 403 }

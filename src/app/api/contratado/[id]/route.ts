@@ -50,7 +50,7 @@ export async function PUT(
             where: { email: session.contratado.email }
         });
 
-        // if (!contratadoLogado || contratado.cargo !== "RH") {
+        // if (!contratadoLogado || (contratado.cargo !== "PROPRIETARIA" && contratado.cargo !== "RH")) {
         //     return NextResponse.json(
         //         { message: "Acesso negado para atualizar os dados do contratado" },
         //         { status: 403 }

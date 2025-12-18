@@ -19,6 +19,28 @@ export async function GET() {
             where: { email: session.contratado.email },
         })
 
+        // if (!contratado || (contratado.cargo !== "PROPRIETARIA" && contratado.cargo !== "RH")) {
+        //     const empresas = await prisma.empresa.findMany({
+        //         select: {
+        //             cod: true,
+        //             nome: true,
+        //             email: true,
+        //             setor: true,
+        //             logotipo: true,
+        //             ativa: true,
+        //             createdAt: true,
+        //             updatedAt: true,
+        //         },
+        //         where: {
+        //             deletedAt: null
+        //         }
+        //     })
+        //     return NextResponse.json(
+        //         empresas,
+        //         { status: 200 }
+        //     )
+        // }
+
         if (!contratado || (contratado.cargo !== "PROPRIETARIA" && contratado.cargo !== "RH")) {
             const empresas = await prisma.empresa.findMany({
                 select: {
@@ -100,7 +122,7 @@ export async function POST(
             )
         }
 
-        // if (!contratado || (contratado.cargo !== "REDATORA" && contratado.cargo !== "PROPRIETARIA")) {
+        // if (!contratado || (contratado.cargo !== "PROPRIETARIA" && contratado.cargo !== "REDATORA")) {
         //     return NextResponse.json(
         //         { message: "Acesso negado" },
         //         { status: 403 }

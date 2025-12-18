@@ -51,14 +51,7 @@ export async function PUT(
             where: { email: session.contratado.email }
         });
 
-        if (!contratado) {
-            return NextResponse.json(
-                { message: "Contratado não encontrado" },
-                { status: 404 }
-            )
-        }
-
-        // if (!contratado || contratado.cargo !== "RH") {
+        // if (!contratado || (contratado.cargo !== "PROPRIETARIA" && contratado.cargo !== "RH")) {
         //     return NextResponse.json(
         //         { message: "Acesso negado para atualizar os dados da empresa" },
         //         { status: 403 }
