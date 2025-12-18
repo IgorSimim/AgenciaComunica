@@ -12,7 +12,7 @@ export default function Home() {
         <div className="flex space-x-8">
           {/* Coluna "A Fazer" */}
           <div className="bg-gray-800 p-6 rounded-lg shadow-xl w-1/3">
-            <h2 className="text-xl font-semibold text-white mb-4">A Fazer</h2>
+            <h2 className="text-xl font-semibold text-white mb-4">A fazer</h2>
             <div className="space-y-4">
               <div className="bg-gray-700 p-4 rounded-md text-white">Tarefa 1</div>
               <div className="bg-gray-700 p-4 rounded-md text-white">Tarefa 2</div>
@@ -22,7 +22,7 @@ export default function Home() {
 
           {/* Coluna "Em Andamento" */}
           <div className="bg-gray-800 p-6 rounded-lg shadow-xl w-1/3">
-            <h2 className="text-xl font-semibold text-white mb-4">Em Andamento</h2>
+            <h2 className="text-xl font-semibold text-white mb-4">Em andamento</h2>
             <div className="space-y-4">
               <div className="bg-gray-700 p-4 rounded-md text-white">Tarefa 4</div>
               <div className="bg-gray-700 p-4 rounded-md text-white">Tarefa 5</div>

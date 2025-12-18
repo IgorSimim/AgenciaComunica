@@ -8,17 +8,17 @@ import { authOptions } from "@/app/api/config/auth/authOptions";
 // GET /api/contratado
 export async function GET() {
     try {
-        const session = await getServerSession(authOptions);
-        if (!session?.contratado?.email) {
-            return NextResponse.json(
-                { message: "Contratado não autenticado" },
-                { status: 401 }
-            );
-        }
+        // const session = await getServerSession(authOptions);
+        // if (!session?.contratado?.email) {
+        //     return NextResponse.json(
+        //         { message: "Contratado não autenticado" },
+        //         { status: 401 }
+        //     );
+        // }
         
-        const contratado = await prisma.contratado.findUnique({
-            where: { email: session.contratado.email }
-        })
+        // const contratado = await prisma.contratado.findUnique({
+        //     where: { email: session.contratado.email }
+        // })
 
         // if (!contratado || (contratado.cargo !== "PROPRIETARIA" && contratado.cargo !== "RH")) {
         //     return NextResponse.json(

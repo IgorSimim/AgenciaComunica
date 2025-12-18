@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 const Footer = () => (
-    <footer className="bg-black text-white font-nunito p-2 mb-1">
+    <footer className="bg-black text-white font-nunito p-2">
         <div className="flex flex-col md:flex-row gap-6">
             {/* Primeira coluna */}
             <div className="md:basis-1/2 flex items-center mt-3">
@@ -30,7 +30,7 @@ const Footer = () => (
                         target="_blank"
                         rel="noopener noreferrer"
                     >
-                        <img src="/footer/icon-wpp.png" alt="WhatsApp" width="45" height="45" />
+                        <img src="/empresa/footer/icon-wpp.png" alt="WhatsApp" width="45" height="45" />
                     </a>
                     <a
                         href="https://www.instagram.com/agenciacomunicatime"
@@ -38,7 +38,7 @@ const Footer = () => (
                         target="_blank"
                         rel="noopener noreferrer"
                     >
-                        <img src="/footer/icon-instagram.png" alt="Instagram" width="45" height="45" />
+                        <img src="/empresa/footer/icon-instagram.png" alt="Instagram" width="45" height="45" />
                     </a>
                     <a
                         href="mailto:agenciacomunicamktdigital@gmail.com"
@@ -46,7 +46,7 @@ const Footer = () => (
                         target="_blank"
                         rel="noopener noreferrer"
                     >
-                        <img src="/footer/icon-gmail.png" alt="Gmail" width="45" height="45" />
+                        <img src="/empresa/footer/icon-gmail.png" alt="Gmail" width="45" height="45" />
                     </a>
                 </div>
             </div>

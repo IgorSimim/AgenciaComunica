@@ -88,7 +88,7 @@ export default function EmpresaLoginForm() {
   return (
     <div className="flex h-screen">
       {/* Seção de imagem à esquerda */}
-      <div className="w-1/2 h-full bg-cover bg-center" style={{ backgroundImage: 'url("/login/img-login.jpg")' }}></div>
+      <div className="w-1/2 h-full bg-cover bg-center" style={{ backgroundImage: 'url("/empresa/login/img-login.jpg")' }}></div>
 
       {/* Seção do formulário de login à direita */}
       <div className="w-1/2 flex items-center justify-center bg-gradient-to-br from-yellow-400 to-orange-500">
