@@ -12,7 +12,9 @@ export async function GET() {
                 nome: true,
                 descricao: true,
                 preco: true,
-                simbolo: true
+                simbolo: true,
+                createdAt: true,
+                updatedAt: true
             }
         })
 
@@ -45,7 +47,14 @@ export async function POST(
             where: { email: session.contratado.email },
         })
 
-        // if (!contratado || (contratado.cargo !== "REDATORA" && contratado.cargo !== "PROPRIETARIA")) {
+        if (!contratado) {
+            return NextResponse.json(
+                { message: "Contratado não encontrado" },
+                { status: 404 }
+            )
+        }
+
+        // if (contratado.cargo !== "REDATORA" && contratado.cargo !== "PROPRIETARIA") {
         //     return NextResponse.json(
         //         { message: "Acesso negado" },
         //         { status: 403 }

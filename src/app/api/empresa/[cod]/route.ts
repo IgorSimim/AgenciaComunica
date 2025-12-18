@@ -27,7 +27,8 @@ export async function PUT(
 
         const empresa = await prisma.empresa.findFirst({
             where: {
-                cod: cod
+                cod: cod,
+                deletedAt: null
             },
         });
 
@@ -46,9 +47,16 @@ export async function PUT(
             );
         }
 
-        // const contratado = await prisma.contratado.findUnique({
-        //     where: { email: session.contratado.email }
-        // });
+        const contratado = await prisma.contratado.findUnique({
+            where: { email: session.contratado.email }
+        });
+
+        if (!contratado) {
+            return NextResponse.json(
+                { message: "Contratado não encontrado" },
+                { status: 404 }
+            )
+        }
 
         // if (!contratado || contratado.cargo !== "RH") {
         //     return NextResponse.json(
@@ -90,7 +98,7 @@ export async function PUT(
     }
 }
 
-// SOFTDELETE /api/empresa/:cod
+// DELETE /api/empresa/:cod (Soft Delete)
 // export async function DELETE(
 //     _request: NextRequest,
 //     { params }: { params: Promise<{ cod: string }> }
@@ -114,7 +122,8 @@ export async function PUT(
 
 //         const empresa = await prisma.empresa.findFirst({
 //             where: {
-//                 cod: cod
+//                 cod: cod,
+//                 deletedAt: null
 //             },
 //         });
 
@@ -133,31 +142,20 @@ export async function PUT(
 //             );
 //         }
 
-//         // const contratado = await prisma.contratado.findUnique({
-//         //     where: { email: session.contratado.email }
-//         // });
-
-//         // if (!contratado || contratado.cargo !== "RH") {
-//         //     return NextResponse.json(
-//         //         { message: "Acesso negado para deletar a empresa" },
-//         //         { status: 403 }
-//         //     );
-//         // }
-
 //         await prisma.empresa.update({
 //             where: { cod },
 //             data: {
-//                 ativa: false
+//                 deletedAt: new Date()
 //             },
 //         });
 
 //         return NextResponse.json(
-//             { message: "Empresa desativada com sucesso!" },
+//             { message: "Empresa removida com sucesso!" },
 //             { status: 200 }
 //         );
 //     } catch (error) {
 //         return NextResponse.json(
-//             { message: "Erro ao desativar empresa" },
+//             { message: "Erro ao remover empresa" },
 //             { status: 500 }
 //         );
 //     }
@@ -187,7 +185,8 @@ export async function GET(
 
         const empresa = await prisma.empresa.findFirst({
             where: {
-                cod: cod
+                cod: cod,
+                deletedAt: null
             },
         });
 

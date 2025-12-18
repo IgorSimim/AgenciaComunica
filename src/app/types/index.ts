@@ -2,6 +2,7 @@ import { Cargo } from "@prisma/client";
 
 export interface TEmpresa {
     cod: number;
+    contratoId: number;
     cnpj: string;
     nome: string;
     email: string;
@@ -81,6 +82,7 @@ export interface TContratado {
 
 export interface TServico {
     cod: number;
+    contratadoId: number;
     nome: string;
     descricao: string;
     preco: number;

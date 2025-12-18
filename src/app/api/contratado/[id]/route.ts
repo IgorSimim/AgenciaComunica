@@ -133,12 +133,15 @@ export async function DELETE(
         //     );
         // }
 
-        await prisma.contratado.delete({
-            where: { id: parseInt(id) }
+        await prisma.contratado.update({
+            where: { id: parseInt(id) },
+            data: {
+                deletedAt: new Date()
+            }
         });
 
         return NextResponse.json(
-            { message: "Contratado deletado com sucesso!" },
+            { message: "Contratado removido com sucesso!" },
             { status: 200 }
         );
     } catch (error) {
@@ -173,7 +176,8 @@ export async function GET(
 
         const contratado = await prisma.contratado.findFirst({
             where: {
-                id: id
+                id: id,
+                deletedAt: null
             },
         });
 

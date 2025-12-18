@@ -27,8 +27,7 @@ export async function GET() {
         //     );
         // }
 
-        let contratadoEncontrado: Array<{ id: number; nome: string; email: string; telefone: string; sobre: string; dtnasc: Date; foto: string; cargo: Cargo; atividades: Atividade[]; comentarios: Comentario[] }> | null = null;
-        contratadoEncontrado = await prisma.contratado.findMany({
+        const contratadoEncontrado = await prisma.contratado.findMany({
             select: {
                 id: true,
                 nome: true,
@@ -38,8 +37,14 @@ export async function GET() {
                 dtnasc: true,
                 foto: true,
                 cargo: true,
+                createdAt: true,
+                updatedAt: true,
+                deletedAt: true,
                 atividades: true,
                 comentarios: true
+            },
+            where: {
+                deletedAt: null
             },
             orderBy: { id: 'asc' },
         });

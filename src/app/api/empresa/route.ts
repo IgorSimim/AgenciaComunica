@@ -22,14 +22,19 @@ export async function GET() {
         if (!contratado || (contratado.cargo !== "PROPRIETARIA" && contratado.cargo !== "RH")) {
             const empresas = await prisma.empresa.findMany({
                 select: {
-                    cod: true,  
+                    cod: true,
                     cnpj: true,
                     nome: true,
                     email: true,
                     setor: true,
                     logotipo: true,
                     ativa: true,
+                    createdAt: true,
+                    updatedAt: true,
                     feedbacks: true
+                },
+                where: {
+                    deletedAt: null
                 }
             })
             return NextResponse.json(
@@ -41,16 +46,22 @@ export async function GET() {
         if (contratado.cargo === "PROPRIETARIA" || contratado.cargo === "RH") {
             const empresas = await prisma.empresa.findMany({
                 select: {
-                    cod: true,  
+                    cod: true,
                     cnpj: true,
                     nome: true,
                     email: true,
                     setor: true,
                     logotipo: true,
                     ativa: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    deletedAt: true,
                     feedbacks: true,
                     contratos: true
                 },
+                where: {
+                    deletedAt: null
+                }
             })
             return NextResponse.json(
                 empresas,
@@ -81,6 +92,13 @@ export async function POST(
         const contratado = await prisma.contratado.findUnique({
             where: { email: session.contratado.email },
         })
+
+        if (!contratado) {
+            return NextResponse.json(
+                { message: "Contratado não encontrado" },
+                { status: 404 }
+            )
+        }
 
         // if (!contratado || (contratado.cargo !== "REDATORA" && contratado.cargo !== "PROPRIETARIA")) {
         //     return NextResponse.json(
