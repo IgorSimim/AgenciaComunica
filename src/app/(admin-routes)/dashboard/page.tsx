@@ -10,6 +10,7 @@ const Home: React.FC = () => {
   const [coresEmpresas, setCoresEmpresas] = useState<string[]>([])
   const [coresContratados, setCoresContratados] = useState<string[]>([])
   const [geral, setGeral] = useState<DashboardType>({ empresas: 0, contratados: 0, servicos: 0 })
+  const [maxEmpresas, setMaxEmpresas] = useState<number>(0)
   const { setFocus } = useForm()
 
   function generateRandomColor() {
@@ -47,12 +48,15 @@ const Home: React.FC = () => {
 
           const dadosEmpresasFormatted: (string | number)[][] = [['Setor', 'Empresas']]
           const coresEmp: string[] = []
+          let maxCount = 0
           Object.entries(setorCount).forEach(([setor, count]) => {
             dadosEmpresasFormatted.push([setor, count as number])
             coresEmp.push(generateRandomColor())
+            if (count as number > maxCount) maxCount = count as number
           })
           setDadosEmpresas(dadosEmpresasFormatted)
           setCoresEmpresas(coresEmp)
+          setMaxEmpresas(maxCount + 1)
         }
 
         if (Array.isArray(contratados)) {
@@ -81,7 +85,7 @@ const Home: React.FC = () => {
   }, [setFocus])
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="p-6">
       <h2 className="text-4xl font-extrabold text-gray-800 mb-6 text-center">Visão geral do sistema</h2>
 
       <div className="grid grid-cols-3 gap-6 mb-8">
@@ -102,68 +106,49 @@ const Home: React.FC = () => {
       <h3 className="text-2xl font-bold text-gray-700 mt-6 mb-4 text-center">Distribuição das empresas por área de atuação</h3>
       <div className="shadow-lg p-4 rounded-lg border border-gray-200 bg-white">
         <Chart
-          chartType="BarChart"
+          chartType="ColumnChart"
           width="100%"
           height="400px"
           data={dadosEmpresas}
           options={{
             title: 'Distribuição das empresas por setor',
-            chartArea: { width: '60%' },
+            chartArea: { width: '80%', height: '70%' },
             hAxis: {
-              title: 'Empresas ativas',
-              textStyle: { fontSize: 14 },
-              format: '0',
+              title: 'Setor',
+              textStyle: { fontSize: 14 }
             },
             vAxis: {
-              title: 'Setor',
+              title: 'Número de empresas',
               textStyle: { fontSize: 14 },
+              format: '0',
+              minValue: 0,
+              maxValue: maxEmpresas
             },
             legend: { position: 'none' },
-            bars: 'horizontal',
-            axes: {
-              x: {
-                0: { side: 'top', label: 'Porcentagem' }
-              }
-            },
-            bar: { groupWidth: "90%" },
             colors: coresEmpresas,
           }}
         />
       </div>
 
-      <h3 className="text-2xl font-bold text-gray-700 mt-6 mb-4 text-center">Distribuição dos funcionários por área de atuação</h3>
+      <h3 className="text-2xl font-bold text-gray-700 mt-6 mb-4 text-center">Distribuição dos funcionários por cargo</h3>
       <div className="shadow-lg p-4 rounded-lg border border-gray-200 bg-white">
         <Chart
-          chartType="BarChart"
+          chartType="PieChart"
           width="100%"
           height="400px"
           data={dadosContratados}
           options={{
             title: 'Distribuição dos funcionários por cargo',
-            chartArea: { width: '60%' },
-            hAxis: {
-              title: 'Funcionários ativos',
-              textStyle: { fontSize: 14 },
-              format: '0',
-            },
-            vAxis: {
-              title: 'Cargo',
-              textStyle: { fontSize: 14 },
-            },
-            legend: { position: 'none' },
-            bars: 'horizontal',
-            axes: {
-              x: {
-                0: { side: 'top', label: 'Porcentagem' }
-              }
-            },
-            bar: { groupWidth: "70%" },
+            chartArea: { width: '90%', height: '70%' },
+            pieHole: 0.4,
+            is3D: false,
+            legend: { position: 'bottom' },
             colors: coresContratados,
           }}
         />
       </div>
     </div>
-  )
+  );
 }
 
 export default Home

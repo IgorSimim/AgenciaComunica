@@ -51,7 +51,10 @@ export default function EmpresaLoginForm() {
     if (wasPending && !isPending) {
       if (state?.success) {
         alerts.success("Login realizado com sucesso!")
-        router.push('/home-empresa')
+        console.log('Redirecionando para /home-empresa');
+        setTimeout(() => {
+          window.location.href = '/home-empresa';
+        }, 1000);
       } else if (state?.error) {
         setFieldErrors(state.error)
         setLastError(state.error)
@@ -87,10 +90,8 @@ export default function EmpresaLoginForm() {
 
   return (
     <div className="flex h-screen">
-      {/* Seção de imagem à esquerda */}
       <div className="w-1/2 h-full bg-cover bg-center" style={{ backgroundImage: 'url("/empresa/login/img-login.jpg")' }}></div>
 
-      {/* Seção do formulário de login à direita */}
       <div className="w-1/2 flex items-center justify-center bg-gradient-to-br from-yellow-400 to-orange-500">
         <div className="max-w-lg w-full p-10 bg-gray-100 rounded-lg shadow-xl">
           <img src="/logo2.png" className="mx-auto mb-6" alt="Logo de login" />

@@ -3,11 +3,11 @@
 export default function Home() {
   return (
     <div className="min-h-screen bg-gray-900 p-8">
-      <div className="container mx-auto">
-        {/* Título da tela */}
-        <h1 className="text-4xl font-semibold text-white text-center mb-8">
-          Quadro de entregas
-        </h1>
+        <div className="container mx-auto">
+          {/* Título da tela */}
+          <h1 className="text-4xl font-semibold text-white text-center mb-8">
+            Quadro de entregas
+          </h1>
 
         <div className="flex space-x-8">
           {/* Coluna "A Fazer" */}

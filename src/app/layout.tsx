@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "@/app/styles/globals.css";
 import { Toaster } from "sonner";
+import NextAuthSessionProvider from "./providers/SessionProvider";
 
 export const metadata: Metadata = {
   title: "Agência Comunica",
@@ -22,7 +23,9 @@ export default function RootLayout({
         <link rel="shortcut icon" href="/logo.png" type="image/x-icon" />
       </head>
       <body>
-        {children}
+        <NextAuthSessionProvider>
+          {children}
+        </NextAuthSessionProvider>
         <Toaster position="top-right" richColors />
       </body>
     </html>

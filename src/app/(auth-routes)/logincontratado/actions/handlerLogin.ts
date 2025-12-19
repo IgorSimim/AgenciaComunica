@@ -1,4 +1,4 @@
-import { EmpresaLogin } from "@/app/types/auth";
+import { ContratadoLogin } from "@/app/types/auth";
 import { signIn } from "next-auth/react";
 
 export default async function handlerLogin(
@@ -6,7 +6,7 @@ export default async function handlerLogin(
     formData: FormData
 ) {
     const entries = Array.from(formData.entries());
-    const data = Object.fromEntries(entries) as EmpresaLogin;
+    const data = Object.fromEntries(entries) as ContratadoLogin;
 
     if (!data.email) {
         return {
@@ -24,6 +24,7 @@ export default async function handlerLogin(
     const result = await signIn("credentials", {
         email: data.email,
         senha: data.senha,
+        type: "contratado",
         redirect: false,
     });
 
@@ -41,4 +42,9 @@ export default async function handlerLogin(
             success: false,
         };
     }
+
+    return {
+        success: true,
+        message: "Login realizado com sucesso!"
+    };
 }

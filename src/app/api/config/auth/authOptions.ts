@@ -3,7 +3,13 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import prisma from "@/lib/prisma";
 import bcryptjs from "bcryptjs";
 
+// Validação do NEXTAUTH_SECRET
+if (!process.env.NEXTAUTH_SECRET) {
+  throw new Error("NEXTAUTH_SECRET não está configurado nas variáveis de ambiente");
+}
+
 export const authOptions: NextAuthOptions = {
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     CredentialsProvider({
       name: "credentials",
@@ -34,7 +40,11 @@ export const authOptions: NextAuthOptions = {
               throw new Error("Email ou senha incorreta");
             }
 
-            return { empresa };
+            return {
+              id: empresa.cod.toString(),
+              email: empresa.email,
+              empresa
+            };
           } else if (type === "contratado") {
             const contratado = await prisma.contratado.findUnique({
               where: { email },
@@ -49,7 +59,11 @@ export const authOptions: NextAuthOptions = {
               throw new Error("Email ou senha incorreta");
             }
 
-            return { contratado };
+            return {
+              id: contratado.id.toString(),
+              email: contratado.email,
+              contratado
+            };
           } else {
             throw new Error("Tipo inválido");
           }
@@ -62,6 +76,15 @@ export const authOptions: NextAuthOptions = {
 
   pages: {
     signIn: "/",
+  },
+
+  session: {
+    strategy: "jwt",
+    maxAge: 24 * 60 * 60, // 24 horas
+  },
+
+  jwt: {
+    maxAge: 24 * 60 * 60, // 24 horas
   },
 
   callbacks: {
