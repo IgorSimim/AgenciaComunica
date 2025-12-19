@@ -35,7 +35,7 @@ export default function SobreNos() {
                         {/* Card Missão */}
                         <div className="bg-yellow-300 p-8 rounded-xl shadow-lg w-full md:w-1/3 transform transition-all duration-300 hover:scale-105 hover:shadow-2xl">
                             <div className="flex justify-center mb-4">
-                                <img src="/empresa/sobre-nos/icon-missao.png" alt="Missão" className="w-16 h-16 text-white" />
+                                <img src="/empresa/sobre-nos/icon-missao.png" alt="Icon missão" className="w-16 h-16 text-white" />
                             </div>
                             <h4 className="text-2xl font-bold text-gray-800 mb-4">Missão</h4>
                             <p className="text-lg text-gray-900">
@@ -47,7 +47,7 @@ export default function SobreNos() {
                         {/* Card Visão */}
                         <div className="bg-yellow-300 p-8 rounded-xl shadow-lg w-full md:w-1/3 transform transition-all duration-300 hover:scale-105 hover:shadow-2xl">
                             <div className="flex justify-center mb-4">
-                                <img src="/empresa/sobre-nos/icon-visao.png" alt="Visão" className="w-16 h-16 text-white" />
+                                <img src="/empresa/sobre-nos/icon-visao.png" alt="Icon visão" className="w-16 h-16 text-white" />
                             </div>
                             <h4 className="text-2xl font-bold text-gray-800 mb-4">Visão</h4>
                             <p className="text-lg text-gray-900">
@@ -59,7 +59,7 @@ export default function SobreNos() {
                         {/* Card Valores */}
                         <div className="bg-yellow-300 p-8 rounded-xl shadow-lg w-full md:w-1/3 transform transition-all duration-300 hover:scale-105 hover:shadow-2xl">
                             <div className="flex justify-center mb-4">
-                                <img src="/empresa/sobre-nos/icon-valores.png" alt="Valores" className="w-16 h-16 text-white" />
+                                <img src="/empresa/sobre-nos/icon-valores.png" alt="Icon valores" className="w-16 h-16 text-white" />
                             </div>
                             <h4 className="text-2xl font-bold text-gray-800 mb-4">Valores</h4>
                             <p className="text-lg text-gray-900">

@@ -94,7 +94,7 @@ export default function EmpresaLoginForm() {
 
       <div className="w-1/2 flex items-center justify-center bg-gradient-to-br from-yellow-400 to-orange-500">
         <div className="max-w-lg w-full p-10 bg-gray-100 rounded-lg shadow-xl">
-          <img src="/logo2.png" className="mx-auto mb-6" alt="Logo de login" />
+          <img src="/logo2.png" className="mx-auto mb-6" alt="Logo comunica" />
 
           <Form action={formAction} onSubmit={handleFormSubmit}>
             <input type="hidden" name="type" value="empresa" />

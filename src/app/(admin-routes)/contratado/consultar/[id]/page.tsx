@@ -141,7 +141,7 @@ export default function ConsultaContratado() {
               <div className="w-full h-56">
                 <img
                   src={foto}
-                  alt="Foto do contratado"
+                  alt="Foto do funcionário"
                   className="w-full h-full object-contain rounded-lg"
                 />
               </div>

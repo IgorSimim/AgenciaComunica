@@ -27,7 +27,7 @@ function Header() {
             <>
               <img
                 src={empresa?.logotipo || "/logo.png"}
-                alt="Logo ou Foto de Perfil da Empresa"
+                alt="Logotipo da empresa"
                 className="w-20 h-20 rounded-full border-4 border-white me-3"
               />
               <span className="text-white text-2xl font-semibold">

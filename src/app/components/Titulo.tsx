@@ -6,7 +6,7 @@ function Titulo() {
           <img
             src="/logo.png"
             className="h-16 sm:h-20"
-            alt="Logo Agência Comunica"
+            alt="Logo da Agência Comunica"
           />
           <span className="self-center text-3xl font-semibold text-black">
             Setor Administrativo: Agência Comunica Mkt. Digital

@@ -9,7 +9,7 @@ const Footer = () => (
                     src="/logo.png"
                     width="179"
                     height="141"
-                    alt="Agência Comunica Logo"
+                    alt="Logo da Agência Comunica"
                     className="mr-5"
                 />
                 <div className="text-base">
@@ -30,7 +30,7 @@ const Footer = () => (
                         target="_blank"
                         rel="noopener noreferrer"
                     >
-                        <img src="/empresa/footer/icon-wpp.png" alt="WhatsApp" width="45" height="45" />
+                        <img src="/empresa/footer/icon-wpp.png" alt="Icon do WhatsApp" width="45" height="45" />
                     </a>
                     <a
                         href="https://www.instagram.com/agenciacomunicatime"
@@ -38,7 +38,7 @@ const Footer = () => (
                         target="_blank"
                         rel="noopener noreferrer"
                     >
-                        <img src="/empresa/footer/icon-instagram.png" alt="Instagram" width="45" height="45" />
+                        <img src="/empresa/footer/icon-instagram.png" alt="Icon do Instagram" width="45" height="45" />
                     </a>
                     <a
                         href="mailto:agenciacomunicamktdigital@gmail.com"
@@ -46,7 +46,7 @@ const Footer = () => (
                         target="_blank"
                         rel="noopener noreferrer"
                     >
-                        <img src="/empresa/footer/icon-gmail.png" alt="Gmail" width="45" height="45" />
+                        <img src="/empresa/footer/icon-gmail.png" alt="Icon do Gmail" width="45" height="45" />
                     </a>
                 </div>
             </div>

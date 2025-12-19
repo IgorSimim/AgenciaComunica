@@ -91,7 +91,7 @@ export default function ContratadoLoginForm() {
       <div className="bg-white rounded-full p-4 shadow-md"> 
         <img
           src="/logo2.png"
-          alt="Logo Agência Comunica"
+          alt="Logo comunica"
           className="w-65"
         />
       </div>

@@ -29,7 +29,7 @@ export default function HomeDeslogado() {
                 <div className="w-[40%] flex justify-center items-center">
                     <div className="flex flex-col items-center justify-center space-y-4 text-center w-full">
                         <p className="text-4xl text-black">Nossa paixão é impulsionar sua marca com criatividade e resultados excepcionais.</p>
-                        <img src="/logo2.png" alt="Logo" className="max-w-full" />
+                        <img src="/logo2.png" alt="Logo comunica" className="max-w-full" />
 
                         <div className="flex justify-center w-full space-x-2">
                             <ul className="flex space-x-2 w-full justify-center mt-6">
@@ -95,11 +95,11 @@ export default function HomeDeslogado() {
                     </p>
                     <div className="flex flex-col items-center gap-4 mt-[6rem]">
                         <div className="flex gap-16">
-                            <img src="/empresa/home-deslogado/img-equipe-larissa.png" alt="Foto Larissa" className="rounded-3xl" />
-                            <img src="/empresa/home-deslogado/img-equipe-paulo.png" alt="Foto Paulo" className="rounded-3xl" />
+                            <img src="/empresa/home-deslogado/img-equipe-larissa.png" alt="Foto da Larissa" className="rounded-3xl" />
+                            <img src="/empresa/home-deslogado/img-equipe-paulo.png" alt="Foto do Paulo" className="rounded-3xl" />
                         </div>
                         <div className="mt-[-4rem]">
-                            <img src="/empresa/home-deslogado/img-equipe-kbelo.png" alt="Foto Kbelo" className=" rounded-3xl" />
+                            <img src="/empresa/home-deslogado/img-equipe-kbelo.png" alt="Foto do Kbelo" className=" rounded-3xl" />
                         </div>
                     </div>
                     <ul className="flex space-x-2 w-full justify-end mt-[4rem]">
@@ -109,7 +109,7 @@ export default function HomeDeslogado() {
                     </ul>
                 </div>
                 <div className="w-1/2 flex justify-center items-center overflow-hidden">
-                    <img src="/empresa/home-deslogado/img-equipe.jpg" alt="Foto da Equipe" className="w-full h-full object-cover" />
+                    <img src="/empresa/home-deslogado/img-equipe.jpg" alt="Foto da equipe" className="w-full h-full object-cover" />
                 </div>
             </div>
         </div >
