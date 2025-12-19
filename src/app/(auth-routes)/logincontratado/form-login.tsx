@@ -87,7 +87,7 @@ export default function ContratadoLoginForm() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-start bg-gray-900 pt-20 pb-10"> 
+    <div className="flex flex-col items-center justify-start bg-gray-900 pt-10 pb-10"> 
       <div className="bg-white rounded-full p-4 shadow-md"> 
         <img
           src="/logo2.png"
@@ -96,7 +96,7 @@ export default function ContratadoLoginForm() {
         />
       </div>
       <div className="bg-gray-800 shadow-md rounded-xl p-8 w-full max-w-md mt-6">
-        <h1 className="text-2xl font-bold text-center mb-6 text-yellow-400">
+        <h1 className="text-2xl font-semibold text-center mb-6 text-yellow-400">
           Área Administrativa
         </h1>
         
@@ -107,13 +107,13 @@ export default function ContratadoLoginForm() {
               htmlFor="email"
               className="block mb-2 text-base font-medium text-gray-300"
             >
-              E-mail de Acesso
+              E-mail
             </label>
             <input
               type="email"
               id="email"
               name="email"
-              className="bg-gray-700 border border-gray-600 text-white text-base rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full p-2.5"
+              className="bg-gray-700 border border-gray-600 text-white text-base rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full p-2.5 transition-colors"
               placeholder="seuemail@exemplo.com"
               required
               value={email}
@@ -132,7 +132,7 @@ export default function ContratadoLoginForm() {
               type={showPassword ? "text" : "password"}
               id="senha"
               name="senha"
-              className="bg-gray-700 border border-gray-600 text-white text-base rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full p-2.5"
+              className="bg-gray-700 border border-gray-600 text-white text-base rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full p-2.5 transition-colors"
               placeholder="********"
               required
               value={senha}
@@ -141,7 +141,7 @@ export default function ContratadoLoginForm() {
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-yellow-500 mt-8"
+              className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-yellow-500 mt-8 transition-colors"
             >
               {showPassword ? (
                 <svg
@@ -174,7 +174,7 @@ export default function ContratadoLoginForm() {
             <button
               type="submit"
               disabled={!isFormValid || isPending}
-              className={`w-full font-medium rounded-lg text-base px-5 py-2.5 focus:outline-none focus:ring-4 focus:ring-yellow-300 transition ${
+              className={`w-full font-medium rounded-lg text-base px-5 py-2.5 focus:outline-none focus:ring-4 focus:ring-yellow-300 transition-colors ${
                 isFormValid && !isPending
                   ? "bg-yellow-500 text-black hover:bg-yellow-600"
                   : "bg-gray-400 text-gray-600 cursor-not-allowed"

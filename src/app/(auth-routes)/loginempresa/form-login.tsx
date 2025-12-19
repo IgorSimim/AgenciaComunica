@@ -90,7 +90,7 @@ export default function EmpresaLoginForm() {
 
   return (
     <div className="flex h-screen">
-      <div className="w-1/2 h-full bg-cover bg-center" style={{ backgroundImage: 'url("/empresa/login/img-login.jpg")' }}></div>
+      <div className="w-1/2 h-full bg-cover bg-center" style={{ backgroundImage: 'url("/login/img-login.jpg")' }}></div>
 
       <div className="w-1/2 flex items-center justify-center bg-gradient-to-br from-yellow-400 to-orange-500">
         <div className="max-w-lg w-full p-10 bg-gray-100 rounded-lg shadow-xl">
@@ -103,7 +103,7 @@ export default function EmpresaLoginForm() {
                 type="text"
                 id="email"
                 name="email"
-                className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 transition duration-300 text-black"
+                className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 transition-colors text-black"
                 placeholder="Digite o email da sua empresa"
                 required
                 value={email}
@@ -116,7 +116,7 @@ export default function EmpresaLoginForm() {
                 type={showPassword ? "text" : "password"}
                 id="senha"
                 name="senha"
-                className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 transition duration-300 text-black focus:text-black"
+                className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 transition-colors text-black focus:text-black"
                 placeholder="Digite sua senha"
                 required
                 value={senha}
@@ -125,7 +125,7 @@ export default function EmpresaLoginForm() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-yellow-500 mb-7"
+                className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-yellow-500 mb-7 transition-colors"
               >
                 {showPassword ? (
                   <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fillRule="evenodd" clipRule="evenodd">
@@ -139,7 +139,7 @@ export default function EmpresaLoginForm() {
               </button>
               {fieldErrors && <span className="text-red-500 text-xs mt-1 block">{fieldErrors}</span>}
               <div className="text-right mt-2">
-                <p className="text-blue-700 underline cursor-pointer">Esqueceu a senha?</p>
+                <p className="text-blue-700 underline cursor-pointer text-base font-medium">Esqueceu a senha?</p>
               </div>
             </div>
 
@@ -147,7 +147,7 @@ export default function EmpresaLoginForm() {
               <button
                 type="submit"
                 disabled={!isFormValid || isPending}
-                className={`w-3/4 py-3 text-white text-lg font-semibold rounded-full transition duration-300 ${isFormValid && !isPending
+                className={`w-3/4 py-3 text-white text-lg font-semibold rounded-full transition-colors ${isFormValid && !isPending
                     ? "bg-orange-600 hover:bg-orange-700"
                     : "bg-gray-400 cursor-not-allowed"
                   }`}

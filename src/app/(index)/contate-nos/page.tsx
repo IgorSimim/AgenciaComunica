@@ -55,12 +55,11 @@ export default function Contato() {
 
     return (
         <>
-
             <div className="bg-black py-12">
                 {/* Título da página */}
-                <div className="text-center font-sans mb-12">
-                    <h2 className="text-white text-5xl">Fale conosco</h2>
-                    <p className="text-gray-400 text-xl mt-4">
+                <div className="text-center mb-12">
+                    <h2 className="text-white text-4xl font-semibold">Fale conosco</h2>
+                    <p className="text-gray-400 text-xl font-medium mt-4">
                         Estamos aqui para ajudar! Preencha o formulário abaixo e entraremos em contato.
                     </p>
                 </div>
@@ -85,7 +84,7 @@ export default function Contato() {
                                 value={formData.nome}
                                 onChange={handleChange}
                                 required
-                                className="w-full p-4 rounded-lg border-2 border-gray-300 text-gray-800"
+                                className="w-full p-4 rounded-lg border-2 border-gray-300 text-gray-800 text-base"
                             />
                         </div>
 
@@ -106,7 +105,7 @@ export default function Contato() {
                                 value={formData.email}
                                 onChange={handleChange}
                                 required
-                                className="w-full p-4 rounded-lg border-2 border-gray-300 text-gray-800"
+                                className="w-full p-4 rounded-lg border-2 border-gray-300 text-gray-800 text-base"
                             />
                         </div>
 
@@ -127,7 +126,7 @@ export default function Contato() {
                                 onChange={handleChange}
                                 required
                                 rows={6}
-                                className="w-full p-4 rounded-lg border-2 border-gray-300 text-gray-800"
+                                className="w-full p-4 rounded-lg border-2 border-gray-300 text-gray-800 text-base"
                             ></textarea>
                         </div>
 
@@ -135,7 +134,7 @@ export default function Contato() {
                         <div className="text-center">
                             <button
                                 type="submit"
-                                className="bg-orange-600 hover:bg-orange-700 text-white text-xl px-10 py-3 rounded-full transition-all duration-300 transform hover:scale-105 shadow-md"
+                                className="bg-orange-600 hover:bg-orange-700 text-white text-xl font-medium px-10 py-3 rounded-full transition-colors transform hover:scale-105 shadow-md"
                             >
                                 Enviar mensagem
                             </button>
@@ -145,8 +144,8 @@ export default function Contato() {
 
                 {/* Informações adicionais */}
                 <div className="text-center mt-12">
-                    <p className="text-white text-xl">Ou entre em contato diretamente com nosso time:</p>
-                    <p className="text-gray-400 text-lg mt-2">Telefone: (053) 99139-3855</p>
+                    <p className="text-white text-xl font-medium">Ou entre em contato diretamente com nosso time:</p>
+                    <p className="text-gray-400 text-lg font-medium mt-2">Telefone: (053) 99139-3855</p>
                 </div>
             </div>
         </>

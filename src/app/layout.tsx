@@ -11,36 +11,26 @@ import Footer from "@/app/components/Footer";
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
-  // Rotas com apenas Titulo
-  const isTituloOnly = pathname.includes('/logincontratado') || pathname.startsWith('/admin');
-
   // Rotas de admin com MenuLateral (Titulo + MenuLateral)
   const isAdminRoute = pathname.startsWith('/dashboard') ||
     pathname.startsWith('/servico') ||
     pathname.startsWith('/empresa') ||
     (pathname.startsWith('/contratado') && !pathname.startsWith('/contratados'));
 
-  // Rotas de empresa, index e loginempresa
-  const isEmpresaOrIndexRoute = pathname.startsWith('/home-empresa') ||
+  // Rotas de empresa, index e login
+  const isEmpresaOrIndexRoute =
     pathname === '/' ||
-    pathname.startsWith('/contate-nos') ||
     pathname.startsWith('/contratados') ||
     pathname.startsWith('/sobre-nos') ||
-    pathname.includes('/loginempresa');
-
-  if (isTituloOnly) {
-    return (
-      <>
-        <Titulo />
-        {children}
-      </>
-    );
-  }
+    pathname.startsWith('/contate-nos') ||
+    pathname.includes('/loginempresa') ||
+    pathname.startsWith('/home-empresa') ||
+    pathname.includes('/logincontratado');
 
   if (isAdminRoute) {
     return (
       <>
-          <Titulo />
+        <Titulo />
         <div className="sm:ml-64">
           <MenuLateral />
           {children}
