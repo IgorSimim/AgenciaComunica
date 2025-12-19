@@ -13,12 +13,11 @@ const Home: React.FC = () => {
   const [maxEmpresas, setMaxEmpresas] = useState<number>(0)
   const { setFocus } = useForm()
 
-  function generateRandomColor() {
-    const colors = [
-      '#FF5733', '#33FF57', '#3357FF', '#F1C40F', '#8E44AD', '#E74C3C', '#3498DB', '#1ABC9C', '#9B59B6'
-    ]
-    return colors[Math.floor(Math.random() * colors.length)]
-  }
+  const colorPalette = [
+    '#FF5733', '#33FF57', '#3357FF', '#F1C40F', '#8E44AD', 
+    '#E74C3C', '#3498DB', '#1ABC9C', '#9B59B6', '#E67E22',
+    '#16A085', '#C0392B', '#2980B9', '#27AE60', '#D35400'
+  ]
 
   useEffect(() => {
     async function getDadosGerais() {
@@ -49,9 +48,9 @@ const Home: React.FC = () => {
           const dadosEmpresasFormatted: (string | number)[][] = [['Setor', 'Empresas']]
           const coresEmp: string[] = []
           let maxCount = 0
-          Object.entries(setorCount).forEach(([setor, count]) => {
+          Object.entries(setorCount).forEach(([setor, count], index) => {
             dadosEmpresasFormatted.push([setor, count as number])
-            coresEmp.push(generateRandomColor())
+            coresEmp.push(colorPalette[index % colorPalette.length])
             if (count as number > maxCount) maxCount = count as number
           })
           setDadosEmpresas(dadosEmpresasFormatted)
@@ -67,9 +66,9 @@ const Home: React.FC = () => {
 
           const dadosContratadosFormatted: (string | number)[][] = [['Cargo', 'Contratados']]
           const coresCont: string[] = []
-          Object.entries(cargoCount).forEach(([cargo, count]) => {
+          Object.entries(cargoCount).forEach(([cargo, count], index) => {
             dadosContratadosFormatted.push([cargo, count as number])
-            coresCont.push(generateRandomColor())
+            coresCont.push(colorPalette[index % colorPalette.length])
           })
           setDadosContratados(dadosContratadosFormatted)
           setCoresContratados(coresCont)

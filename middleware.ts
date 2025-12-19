@@ -20,13 +20,13 @@ export async function middleware(request: NextRequest) {
     if (pathname.startsWith("/home-empresa")) {
       return NextResponse.redirect(new URL("/loginempresa", request.url));
     }
-    if (pathname.startsWith("/dashboard") || pathname.startsWith("/contratado") || pathname.startsWith("/empresa") || pathname.startsWith("/servico") || pathname.startsWith("/admin")) {
+    if (pathname.startsWith("/dashboard") || pathname.startsWith("/contratado") || pathname.startsWith("/empresa") || pathname.startsWith("/servico")) {
       return NextResponse.redirect(new URL("/logincontratado", request.url));
     }
   }
   
   // Rotas admin - apenas contratados
-  if (pathname.startsWith("/dashboard") || pathname.startsWith("/contratado") || pathname.startsWith("/empresa") || pathname.startsWith("/servico")) {
+  if (pathname.startsWith("/dashboard") || (pathname.startsWith('/contratado') && !pathname.startsWith('/contratados')) || pathname.startsWith("/empresa") || pathname.startsWith("/servico")) {
     if (!(token as any)?.contratado) {
       return NextResponse.redirect(new URL("/logincontratado", request.url));
     }
@@ -48,7 +48,6 @@ export const config = {
     "/contratado/:path*",
     "/empresa/:path*",
     "/servico/:path*",
-    "/admin/:path*",
     "/home-empresa/:path*"
   ]
 };
