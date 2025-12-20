@@ -27,7 +27,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   if (isAdminRoute) {
     return (
       <>
-        <Header />
+        <Titulo />
         <div className="sm:ml-64">
           <MenuLateral />
           {children}
