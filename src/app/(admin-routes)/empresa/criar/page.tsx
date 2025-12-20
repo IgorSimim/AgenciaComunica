@@ -3,11 +3,17 @@ import { useForm } from "react-hook-form"
 import { alerts } from "@/lib/alerts"
 import Link from "next/link"
 import { TEmpresa } from "@/app/types/index"
+import ImageUpload from "@/app/components/ImageUpload"
+import { useImageUpload } from "@/app/components/useImageUpload"
+import { useState } from "react"
 
 export default function CriarEmpresa() {
   const { register, handleSubmit, reset, formState: { errors } } = useForm<TEmpresa>({
     mode: "onBlur"
   })
+  
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const { uploading, uploadImage, error: uploadError } = useImageUpload()
 
   const validateNome = (nome: string) => {
     const nomeRegex = /^[A-Za-zÀ-ú\s]+$/
@@ -69,13 +75,25 @@ export default function CriarEmpresa() {
   }
 
   async function criarEmpresa(data: TEmpresa) {
+    let logotipoUrl = data.logotipo || ''
+    
+    // Se há uma nova imagem selecionada, fazer upload
+    if (selectedFile) {
+      const uploadedUrl = await uploadImage(selectedFile, 'empresa')
+      if (!uploadedUrl) {
+        alerts.error('Erro no upload da imagem')
+        return
+      }
+      logotipoUrl = uploadedUrl
+    }
+
     const novaEmpresa = {
       nome: data.nome,
       cnpj: data.cnpj,
       email: data.email,
       senha: data.senha,
       setor: data.setor,
-      logotipo: data.logotipo
+      logotipo: logotipoUrl
     }
 
     try {
@@ -88,9 +106,10 @@ export default function CriarEmpresa() {
       if (response.status === 201 || response.status === 200) {
         alerts.success("Empresa criada com sucesso!")
         reset()
+        setSelectedFile(null)
       } else {
         const errorData = await response.json()
-        alerts.error(`Erro ao criar a empresa: ${errorData.message || 'Tente novamente.'}`)
+        alerts.error(errorData.message || 'Erro ao criar a empresa')
       }
     } catch (error) {
       console.error('Erro na requisição:', error)
@@ -201,26 +220,18 @@ export default function CriarEmpresa() {
         <fieldset className="border border-gray-300 rounded-md p-4">
           <legend className="text-lg font-bold text-gray-700 px-2">Logotipo</legend>
           <div className="mt-4">
-            <label htmlFor="logotipo" className="block mb-2 text-sm font-medium text-gray-800">URL do logotipo</label>
-            <input
-              {...register("logotipo", {
-                required: "URL do logotipo é obrigatória",
-                validate: validateURL
-              })}
-              type="url"
-              id="logotipo"
-              className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.logotipo ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'
-                }`}
-              placeholder="Insira a URL do logotipo"
-              maxLength={255}
+            <ImageUpload
+              currentImage=""
+              onImageChange={setSelectedFile}
+              label=""
             />
-            {errors.logotipo && <p className="text-red-500 text-sm mt-1">{errors.logotipo.message}</p>}
+            {uploadError && <p className="text-red-500 text-sm mt-1">{uploadError}</p>}
           </div>
         </fieldset>
 
         <div className="flex flex-col sm:flex-row justify-between items-center mt-6 gap-4">
-          <button type="submit" className="bg-yellow-400 text-black font-bold rounded-md py-4 px-8 w-full sm:w-auto hover:bg-yellow-500 focus:outline-none focus:ring-4 focus:ring-yellow-300 transition-all duration-200 ease-in-out shadow-md">
-            Cadastrar empresa
+          <button type="submit" disabled={uploading} className="bg-yellow-400 text-black font-bold rounded-md py-4 px-8 w-full sm:w-auto hover:bg-yellow-500 focus:outline-none focus:ring-4 focus:ring-yellow-300 transition-all duration-200 ease-in-out shadow-md disabled:opacity-50">
+            {uploading ? 'Enviando...' : 'Cadastrar empresa'}
           </button>
           <button type="button" className="bg-gray-500 text-white font-bold rounded-md py-4 px-8 w-full sm:w-auto hover:bg-gray-600 focus:outline-none focus:ring-4 focus:ring-gray-300 transition-all duration-200 ease-in-out shadow-md" onClick={() => reset()}>
             Limpar

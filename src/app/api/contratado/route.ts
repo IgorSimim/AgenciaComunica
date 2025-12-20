@@ -92,7 +92,7 @@ export async function POST(
         const data = await _request.json()
 
         const { nome, email, senha, telefone, sobre, dtnasc, foto, cargo } = data
-        if (!nome || !email || !senha || !telefone || !sobre || !dtnasc || !foto || !cargo) {
+        if (!nome || !email || !senha || !telefone || !sobre || !dtnasc || !cargo) {
             return NextResponse.json(
                 { message: "Todos os campos são obrigatórios" },
                 { status: 400 }
@@ -131,7 +131,7 @@ export async function POST(
                 telefone,
                 sobre,
                 dtnasc,
-                foto,
+                foto: foto || '/uploads/contratado/default.png',
                 cargo,
             },
         })

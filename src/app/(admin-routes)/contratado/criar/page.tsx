@@ -1,9 +1,11 @@
 'use client'
-import React from "react"
+import React, { useState } from "react"
 import { useForm } from "react-hook-form"
 import { alerts } from "@/lib/alerts"
 import Link from "next/link"
 import { TContratado } from "@/app/types/index"
+import ImageUpload from "@/app/components/ImageUpload"
+import { useImageUpload } from "@/app/components/useImageUpload"
 
 const validateNome = (nome: string) => {
   const nomeRegex = /^[A-Za-zÀ-ú\s]+$/
@@ -64,8 +66,23 @@ const ContratadosRegister: React.FC = () => {
   const { register, handleSubmit, reset, formState: { errors } } = useForm<TContratado>({
     mode: "onBlur"
   })
+  
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const { uploading, uploadImage, error: uploadError } = useImageUpload()
 
   async function criarContratado(data: TContratado) {
+    let fotoUrl = data.foto || ''
+    
+    // Se há uma nova imagem selecionada, fazer upload
+    if (selectedFile) {
+      const uploadedUrl = await uploadImage(selectedFile, 'contratado')
+      if (!uploadedUrl) {
+        alerts.error('Erro no upload da imagem')
+        return
+      }
+      fotoUrl = uploadedUrl
+    }
+
     const novoContratado = {
       nome: data.nome,
       email: data.email,
@@ -74,7 +91,7 @@ const ContratadosRegister: React.FC = () => {
       cargo: data.cargo,
       dtnasc: new Date(data.dtnasc).toISOString(),
       sobre: data.sobre,
-      foto: data.foto
+      foto: fotoUrl
     }
 
     try {
@@ -87,9 +104,10 @@ const ContratadosRegister: React.FC = () => {
       if (response.status === 201 || response.status === 200) {
         alerts.success("Contratado criado com sucesso!")
         reset()
+        setSelectedFile(null)
       } else {
         const errorData = await response.json()
-        alerts.error(errorData.message || errorData.msg || 'Erro ao criar o contratado')
+        alerts.error(errorData.message|| 'Erro ao criar o contratado')
       }
     } catch (error) {
       alerts.error("Erro ao processar a criação. Tente novamente mais tarde.")
@@ -207,19 +225,12 @@ const ContratadosRegister: React.FC = () => {
         <fieldset className="border border-gray-300 rounded-md p-4">
           <legend className="text-lg font-bold text-gray-700 px-2">Foto</legend>
           <div className="mt-4">
-            <label htmlFor="foto" className="block mb-2 text-sm font-medium text-gray-800">URL da foto</label>
-            <input
-              {...register("foto", {
-                required: "URL da foto é obrigatória",
-                validate: validateURL
-              })}
-              type="url"
-              id="foto"
-              className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.foto ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
-              placeholder="Insira a URL da foto"
-              maxLength={255}
+            <ImageUpload
+              currentImage=""
+              onImageChange={setSelectedFile}
+              label=""
             />
-            {errors.foto && <p className="text-red-500 text-sm mt-1">{errors.foto.message}</p>}
+            {uploadError && <p className="text-red-500 text-sm mt-1">{uploadError}</p>}
           </div>
         </fieldset>
 
@@ -243,8 +254,8 @@ const ContratadosRegister: React.FC = () => {
         </fieldset>
 
         <div className="flex flex-col sm:flex-row justify-between items-center mt-6 gap-4">
-          <button type="submit" className="bg-yellow-400 text-black font-bold rounded-md py-4 px-8 w-full sm:w-auto hover:bg-yellow-500 focus:outline-none focus:ring-4 focus:ring-yellow-300 transition-all duration-200 ease-in-out shadow-md">
-            Cadastrar funcionário
+          <button type="submit" disabled={uploading} className="bg-yellow-400 text-black font-bold rounded-md py-4 px-8 w-full sm:w-auto hover:bg-yellow-500 focus:outline-none focus:ring-4 focus:ring-yellow-300 transition-all duration-200 ease-in-out shadow-md disabled:opacity-50">
+            {uploading ? 'Enviando...' : 'Cadastrar funcionário'}
           </button>
           <button type="button" className="bg-gray-500 text-white font-bold rounded-md py-4 px-8 w-full sm:w-auto hover:bg-gray-600 focus:outline-none focus:ring-4 focus:ring-gray-300 transition-all duration-200 ease-in-out shadow-md" onClick={() => reset()}>
             Limpar
