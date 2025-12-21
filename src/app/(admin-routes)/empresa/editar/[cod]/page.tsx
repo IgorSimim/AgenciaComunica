@@ -1,16 +1,22 @@
 'use client'
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { useParams } from "next/navigation"
 import { alerts } from "@/lib/alerts"
 import Link from "next/link"
 import { TEmpresa } from "@/app/types/index"
+import ImageUpload from "@/app/components/ImageUpload"
+import { useImageUpload } from "@/app/components/useImageUpload"
 
 export default function AlteracaoEmpresa() {
   const params = useParams()
-  const { register, reset, handleSubmit, formState: { errors } } = useForm<TEmpresa>({
+  const { register, reset, handleSubmit, formState: { errors }, setValue } = useForm<TEmpresa>({
     mode: "onBlur"
   })
+  
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [currentImage, setCurrentImage] = useState<string>('')
+  const { uploading, uploadImage, error } = useImageUpload()
 
   const validateNome = (nome: string) => {
     const nomeRegex = /^[A-Za-zÀ-ú\s]+$/
@@ -68,6 +74,7 @@ export default function AlteracaoEmpresa() {
         const dado = await response.json()
 
         if (response.ok) {
+          setCurrentImage(dado.logotipo)
           reset({
             nome: dado.nome,
             cnpj: dado.cnpj,
@@ -88,10 +95,30 @@ export default function AlteracaoEmpresa() {
 
   async function alteraDados(data: TEmpresa) {
     try {
+      let logotipoUrl: string = data.logotipo || currentImage
+      
+      // Validar se há imagem
+      if (!logotipoUrl && !selectedFile) {
+        alerts.error('Logotipo é obrigatório')
+        return
+      }
+      
+      if (selectedFile) {
+        const uploadResult = await uploadImage(selectedFile, 'empresa')
+        if (!uploadResult) {
+          alerts.error('Erro no upload da imagem')
+          return
+        }
+        logotipoUrl = uploadResult
+      }
+
       const response = await fetch("/api/empresa/" + params.cod, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...data }),
+        body: JSON.stringify({ 
+          ...data, 
+          logotipo: logotipoUrl 
+        }),
       })
 
       if (response.status === 200) {
@@ -197,35 +224,33 @@ export default function AlteracaoEmpresa() {
           </div>
         </fieldset>
 
-        {/* Logotipo */}
         <fieldset className="border border-gray-300 rounded-md p-4">
           <legend className="text-lg font-bold text-gray-700 px-2">Logotipo</legend>
           <div className="mt-4">
-            <label htmlFor="logotipo" className="block mb-2 text-sm font-medium text-gray-800">
-              URL do Logotipo
-            </label>
-            <input
-              {...register("logotipo", {
-                required: "URL do logotipo é obrigatória",
-                validate: validateURL
-              })}
-              type="url"
-              id="logotipo"
-              className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.logotipo ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'
-                }`}
-              placeholder="Insira a URL do logotipo"
-              maxLength={255}
+            <ImageUpload
+              currentImage={currentImage}
+              onImageChange={(file) => {
+                setSelectedFile(file)
+                if (file) {
+                  setValue('logotipo', 'uploading...')
+                } else {
+                  setValue('logotipo', '')
+                  setCurrentImage('')
+                }
+              }}
+              label=""
             />
-            {errors.logotipo && <p className="text-red-500 text-sm mt-1">{errors.logotipo.message}</p>}
+            {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
           </div>
         </fieldset>
 
         <div className="flex flex-col sm:flex-row justify-between items-center mt-6 gap-4">
           <button
             type="submit"
-            className="bg-yellow-400 text-black font-bold rounded-md py-4 px-8 w-full sm:w-auto hover:bg-yellow-500 focus:outline-none focus:ring-4 focus:ring-yellow-300 transition-all duration-200 ease-in-out shadow-md"
+            disabled={uploading}
+            className="bg-yellow-400 text-black font-bold rounded-md py-4 px-8 w-full sm:w-auto hover:bg-yellow-500 focus:outline-none focus:ring-4 focus:ring-yellow-300 transition-all duration-200 ease-in-out shadow-md disabled:opacity-50"
           >
-            Alterar empresa
+            {uploading ? 'Enviando...' : 'Alterar empresa'}
           </button>
           <button
             type="button"

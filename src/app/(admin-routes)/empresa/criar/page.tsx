@@ -3,9 +3,9 @@ import { useForm } from "react-hook-form"
 import { alerts } from "@/lib/alerts"
 import Link from "next/link"
 import { TEmpresa } from "@/app/types/index"
-import ImageUpload from "@/app/components/ImageUpload"
+import ImageUpload, { ImageUploadRef } from "@/app/components/ImageUpload"
 import { useImageUpload } from "@/app/components/useImageUpload"
-import { useState } from "react"
+import { useState, useRef } from "react"
 
 export default function CriarEmpresa() {
   const { register, handleSubmit, reset, formState: { errors } } = useForm<TEmpresa>({
@@ -14,6 +14,7 @@ export default function CriarEmpresa() {
   
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const { uploading, uploadImage, error: uploadError } = useImageUpload()
+  const imageUploadRef = useRef<ImageUploadRef>(null)
 
   const validateNome = (nome: string) => {
     const nomeRegex = /^[A-Za-zÀ-ú\s]+$/
@@ -75,16 +76,17 @@ export default function CriarEmpresa() {
   }
 
   async function criarEmpresa(data: TEmpresa) {
-    let logotipoUrl = data.logotipo || ''
+    // Validar se há imagem selecionada
+    if (!selectedFile) {
+      alerts.error('Logotipo é obrigatório')
+      return
+    }
     
-    // Se há uma nova imagem selecionada, fazer upload
-    if (selectedFile) {
-      const uploadedUrl = await uploadImage(selectedFile, 'empresa')
-      if (!uploadedUrl) {
-        alerts.error('Erro no upload da imagem')
-        return
-      }
-      logotipoUrl = uploadedUrl
+    // Fazer upload da imagem
+    const uploadedUrl = await uploadImage(selectedFile, 'empresa')
+    if (!uploadedUrl) {
+      alerts.error('Erro no upload da imagem')
+      return
     }
 
     const novaEmpresa = {
@@ -93,7 +95,7 @@ export default function CriarEmpresa() {
       email: data.email,
       senha: data.senha,
       setor: data.setor,
-      logotipo: logotipoUrl
+      logotipo: uploadedUrl
     }
 
     try {
@@ -107,6 +109,7 @@ export default function CriarEmpresa() {
         alerts.success("Empresa criada com sucesso!")
         reset()
         setSelectedFile(null)
+        imageUploadRef.current?.clearImage()
       } else {
         const errorData = await response.json()
         alerts.error(errorData.message || 'Erro ao criar a empresa')
@@ -221,6 +224,7 @@ export default function CriarEmpresa() {
           <legend className="text-lg font-bold text-gray-700 px-2">Logotipo</legend>
           <div className="mt-4">
             <ImageUpload
+              ref={imageUploadRef}
               currentImage=""
               onImageChange={setSelectedFile}
               label=""

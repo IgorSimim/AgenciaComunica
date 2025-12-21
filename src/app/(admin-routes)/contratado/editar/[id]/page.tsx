@@ -1,10 +1,12 @@
 'use client'
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { useParams } from "next/navigation"
 import { alerts } from "@/lib/alerts"
 import Link from "next/link"
 import { TContratado } from "@/app/types/index"
+import ImageUpload from "@/app/components/ImageUpload"
+import { useImageUpload } from "@/app/components/useImageUpload"
 
 const validateNome = (nome: string) => {
   const nomeRegex = /^[A-Za-zÀ-ú\s]+$/
@@ -55,9 +57,13 @@ const validateURL = (url: string) => {
 
 export default function AlteracaoContratado() {
   const params = useParams()
-  const { register, reset, handleSubmit, formState: { errors } } = useForm<TContratado>({
+  const { register, reset, handleSubmit, formState: { errors }, setValue } = useForm<TContratado>({
     mode: "onBlur"
   })
+  
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [currentImage, setCurrentImage] = useState<string>('')
+  const { uploading, uploadImage, error } = useImageUpload()
 
   useEffect(() => {
     async function getContratado() {
@@ -66,6 +72,7 @@ export default function AlteracaoContratado() {
         const dado = await response.json()
 
         if (response.ok) {
+          setCurrentImage(dado.foto)
           reset({
             nome: dado.nome,
             email: dado.email,
@@ -87,10 +94,30 @@ export default function AlteracaoContratado() {
 
   async function alteraDados(data: TContratado) {
     try {
+      let fotoUrl: string = data.foto || currentImage
+      
+      // Validar se há imagem
+      if (!fotoUrl && !selectedFile) {
+        alerts.error('Foto é obrigatória')
+        return
+      }
+      
+      if (selectedFile) {
+        const uploadResult = await uploadImage(selectedFile, 'contratado')
+        if (!uploadResult) {
+          alerts.error('Erro no upload da imagem')
+          return
+        }
+        fotoUrl = uploadResult
+      }
+
       const response = await fetch("/api/contratado/" + params.id, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          ...data,
+          foto: fotoUrl
+        }),
       })
 
       if (response.status === 200) {
@@ -196,21 +223,20 @@ export default function AlteracaoContratado() {
         <fieldset className="border border-gray-300 rounded-md p-4">
           <legend className="text-lg font-bold text-gray-700 px-2">Foto</legend>
           <div className="mt-4">
-            <label htmlFor="foto" className="block mb-2 text-sm font-medium text-gray-800">
-              URL da foto
-            </label>
-            <input
-              {...register("foto", {
-                required: "URL da foto é obrigatória",
-                validate: validateURL
-              })}
-              type="url"
-              id="foto"
-              className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.foto ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
-              placeholder="Insira a URL da foto"
-              maxLength={255}
+            <ImageUpload
+              currentImage={currentImage}
+              onImageChange={(file) => {
+                setSelectedFile(file)
+                if (file) {
+                  setValue('foto', 'uploading...')
+                } else {
+                  setValue('foto', '')
+                  setCurrentImage('')
+                }
+              }}
+              label=""
             />
-            {errors.foto && <p className="text-red-500 text-sm mt-1">{errors.foto.message}</p>}
+            {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
           </div>
         </fieldset>
 
@@ -238,9 +264,10 @@ export default function AlteracaoContratado() {
         <div className="flex flex-col sm:flex-row justify-between items-center mt-6 gap-4">
           <button
             type="submit"
-            className="bg-yellow-400 text-black font-bold rounded-md py-4 px-8 w-full sm:w-auto hover:bg-yellow-500 focus:outline-none focus:ring-4 focus:ring-yellow-300 transition-all duration-200 ease-in-out shadow-md"
+            disabled={uploading}
+            className="bg-yellow-400 text-black font-bold rounded-md py-4 px-8 w-full sm:w-auto hover:bg-yellow-500 focus:outline-none focus:ring-4 focus:ring-yellow-300 transition-all duration-200 ease-in-out shadow-md disabled:opacity-50"
           >
-            Alterar funcionário
+            {uploading ? 'Enviando...' : 'Alterar funcionário'}
           </button>
           <button
             type="button"

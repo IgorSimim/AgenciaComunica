@@ -1,10 +1,10 @@
 'use client'
-import React, { useState } from "react"
+import React, { useState, useRef } from "react"
 import { useForm } from "react-hook-form"
 import { alerts } from "@/lib/alerts"
 import Link from "next/link"
 import { TContratado } from "@/app/types/index"
-import ImageUpload from "@/app/components/ImageUpload"
+import ImageUpload, { ImageUploadRef } from "@/app/components/ImageUpload"
 import { useImageUpload } from "@/app/components/useImageUpload"
 
 const validateNome = (nome: string) => {
@@ -69,18 +69,20 @@ const ContratadosRegister: React.FC = () => {
   
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const { uploading, uploadImage, error: uploadError } = useImageUpload()
+  const imageUploadRef = useRef<ImageUploadRef>(null)
 
   async function criarContratado(data: TContratado) {
-    let fotoUrl = data.foto || ''
+    // Validar se há imagem selecionada
+    if (!selectedFile) {
+      alerts.error('Foto é obrigatória')
+      return
+    }
     
-    // Se há uma nova imagem selecionada, fazer upload
-    if (selectedFile) {
-      const uploadedUrl = await uploadImage(selectedFile, 'contratado')
-      if (!uploadedUrl) {
-        alerts.error('Erro no upload da imagem')
-        return
-      }
-      fotoUrl = uploadedUrl
+    // Fazer upload da imagem
+    const uploadedUrl = await uploadImage(selectedFile, 'contratado')
+    if (!uploadedUrl) {
+      alerts.error('Erro no upload da imagem')
+      return
     }
 
     const novoContratado = {
@@ -91,7 +93,7 @@ const ContratadosRegister: React.FC = () => {
       cargo: data.cargo,
       dtnasc: new Date(data.dtnasc).toISOString(),
       sobre: data.sobre,
-      foto: fotoUrl
+      foto: uploadedUrl
     }
 
     try {
@@ -105,6 +107,7 @@ const ContratadosRegister: React.FC = () => {
         alerts.success("Contratado criado com sucesso!")
         reset()
         setSelectedFile(null)
+        imageUploadRef.current?.clearImage()
       } else {
         const errorData = await response.json()
         alerts.error(errorData.message|| 'Erro ao criar o contratado')
@@ -226,6 +229,7 @@ const ContratadosRegister: React.FC = () => {
           <legend className="text-lg font-bold text-gray-700 px-2">Foto</legend>
           <div className="mt-4">
             <ImageUpload
+              ref={imageUploadRef}
               currentImage=""
               onImageChange={setSelectedFile}
               label=""
