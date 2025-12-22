@@ -5,8 +5,8 @@ import { useParams } from "next/navigation"
 import { alerts } from "@/lib/alerts"
 import Link from "next/link"
 import { TServico } from "@/app/types/index"
-import ImageUpload from "@/app/components/ImageUpload"
-import { useImageUpload } from "@/app/components/useImageUpload"
+import ImageUpload from "@/app/components/shared/ImageUpload"
+import { useImageUpload } from "@/hooks/useImageUpload"
 
 const validateNome = (nome: string) => {
     const nomeRegex = /^[A-Za-zÀ-ú\s]+$/

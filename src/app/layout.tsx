@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "@/app/styles/globals.css";
 import { Toaster } from "sonner";
 import NextAuthSessionProvider from "@/app/providers/SessionProvider";
-import LayoutContent from "@/app/components/LayoutContent";
+import LayoutContent from "@/app/components/shared/LayoutContent";
 
 export const metadata: Metadata = {
   title: "Agência Comunica",

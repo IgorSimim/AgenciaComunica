@@ -1,8 +1,8 @@
 'use client'
 import { usePathname } from "next/navigation";
-import MenuLateral from "@/app/components/MenuLateral";
-import Header from "@/app/components/Header";
-import Footer from "@/app/components/Footer";
+import MenuLateral from "@/app/components/layout/MenuLateral";
+import Header from "@/app/components/layout/Header";
+import Footer from "@/app/components/layout/Footer";
 
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();

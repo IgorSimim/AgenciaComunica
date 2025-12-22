@@ -5,8 +5,8 @@ import { useParams } from "next/navigation"
 import { alerts } from "@/lib/alerts"
 import Link from "next/link"
 import { TEmpresa } from "@/app/types/index"
-import ImageUpload from "@/app/components/ImageUpload"
-import { useImageUpload } from "@/app/components/useImageUpload"
+import ImageUpload from "@/app/components/shared/ImageUpload"
+import { useImageUpload } from "@/hooks/useImageUpload"
 
 export default function AlteracaoEmpresa() {
   const params = useParams()
@@ -69,7 +69,7 @@ export default function AlteracaoEmpresa() {
             email: dado.email,
             senha: dado.senha,
             setor: dado.setor,
-            logotipo: dado.logotipoUrl
+            logotipoUrl: dado.logotipoUrl
           })
         } else {
           alerts.error("Não foi possível carregar os dados da empresa")
@@ -83,7 +83,7 @@ export default function AlteracaoEmpresa() {
 
   async function alteraDados(data: TEmpresa) {
     try {
-      let logotipoUrl: string = data.logotipo || currentImage
+      let logotipoUrl: string = data.logotipoUrl || currentImage
       let logotipoPublicId: string = ''
 
       // Validar se há imagem
@@ -223,9 +223,9 @@ export default function AlteracaoEmpresa() {
               onImageChange={(file) => {
                 setSelectedFile(file)
                 if (file) {
-                  setValue('logotipo', 'uploading...')
+                  setValue('logotipoUrl', 'uploading...')
                 } else {
-                  setValue('logotipo', '')
+                  setValue('logotipoUrl', '')
                   setCurrentImage('')
                 }
               }}
@@ -253,7 +253,7 @@ export default function AlteracaoEmpresa() {
                 email: "",
                 senha: "",
                 setor: "",
-                logotipo: "",
+                logotipoUrl: "",
               })
               setSelectedFile(null)
               setCurrentImage('')

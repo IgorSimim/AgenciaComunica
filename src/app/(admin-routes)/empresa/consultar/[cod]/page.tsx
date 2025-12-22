@@ -10,7 +10,7 @@ export default function ConsultaEmpresa() {
   const params = useParams()
   const { register, reset, watch } = useForm<TEmpresa>()
 
-  const logotipo = watch("logotipo")
+  const logotipoUrl = watch("logotipoUrl")
 
   useEffect(() => {
     async function getEmpresa() {
@@ -24,8 +24,8 @@ export default function ConsultaEmpresa() {
             cnpj: dado.cnpj,
             email: dado.email,
             setor: dado.setor,
-            logotipo: dado.logotipo,
-            createdAt: dado.createdAt,
+            logotipoUrl: dado.logotipoUrl,
+            createdAt: dado.createdAt,  
             updatedAt: dado.updatedAt
           })
         } else {
@@ -139,10 +139,10 @@ export default function ConsultaEmpresa() {
               <label htmlFor="logotipo" className="block mb-2 text-sm font-medium text-gray-800">
                 Logotipo
               </label>
-              {logotipo && (
+              {logotipoUrl && (
                 <div className="flex justify-center">
                   <img
-                    src={logotipo}
+                    src={logotipoUrl}
                     alt="Logotipo da empresa"
                     className="w-40 h-auto object-contain"
                   />

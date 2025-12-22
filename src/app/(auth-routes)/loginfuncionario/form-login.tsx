@@ -2,39 +2,12 @@
 import { useActionState, useState, useEffect } from "react"
 import Form from "next/form"
 import { Loader2 as SpinnerIcon } from "lucide-react"
-import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { alerts } from "@/lib/alerts"
-
-interface LoginState {
-  error?: string
-  success?: boolean
-}
-
-async function handlerFuncionarioLogin(prevState: LoginState | null, formData: FormData): Promise<LoginState> {
-  const email = formData.get('email') as string
-  const senha = formData.get('senha') as string
-
-  try {
-    const result = await signIn("credentials", {
-      email,
-      senha,
-      type: "funcionario",
-      redirect: false,
-    });
-
-    if (result?.ok) {
-      return { success: true }
-    } else {
-      return { error: "Email ou senha incorreta" }
-    }
-  } catch (error) {
-    return { error: "Email ou senha incorreta" }
-  }
-}
+import handlerLogin from "@/actions/loginFuncionario"
 
 export default function FuncionarioLoginForm() {
-  const [state, formAction, isPending] = useActionState(handlerFuncionarioLogin, null)
+  const [state, formAction, isPending] = useActionState(handlerLogin, null)
   const router = useRouter()
 
   const [email, setEmail] = useState("")
