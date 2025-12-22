@@ -3,7 +3,7 @@ import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/config/auth/authOptions";
 
-// PUT /api/contratado/:id
+// PUT /api/funcionario/:id
 export async function PUT(
     _request: NextRequest,
     { params }: { params: Promise<{ id: string }> }
@@ -12,7 +12,7 @@ export async function PUT(
         const idStr = await params?.then((c) => c.id);
         if (!idStr) {
             return NextResponse.json(
-                { message: "id do contratado é obrigatório" },
+                { message: "ID do funcionário é obrigatório" },
                 { status: 400 }
             );
         }
@@ -25,34 +25,34 @@ export async function PUT(
             );
         }
 
-        const contratado = await prisma.contratado.findUnique({
+        const funcionario = await prisma.funcionario.findUnique({
             where: {
                 id: id
             },
         });
 
-        if (!contratado) {
+        if (!funcionario) {
             return NextResponse.json(
-                { message: "Contratado não encontrado" },
+                { message: "Funcionário não encontrado" },
                 { status: 404 }
             );
         }
 
         const session = await getServerSession(authOptions);
-        if (!session?.contratado?.email) {
+        if (!session?.funcionario?.email) {
             return NextResponse.json(
-                { message: "Contratado não autenticado" },
+                { message: "Funcionário não autenticado" },
                 { status: 401 }
             );
         }
 
-        const contratadoLogado = await prisma.contratado.findUnique({
-            where: { email: session.contratado.email }
+        const funcionarioLogado = await prisma.funcionario.findUnique({
+            where: { email: session.funcionario.email }
         });
 
-        // if (!contratadoLogado || (contratado.cargo !== "PROPRIETARIA" && contratado.cargo !== "RH")) {
+        // if (!funcionarioLogado || (funcionario.cargo !== "PROPRIETARIA" && funcionario.cargo !== "RH")) {
         //     return NextResponse.json(
-        //         { message: "Acesso negado para atualizar os dados do contratado" },
+        //         { message: "Acesso negado para atualizar os dados do funcionário" },
         //         { status: 403 }
         //     );
         // }
@@ -67,7 +67,7 @@ export async function PUT(
             );
         }
 
-        await prisma.contratado.update({
+        await prisma.funcionario.update({
             where: { id },
             data: {
                 nome,
@@ -80,18 +80,18 @@ export async function PUT(
         });
 
         return NextResponse.json(
-            { message: "contratado atualizado com sucesso!" },
+            { message: "Funcionário atualizado com sucesso!" },
             { status: 200 }
         );
     } catch (error) {
         return NextResponse.json(
-            { message: "Erro ao atualizar contratado" },
+            { message: "Erro ao atualizar funcionário" },
             { status: 500 }
         );
     }
 }
 
-// DELETE /api/contratado/:id
+// DELETE /api/funcionario/:id
 export async function DELETE(
     _request: NextRequest,
     { params }: { params: Promise<{ id: string }> }
@@ -100,40 +100,40 @@ export async function DELETE(
         const id = await params?.then((c) => c.id);
         if (!id) {
             return NextResponse.json(
-                { message: "ID do contratado é obrigatório" },
+                { message: "ID do funcionário é obrigatório" },
                 { status: 400 }
             );
         }
 
-        const contratado = await prisma.contratado.findUnique({
+        const funcionario = await prisma.funcionario.findUnique({
             where: {
                 id: parseInt(id)
             },
         });
 
-        if (!contratado) {
+        if (!funcionario) {
             return NextResponse.json(
-                { message: "Contratado não encontrado" },
+                { message: "Funcionário não encontrado" },
                 { status: 404 }
             );
         }
 
         const session = await getServerSession(authOptions);
-        if (!session?.contratado?.email) {
+        if (!session?.funcionario?.email) {
             return NextResponse.json(
-                { message: "Contratado não autenticado" },
+                { message: "Funcionário não autenticado" },
                 { status: 401 }
             );
         }
 
-        // if (!contratado || (contratado.cargo !== "PROPRIETARIA" && contratado.cargo !== "RH")) {
+        // if (!funcionario || (funcionario.cargo !== "PROPRIETARIA" && funcionario.cargo !== "RH")) {
         //     return NextResponse.json(
-        //         { message: "Acesso negado para deletar contratado" },
+        //         { message: "Acesso negado para deletar funcionário" },
         //         { status: 403 }
         //     );
         // }
 
-        await prisma.contratado.update({
+        await prisma.funcionario.update({
             where: { id: parseInt(id) },
             data: {
                 deletedAt: new Date()
@@ -141,18 +141,18 @@ export async function DELETE(
         });
 
         return NextResponse.json(
-            { message: "Contratado removido com sucesso!" },
+            { message: "Funcionário removido com sucesso!" },
             { status: 200 }
         );
     } catch (error) {
         return NextResponse.json(
-            { message: "Erro ao excluir contratado" },
+            { message: "Erro ao excluir funcionário" },
             { status: 500 }
         );
     }
 }
 
-// GET /api/contratado/:id
+// GET /api/funcionario/:id
 export async function GET(
     _request: NextRequest,
     { params }: { params: Promise<{ id: string }> }
@@ -161,7 +161,7 @@ export async function GET(
         const idStr = await params?.then((e) => e.id);
         if (!idStr) {
             return NextResponse.json(
-                { message: "ID da contratado é obrigatório" },
+                { message: "ID do funcionário é obrigatório" },
                 { status: 400 }
             );
         }
@@ -169,29 +169,29 @@ export async function GET(
         const id = parseInt(idStr, 10);
         if (isNaN(id)) {
             return NextResponse.json(
-                { message: "ID da contratado deve ser um número válido" },
+                { message: "ID do funcionário deve ser um número válido" },
                 { status: 400 }
             );
         }
 
-        const contratado = await prisma.contratado.findFirst({
+        const funcionario = await prisma.funcionario.findFirst({
             where: {
                 id: id,
                 deletedAt: null
             },
         });
 
-        if (!contratado) {
+        if (!funcionario) {
             return NextResponse.json(
-                { message: "Contratado não encontrado" },
+                { message: "Funcionário não encontrado" },
                 { status: 404 }
             );
         }
 
-        return NextResponse.json(contratado, { status: 200 });
+        return NextResponse.json(funcionario, { status: 200 });
     } catch (error) {
         return NextResponse.json(
-            { message: "Erro ao buscar contratado" },
+            { message: "Erro ao buscar funcionário" },
             { status: 500 }
         );
     }

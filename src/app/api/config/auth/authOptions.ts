@@ -45,24 +45,24 @@ export const authOptions: NextAuthOptions = {
               email: empresa.email,
               empresa
             };
-          } else if (type === "contratado") {
-            const contratado = await prisma.contratado.findUnique({
+          } else if (type === "funcionario") {
+            const funcionario = await prisma.funcionario.findUnique({
               where: { email },
             });
 
-            if (!contratado) {
-              throw new Error("Contratado não encontrado");
+            if (!funcionario) {
+              throw new Error("Funcionário não encontrado");
             }
 
-            const senhaValida = await bcryptjs.compare(senha, contratado.senha);
+            const senhaValida = await bcryptjs.compare(senha, funcionario.senha);
             if (!senhaValida) {
               throw new Error("Email ou senha incorreta");
             }
 
             return {
-              id: contratado.id.toString(),
-              email: contratado.email,
-              contratado
+              id: funcionario.id.toString(),
+              email: funcionario.email,
+              funcionario
             };
           } else {
             throw new Error("Tipo inválido");
@@ -91,13 +91,13 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         if ((user as any).empresa) (token as any).empresa = (user as any).empresa;
-        if ((user as any).contratado) (token as any).contratado = (user as any).contratado;
+        if ((user as any).funcionario) (token as any).funcionario = (user as any).funcionario;
       }
       return token;
     },
     async session({ session, token }) {
       if ((token as any).empresa) (session as any).empresa = (token as any).empresa;
-      if ((token as any).contratado) (session as any).contratado = (token as any).contratado;
+      if ((token as any).funcionario) (session as any).funcionario = (token as any).funcionario;
       return session;
     },
   },

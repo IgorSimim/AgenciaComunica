@@ -4,18 +4,18 @@ import { useForm } from "react-hook-form"
 import { useParams } from "next/navigation"
 import { alerts } from "@/lib/alerts"
 import Link from "next/link"
-import { TContratado } from "@/app/types/index"
+import { TFuncionario } from "@/app/types/index"
 
-export default function ConsultaContratado() {
+export default function ConsultaFuncionario() {
   const params = useParams()
-  const { register, reset, watch } = useForm<TContratado>()
+  const { register, reset, watch } = useForm<TFuncionario>()
 
   const foto = watch("foto")
 
   useEffect(() => {
-    async function getContratado() {
+    async function getFuncionario() {
       try {
-        const response = await fetch("/api/contratado/" + params.id)
+        const response = await fetch("/api/funcionario/" + params.id)
         const dado = await response.json()
 
         if (response.ok) {
@@ -30,18 +30,18 @@ export default function ConsultaContratado() {
             createdAt: dado.createdAt
           })
         } else {
-          alerts.error(dado.message || "Não foi possível carregar os dados do contratado")
+          alerts.error(dado.message || "Não foi possível carregar os dados do funcionário")
         }
       } catch (error) {
-        alerts.error("Erro ao carregar os dados do contratado")
+        alerts.error("Erro ao carregar os dados do funcionário")
       }
     }
-    getContratado()
+    getFuncionario()
   }, [params.id])
 
   return (
     <div className="container mx-auto p-6">
-      <h2 className="text-3xl mb-6 font-bold text-gray-900">Consulta das informações da pessoa contratada</h2>
+      <h2 className="text-3xl mb-6 font-bold text-gray-900">Consulta das informações do funcionário</h2>
 
       <div className="grid grid-cols-1 gap-6 max-w-4xl mx-auto bg-gray-100 p-6 rounded-lg shadow-lg">
         <fieldset className="border border-gray-300 rounded-md p-4">
@@ -54,7 +54,7 @@ export default function ConsultaContratado() {
                 type="text"
                 id="nome"
                 className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
-                placeholder="Nome do contratado"
+                placeholder="Nome do funcionário"
                 readOnly
               />
             </div>
@@ -66,7 +66,7 @@ export default function ConsultaContratado() {
                 type="email"
                 id="email"
                 className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
-                placeholder="Email do contratado"
+                placeholder="Email do funcionário"
                 readOnly
               />
             </div>
@@ -78,7 +78,7 @@ export default function ConsultaContratado() {
                 type="text"
                 id="telefone"
                 className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
-                placeholder="Telefone do contratado"
+                placeholder="Telefone do funcionário"
                 readOnly
               />
             </div>
@@ -90,7 +90,7 @@ export default function ConsultaContratado() {
                 type="text"
                 id="cargo"
                 className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
-                placeholder="Cargo do contratado"
+                placeholder="Cargo do funcionário"
                 readOnly
               />
             </div>
@@ -152,7 +152,7 @@ export default function ConsultaContratado() {
       </div>
 
       <div className="flex justify-start mt-6">
-        <Link href="/contratado">
+        <Link href="/funcionario">
           <button className="bg-gray-600 text-white font-bold rounded-md py-4 px-8 w-full sm:w-auto hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-500 transition-all duration-200 ease-in-out shadow-md">
             Voltar
           </button>

@@ -11,19 +11,19 @@ function Header() {
   const { data: session } = useSession();
   const router = useRouter();
   const empresa = (session as any)?.empresa;
-  const contratado = (session as any)?.contratado;
+  const funcionario = (session as any)?.funcionario;
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   async function logout() {
     alerts.confirm("Deseja realmente fazer logout?", async () => {
       await signOut({ redirect: false });
       alerts.success("Logout realizado com sucesso!");
-      router.push(contratado ? "/logincontratado" : "/");
+      router.push(funcionario ? "/loginfuncionario" : "/");
     });
   }
 
-  // Layout administrativo para contratados
-  if (session && contratado) {
+  // Layout administrativo para funcionários
+  if (session && funcionario) {
     return (
       <nav className="bg-yellow-400 sticky top-0 z-50">
         <div className="container mx-auto flex items-center justify-between p-4">
@@ -40,7 +40,7 @@ function Header() {
           
           <div className="flex items-center space-x-6">
             <span className="text-black text-xl font-medium">
-              Bem-vindo(a), {contratado.nome}
+              Bem-vindo(a), {funcionario.nome}
             </span>
             <span
               onClick={logout}
@@ -91,10 +91,10 @@ function Header() {
               </li>
               <li>
                 <Link
-                  href="/contratados"
+                  href="/funcionarios"
                   className="hover:text-orange-400 hover:scale-105 transition-all duration-300"
                 >
-                  Contratados
+                  Funcionários
                 </Link>
               </li>
               <li>
@@ -152,7 +152,7 @@ function Header() {
                     Área empresarial
                   </Link>
                   <Link
-                    href="/logincontratado"
+                    href="/loginfuncionario"
                     className="block px-4 py-3 text-white hover:bg-yellow-500 hover:text-black rounded-b-lg transition-colors border-t border-gray-700"
                     onClick={() => setDropdownOpen(false)}
                   >

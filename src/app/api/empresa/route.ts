@@ -8,18 +8,18 @@ import { getServerSession } from "next-auth"
 export async function GET() {
     try {
         const session = await getServerSession(authOptions)
-        if (!session?.contratado?.email) {
+        if (!session?.funcionario?.email) {
             return NextResponse.json(
-                { message: "Contratado não autenticado" },
+                { message: "Funcionário não autenticado" },
                 { status: 401 }
             )
         }
 
-        const contratado = await prisma.contratado.findUnique({
-            where: { email: session.contratado.email },
+        const funcionario = await prisma.funcionario.findUnique({
+            where: { email: session.funcionario.email },
         })
 
-        // if (!contratado || (contratado.cargo !== "PROPRIETARIA" && contratado.cargo !== "RH")) {
+        // if (!funcionario || (funcionario.cargo !== "PROPRIETARIA" && funcionario .cargo !== "RH")) {
         //     const empresas = await prisma.empresa.findMany({
         //         select: {
         //             cod: true,
@@ -41,7 +41,7 @@ export async function GET() {
         //     )
         // }
 
-        if (!contratado || (contratado.cargo !== "PROPRIETARIA" && contratado.cargo !== "RH")) {
+        if (!funcionario || (funcionario.cargo !== "PROPRIETARIA" && funcionario.cargo !== "RH")) {
             const empresas = await prisma.empresa.findMany({
                 select: {
                     cod: true,
@@ -65,7 +65,7 @@ export async function GET() {
             )
         }
 
-        if (contratado.cargo === "PROPRIETARIA" || contratado.cargo === "RH") {
+        if (funcionario.cargo === "PROPRIETARIA" || funcionario.cargo === "RH") {
             const empresas = await prisma.empresa.findMany({
                 select: {
                     cod: true,
@@ -104,25 +104,25 @@ export async function POST(
 ) {
     try {
         const session = await getServerSession(authOptions)
-        if (!session?.contratado?.email) {
+        if (!session?.funcionario?.email) {
             return NextResponse.json(
-                { message: "Contratado não autenticado" },
+                { message: "Funcionário não autenticado" },
                 { status: 401 }
             )
         }
 
-        const contratado = await prisma.contratado.findUnique({
-            where: { email: session.contratado.email },
+        const funcionario = await prisma.funcionario.findUnique({
+            where: { email: session.funcionario.email },
         })
 
-        if (!contratado) {
+        if (!funcionario) {
             return NextResponse.json(
-                { message: "Contratado não encontrado" },
+                { message: "Funcionário não encontrado" },
                 { status: 404 }
             )
         }
 
-        // if (!contratado || (contratado.cargo !== "PROPRIETARIA" && contratado.cargo !== "REDATORA")) {
+        // if (!funcionario || (funcionario.cargo !== "PROPRIETARIA" && funcionario.cargo !== "REDATORA")) {
         //     return NextResponse.json(
         //         { message: "Acesso negado" },
         //         { status: 403 }
@@ -165,7 +165,7 @@ export async function POST(
 
         const newEmpresa = await prisma.empresa.create({
             data: {
-                contratado_id: contratado.id,
+                funcionario_id: funcionario.id,
                 cnpj,
                 nome,
                 email,

@@ -60,7 +60,7 @@ const Footer = () => (
                         Área da empresa
                     </Link>
                     <Link
-                        href="/logincontratado"
+                        href="/loginfuncionario"
                         className="block text-white hover:text-yellow-400 transition-colors"
                     >
                         Área do funcionário

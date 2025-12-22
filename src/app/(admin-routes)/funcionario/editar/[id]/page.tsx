@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form"
 import { useParams } from "next/navigation"
 import { alerts } from "@/lib/alerts"
 import Link from "next/link"
-import { TContratado } from "@/app/types/index"
+import { TFuncionario} from "@/app/types/index"
 import ImageUpload from "@/app/components/ImageUpload"
 import { useImageUpload } from "@/app/components/useImageUpload"
 
@@ -55,9 +55,9 @@ const validateURL = (url: string) => {
   }
 }
 
-export default function AlteracaoContratado() {
+export default function AlteracaoFuncionario() {
   const params = useParams()
-  const { register, reset, handleSubmit, formState: { errors }, setValue } = useForm<TContratado>({
+  const { register, reset, handleSubmit, formState: { errors }, setValue } = useForm<TFuncionario>({
     mode: "onBlur"
   })
   
@@ -66,9 +66,9 @@ export default function AlteracaoContratado() {
   const { uploading, uploadImage, error } = useImageUpload()
 
   useEffect(() => {
-    async function getContratado() {
+    async function getFuncionario() {
       try {
-        const response = await fetch("/api/contratado/" + params.id)
+        const response = await fetch("/api/funcionario/" + params.id)
         const dado = await response.json()
 
         if (response.ok) {
@@ -83,16 +83,16 @@ export default function AlteracaoContratado() {
             foto: dado.foto
           })
         } else {
-          alerts.error("Não foi possível carregar os dados do contratado")
+          alerts.error("Não foi possível carregar os dados do funcionário")
         }
       } catch (error) {
-        alerts.error("Erro ao carregar os dados do contratado")
+        alerts.error("Erro ao carregar os dados do funcionário")
       }
     }
-    getContratado()
+    getFuncionario()
   }, [params.id])
 
-  async function alteraDados(data: TContratado) {
+  async function alteraDados(data: TFuncionario) {
     try {
       let fotoUrl: string = data.foto || currentImage
       
@@ -103,7 +103,7 @@ export default function AlteracaoContratado() {
       }
       
       if (selectedFile) {
-        const uploadResult = await uploadImage(selectedFile, 'contratado')
+        const uploadResult = await uploadImage(selectedFile, 'funcionario')
         if (!uploadResult) {
           alerts.error('Erro no upload da imagem')
           return
@@ -111,7 +111,7 @@ export default function AlteracaoContratado() {
         fotoUrl = uploadResult
       }
 
-      const response = await fetch("/api/contratado/" + params.id, {
+      const response = await fetch("/api/funcionario/" + params.id, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -121,10 +121,10 @@ export default function AlteracaoContratado() {
       })
 
       if (response.status === 200) {
-        alerts.success("Contratado alterado com sucesso!")
+        alerts.success("Funcionário alterado com sucesso!")
       } else {
         const errorData = await response.json()
-        alerts.error(errorData.message || 'Erro ao alterar o contratado')
+        alerts.error(errorData.message || 'Erro ao alterar o funcionário')
       }
     } catch (error) {
       alerts.error("Erro ao processar a alteração. Tente novamente mais tarde.")
@@ -134,7 +134,7 @@ export default function AlteracaoContratado() {
 
   return (
     <div className="container mx-auto p-6">
-      <h2 className="text-3xl mb-6 font-bold text-gray-900">Alteração das informações da pessoa contratada</h2>
+      <h2 className="text-3xl mb-6 font-bold text-gray-900">Alteração das informações do funcionário</h2>
       <form
         className="grid grid-cols-1 gap-6 max-w-4xl mx-auto bg-gray-100 p-6 rounded-lg shadow-lg"
         onSubmit={handleSubmit(alteraDados)}
@@ -287,7 +287,7 @@ export default function AlteracaoContratado() {
       </form>
 
       <div className="flex justify-start mt-6">
-        <Link href="/contratado">
+        <Link href="/funcionario">
           <button className="bg-gray-600 text-white font-bold rounded-md py-4 px-8 w-full sm:w-auto hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-500 transition-all duration-200 ease-in-out shadow-md">
             Voltar
           </button>

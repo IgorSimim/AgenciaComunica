@@ -30,10 +30,10 @@ const ServicosData = [
   },
 ]
 
-const ContratadosData = [
+const FuncionariosData = [
   {
-    nome: 'Contratado A',
-    email: 'contratadoA@example.com',
+    nome: 'Funcionário A',
+    email: 'funcionarioA@example.com',
     senha: '-Senha123',
     telefone: '11999999999', 
     sobre: 'Profissional experiente em diversas áreas.',
@@ -43,8 +43,8 @@ const ContratadosData = [
   },
 
   {
-    nome: 'Contratado B',
-    email: 'contratadoB@example.com',
+    nome: 'Funcionário B',
+    email: 'funcionarioB@example.com',
     senha: '-Senha123',
     telefone: '11988888888', 
     sobre: 'Especialista em tecnologia e desenvolvimento de software.',
@@ -55,16 +55,16 @@ const ContratadosData = [
 ]
 
 export async function main() {
-  const contratados = []
-  for (const c of ContratadosData) {
+  const funcionarios = []
+  for (const c of FuncionariosData) {
     const hashedPassword = await bcrypt.hash(c.senha, 10);
-    const contratado = await prisma.contratado.create({
+    const funcionario = await prisma.funcionario.create({
       data: {
         ...c,
         senha: hashedPassword,
       },
     })
-    contratados.push(contratado)
+    funcionarios.push(funcionario)
   }
 
   for (const e of EmpresasData) {
@@ -73,7 +73,7 @@ export async function main() {
       data: {
         ...e,
         senha: hashedPassword,
-        contratado_id: contratados[0].id, 
+        funcionario_id: funcionarios[0].id, 
       },
     })
   }
@@ -82,7 +82,7 @@ export async function main() {
     await prisma.servico.create({
       data: {
         ...s,
-        contratado_id: contratados[1].id, 
+        funcionario_id: funcionarios[1].id, 
       },
     })
   }

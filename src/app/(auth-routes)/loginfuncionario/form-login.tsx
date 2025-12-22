@@ -11,7 +11,7 @@ interface LoginState {
   success?: boolean
 }
 
-async function handlerContratadoLogin(prevState: LoginState | null, formData: FormData): Promise<LoginState> {
+async function handlerFuncionarioLogin(prevState: LoginState | null, formData: FormData): Promise<LoginState> {
   const email = formData.get('email') as string
   const senha = formData.get('senha') as string
 
@@ -19,7 +19,7 @@ async function handlerContratadoLogin(prevState: LoginState | null, formData: Fo
     const result = await signIn("credentials", {
       email,
       senha,
-      type: "contratado",
+      type: "funcionario",
       redirect: false,
     });
 
@@ -33,8 +33,8 @@ async function handlerContratadoLogin(prevState: LoginState | null, formData: Fo
   }
 }
 
-export default function ContratadoLoginForm() {
-  const [state, formAction, isPending] = useActionState(handlerContratadoLogin, null)
+export default function FuncionarioLoginForm() {
+  const [state, formAction, isPending] = useActionState(handlerFuncionarioLogin, null)
   const router = useRouter()
 
   const [email, setEmail] = useState("")
@@ -101,7 +101,7 @@ export default function ContratadoLoginForm() {
         </h1>
         
         <Form action={formAction} onSubmit={handleFormSubmit}>
-          <input type="hidden" name="type" value="contratado" />
+          <input type="hidden" name="type" value="funcionario" />
           <div className="mb-6">
             <label
               htmlFor="email"

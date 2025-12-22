@@ -2,7 +2,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-export function useAuthRedirect(requiredUserType: "empresa" | "contratado") {
+export function useAuthRedirect(requiredUserType: "empresa" | "funcionario") {
   const { data: session, status } = useSession();
   const router = useRouter();
 
@@ -10,17 +10,17 @@ export function useAuthRedirect(requiredUserType: "empresa" | "contratado") {
     if (status === "loading") return;
 
     if (!session) {
-      const redirectPath = requiredUserType === "empresa" ? "/loginempresa" : "/logincontratado";
+      const redirectPath = requiredUserType === "empresa" ? "/loginempresa" : "/loginfuncionario";
       router.push(redirectPath);
       return;
     }
 
     const hasRequiredAuth = requiredUserType === "empresa" 
       ? (session as any)?.empresa 
-      : (session as any)?.contratado;
+      : (session as any)?.funcionario;
 
     if (!hasRequiredAuth) {
-      const redirectPath = requiredUserType === "empresa" ? "/loginempresa" : "/logincontratado";
+      const redirectPath = requiredUserType === "empresa" ? "/loginempresa" : "/loginfuncionario";
       router.push(redirectPath);
     }
   }, [session, status, requiredUserType, router]);
@@ -34,9 +34,9 @@ export function useAuth() {
   return {
     session,
     empresa: (session as any)?.empresa,
-    contratado: (session as any)?.contratado,
+    funcionario: (session as any)?.funcionario,
     isEmpresa: !!(session as any)?.empresa,
-    isContratado: !!(session as any)?.contratado,
+    isFuncionario: !!(session as any)?.funcionario,
     isAuthenticated: !!session
   };
 }

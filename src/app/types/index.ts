@@ -42,7 +42,7 @@ export interface TFeedback {
     data: Date;
 }
 
-export interface TContratado {
+export interface TFuncionario {
     id: number;
     nome: string;
     email: string;
@@ -57,7 +57,7 @@ export interface TContratado {
     updatedAt: Date;
     atividades: {
         id: number;
-        contratadoId: number;
+        funcionarioId: number;
         descricao: string;
         prioridade: string;
         status: string;
@@ -73,7 +73,7 @@ export interface TContratado {
         comentarios: {
             id: number;
             atividadeId: number;
-            contratadoId: number;
+            funcionarioId: number;
             descricao: string;
             data: Date;
         }[] | null;
@@ -82,7 +82,7 @@ export interface TContratado {
 
 export interface TServico {
     cod: number;
-    contratadoId: number;
+    funcionarioId: number;
     nome: string;
     descricao: string;
     preco: number;
@@ -108,6 +108,6 @@ export interface ContatoForm {
 
 export interface DashboardType {
     empresas: number;
-    contratados: number;
+    funcionarios: number;
     servicos: number;
 }

@@ -5,29 +5,29 @@ import { Atividade, Cargo, Comentario } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/config/auth/authOptions";
 
-// GET /api/contratado
+// GET /api/funcionario
 export async function GET() {
     try {
         // const session = await getServerSession(authOptions);
-        // if (!session?.contratado?.email) {
+        // if (!session?.funcionario?.email) {
         //     return NextResponse.json(
-        //         { message: "Contratado não autenticado" },
+        //         { message: "Funcionário não autenticado" },
         //         { status: 401 }
         //     );
         // }
         
-        // const contratado = await prisma.contratado.findUnique({
-        //     where: { email: session.contratado.email }
+        // const funcionario = await prisma.funcionario.findUnique({
+        //     where: { email: session.funcionario.email }
         // })
 
-        // if (!contratado || (contratado.cargo !== "PROPRIETARIA" && contratado.cargo !== "RH")) {
+        // if (!funcionario || (funcionario.cargo !== "PROPRIETARIA" && funcionario.cargo !== "RH")) {
         //     return NextResponse.json(
-        //         { message: "Somente a proprietária e os contratadoes do RH" },
+        //         { message: "Somente a proprietária e os funcionários do RH" },
         //         { status: 403 }
         //     );
         // }
 
-        const contratadoEncontrado = await prisma.contratado.findMany({
+        const funcionarioEncontrado = await prisma.funcionario.findMany({
             select: {
                 id: true,
                 nome: true,
@@ -49,40 +49,40 @@ export async function GET() {
             orderBy: { id: 'asc' },
         });
 
-        if (!contratadoEncontrado) {
+        if (!funcionarioEncontrado) {
             return NextResponse.json(
-                { message: "Não existe contratadoes cadastrados" },
+                { message: "Não existe funcionários cadastrados" },
                 { status: 404 }
             );
         }
 
-        return NextResponse.json(contratadoEncontrado);
+        return NextResponse.json(funcionarioEncontrado);
     } catch (error) {
         return NextResponse.json(
-            { message: "Erro ao buscar contratadoes" },
+            { message: "Erro ao buscar funcionários" },
             { status: 500 }
         );
     }
 }
 
-// POST /api/contratado
+// POST /api/funcionario
 export async function POST(
     _request: NextRequest
 ) {
     try {
         const session = await getServerSession(authOptions)
-        if (!session?.contratado?.email) {
+        if (!session?.funcionario?.email) {
             return NextResponse.json(
-                { message: "Contratado não autenticado" },
+                { message: "Funcionário não autenticado" },
                 { status: 401 }
             )
         }
 
-        const contratado = await prisma.contratado.findUnique({
-            where: { email: session.contratado.email },
+        const funcionario = await prisma.funcionario.findUnique({
+            where: { email: session.funcionario.email },
         })
 
-        // if (!contratado || (contratado.cargo !== "PROPRIETARIA" && contratado.cargo !== "RH")) {
+        // if (!funcionario || (funcionario.cargo !== "PROPRIETARIA" && funcionario.cargo !== "RH")) {
         //     return NextResponse.json(
         //         { message: "Acesso negado" },
         //         { status: 403 }
@@ -99,31 +99,31 @@ export async function POST(
             )
         }
 
-        const existingEmail = await prisma.contratado.findUnique({
+        const existingEmail = await prisma.funcionario.findUnique({
             where: { email }
         })
 
         if (existingEmail) {
             return NextResponse.json(
-                { message: "Já existe um contratado com este email" },
+                { message: "Já existe um funcionário com este email" },
                 { status: 400 }
             )
         }
 
-        const existingTelefone = await prisma.contratado.findUnique({
+        const existingTelefone = await prisma.funcionario.findUnique({
             where: { telefone }
         })
 
         if (existingTelefone) {
             return NextResponse.json(
-                { message: "Já existe um contratado com este telefone" },
+                { message: "Já existe um funcionário com este telefone" },
                 { status: 400 }
             )
         }
 
         const hashedPassword = await bcrypt.hash(senha, 10)
 
-        const newContratado = await prisma.contratado.create({
+        const newFuncionario = await prisma.funcionario.create({
             data: {
                 nome,
                 email,
@@ -131,18 +131,18 @@ export async function POST(
                 telefone,
                 sobre,
                 dtnasc,
-                foto: foto || '/uploads/contratado/default.png',
+                foto: foto || '/uploads/funcionario/default.png',
                 cargo,
             },
         })
 
         return NextResponse.json(
-            { contratado: newContratado },
+            { funcionario: newFuncionario },
             { status: 201 }
         )
     } catch (error) {
         return NextResponse.json(
-            { message: "Erro ao criar contratado" },
+            { message: "Erro ao criar funcionário" },
             { status: 500 }
         )
     }

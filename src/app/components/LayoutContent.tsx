@@ -12,17 +12,17 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   const isAdminRoute = pathname.startsWith('/dashboard') ||
     pathname.startsWith('/servico') ||
     pathname.startsWith('/empresa') ||
-    (pathname.startsWith('/contratado') && !pathname.startsWith('/contratados'));
+    (pathname.startsWith('/funcionario') && !pathname.startsWith('/funcionarios'));
 
   // Rotas de empresa, index e login
   const isEmpresaOrIndexRoute =
     pathname === '/' ||
-    pathname.startsWith('/contratados') ||
+    pathname.startsWith('/funcionarios') ||
     pathname.startsWith('/sobre-nos') ||
     pathname.startsWith('/contate-nos') ||
     pathname.includes('/loginempresa') ||
     pathname.startsWith('/home-empresa') ||
-    pathname.includes('/logincontratado');
+    pathname.includes('/loginfuncionario');
 
   if (isAdminRoute) {
     return (

@@ -40,18 +40,18 @@ export async function PUT(
         }
 
         const session = await getServerSession(authOptions);
-        if (!session?.contratado?.email) {
+        if (!session?.funcionario?.email) {
             return NextResponse.json(
-                { message: "Contratado não autenticado" },
+                { message: "Funcionário não autenticado" },
                 { status: 401 }
             );
         }
 
-        const contratado = await prisma.contratado.findUnique({
-            where: { email: session.contratado.email }
+        const funcionario = await prisma.funcionario.findUnique({
+            where: { email: session.funcionario.email }
         });
 
-        // if (!contratado || (contratado.cargo !== "PROPRIETARIA" && contratado.cargo !== "RH")) {
+        // if (!funcionario || (funcionario.cargo !== "PROPRIETARIA" && funcionario.cargo !== "RH")) {
         //     return NextResponse.json(
         //         { message: "Acesso negado para atualizar os dados da empresa" },
         //         { status: 403 }
@@ -128,9 +128,9 @@ export async function PUT(
 //         }
 
 //         const session = await getServerSession(authOptions);
-//         if (!session?.contratado?.email) {
+//         if (!session?.funcionario?.email) {
 //             return NextResponse.json(
-//                 { message: "Contratado não autenticado" },
+//                 { message: "Funcionário não autenticado" },
 //                 { status: 401 }
 //             );
 //         }

@@ -3,7 +3,7 @@ import React, { useState, useRef } from "react"
 import { useForm } from "react-hook-form"
 import { alerts } from "@/lib/alerts"
 import Link from "next/link"
-import { TContratado } from "@/app/types/index"
+import { TFuncionario } from "@/app/types/index"
 import ImageUpload, { ImageUploadRef } from "@/app/components/ImageUpload"
 import { useImageUpload } from "@/app/components/useImageUpload"
 
@@ -62,8 +62,8 @@ const validateURL = (url: string) => {
   }
 }
 
-const ContratadosRegister: React.FC = () => {
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<TContratado>({
+const FuncionariosRegister: React.FC = () => {
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<TFuncionario>({
     mode: "onBlur"
   })
   
@@ -71,7 +71,7 @@ const ContratadosRegister: React.FC = () => {
   const { uploading, uploadImage, error: uploadError } = useImageUpload()
   const imageUploadRef = useRef<ImageUploadRef>(null)
 
-  async function criarContratado(data: TContratado) {
+  async function criarFuncionario(data: TFuncionario) {
     // Validar se há imagem selecionada
     if (!selectedFile) {
       alerts.error('Foto é obrigatória')
@@ -79,13 +79,13 @@ const ContratadosRegister: React.FC = () => {
     }
     
     // Fazer upload da imagem
-    const uploadedUrl = await uploadImage(selectedFile, 'contratado')
+    const uploadedUrl = await uploadImage(selectedFile, 'funcionario')
     if (!uploadedUrl) {
       alerts.error('Erro no upload da imagem')
       return
     }
 
-    const novoContratado = {
+    const novoFuncionario = {
       nome: data.nome,
       email: data.email,
       senha: data.senha,
@@ -97,20 +97,20 @@ const ContratadosRegister: React.FC = () => {
     }
 
     try {
-      const response = await fetch("/api/contratado", {
+      const response = await fetch("/api/funcionario", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(novoContratado),
+        body: JSON.stringify(novoFuncionario),
       })
 
       if (response.status === 201 || response.status === 200) {
-        alerts.success("Contratado criado com sucesso!")
+        alerts.success("Funcionário criado com sucesso!")
         reset()
         setSelectedFile(null)
         imageUploadRef.current?.clearImage()
       } else {
         const errorData = await response.json()
-        alerts.error(errorData.message|| 'Erro ao criar o contratado')
+        alerts.error(errorData.message|| 'Erro ao criar o funcionário')
       }
     } catch (error) {
       alerts.error("Erro ao processar a criação. Tente novamente mais tarde.")
@@ -122,7 +122,7 @@ const ContratadosRegister: React.FC = () => {
       <h2 className="text-3xl mb-6 font-bold text-gray-900">Cadastrar novo funcionário</h2>
       <form
         className="grid grid-cols-1 gap-6 max-w-4xl mx-auto bg-gray-100 p-6 rounded-lg shadow-lg"
-        onSubmit={handleSubmit(criarContratado)}
+        onSubmit={handleSubmit(criarFuncionario)}
       >
         <fieldset className="border border-gray-300 rounded-md p-4">
           <legend className="text-lg font-bold text-gray-700 px-2">Informações básicas</legend>
@@ -268,7 +268,7 @@ const ContratadosRegister: React.FC = () => {
       </form>
 
       <div className="flex justify-start mt-6">
-        <Link href="/contratado">
+        <Link href="/funcionario">
           <button className="bg-gray-600 text-white font-bold rounded-md py-4 px-8 w-full sm:w-auto hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-500 transition-all duration-200 ease-in-out shadow-md">
             Voltar
           </button>
@@ -278,4 +278,4 @@ const ContratadosRegister: React.FC = () => {
   )
 }
 
-export default ContratadosRegister
+export default FuncionariosRegister

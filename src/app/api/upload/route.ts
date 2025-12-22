@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Nenhum arquivo enviado' }, { status: 400 })
     }
 
-    if (!type || !['contratado', 'empresa'].includes(type)) {
+    if (!type || !['funcionario', 'empresa'].includes(type)) {
       return NextResponse.json({ error: 'Tipo inválido' }, { status: 400 })
     }
 

@@ -5,7 +5,7 @@ export type EmpresaLogin = {
     senha: string;
 }
 
-export type ContratadoLogin = {
+export type FuncionarioLogin = {
     email: string;
     senha: string;
 }
@@ -18,7 +18,7 @@ export interface EmpresaSession {
     logotipo: string;
 }
 
-export interface ContratadoSession {
+export interface FuncionarioSession {
     id: number;
     nome: string;
     email: string;

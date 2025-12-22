@@ -17,7 +17,7 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL("/loginempresa", request.url));
     }
     // Para todas as outras rotas privadas do matcher
-    return NextResponse.redirect(new URL("/logincontratado", request.url));
+    return NextResponse.redirect(new URL("/loginfuncionario", request.url));
   }
 
   // 3. Verificação de permissões (Roles)
@@ -27,15 +27,15 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/loginempresa", request.url));
   }
 
-  // Rotas de Contratado: exige que seja 'contratado'
+  // Rotas de Funcionário: exige que seja 'funcionario'
   // Note que usei o matcher para filtrar, então aqui só checo a lógica
-  const isContratadoRoute = pathname.startsWith("/dashboard") || 
-                           pathname.startsWith("/contratado") || 
+  const isFuncionarioRoute = pathname.startsWith("/dashboard") || 
+                           pathname.startsWith("/funcionario") || 
                            pathname.startsWith("/servico") || 
                            pathname.startsWith("/empresa");
 
-  if (isContratadoRoute && !(token as any)?.contratado) {
-    return NextResponse.redirect(new URL("/logincontratado", request.url));
+  if (isFuncionarioRoute && !(token as any)?.funcionario) {
+    return NextResponse.redirect(new URL("/loginfuncionario", request.url));
   }
 
   return NextResponse.next();
@@ -45,7 +45,7 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     "/dashboard/:path*", 
-    "/contratado/:path*",
+    "/funcionario/:path*",
     "/empresa/:path*",
     "/servico/:path*",
     "/home-empresa/:path*"

@@ -6,10 +6,10 @@ import { DashboardType } from '@/app/types/index'
 
 const Home: React.FC = () => {
   const [dadosEmpresas, setDadosEmpresas] = useState<(string | number)[][]>([['Área de Atuação', 'Empresas']])
-  const [dadosContratados, setDadosContratados] = useState<(string | number)[][]>([['Área de Atuação', 'Contratados']])
+  const [dadosFuncionarios, setDadosFuncionarios] = useState<(string | number)[][]>([['Área de Atuação', 'Funcionários']])
   const [coresEmpresas, setCoresEmpresas] = useState<string[]>([])
-  const [coresContratados, setCoresContratados] = useState<string[]>([])
-  const [geral, setGeral] = useState<DashboardType>({ empresas: 0, contratados: 0, servicos: 0 })
+  const [coresFuncionarios, setCoresFuncionarios] = useState<string[]>([])
+  const [geral, setGeral] = useState<DashboardType>({ empresas: 0, funcionarios: 0, servicos: 0 })
   const [maxEmpresas, setMaxEmpresas] = useState<number>(0)
   const { setFocus } = useForm()
 
@@ -22,19 +22,19 @@ const Home: React.FC = () => {
   useEffect(() => {
     async function getDadosGerais() {
       try {
-        const [empresasRes, contratadosRes, servicosRes] = await Promise.all([
+        const [empresasRes, funcionariosRes, servicosRes] = await Promise.all([
           fetch('/api/empresa'),
-          fetch('/api/contratado'),
+          fetch('/api/funcionario'),
           fetch('/api/servico')
         ])
 
         const empresas = empresasRes.ok ? await empresasRes.json() : []
-        const contratados = contratadosRes.ok ? await contratadosRes.json() : []
+        const funcionarios = funcionariosRes.ok ? await funcionariosRes.json() : []
         const servicosData = servicosRes.ok ? await servicosRes.json() : { servicos: [] }
 
         setGeral({
           empresas: Array.isArray(empresas) ? empresas.filter(e => e.ativa !== false).length : 0,
-          contratados: Array.isArray(contratados) ? contratados.length : 0,
+          funcionarios: Array.isArray(funcionarios) ? funcionarios.length : 0,
           servicos: Array.isArray(servicosData.servicos) ? servicosData.servicos.length : 0
         })
 
@@ -58,20 +58,20 @@ const Home: React.FC = () => {
           setMaxEmpresas(maxCount + 1)
         }
 
-        if (Array.isArray(contratados)) {
-          const cargoCount = contratados.reduce((acc, cont) => {
-            acc[cont.cargo] = (acc[cont.cargo] || 0) + 1
+        if (Array.isArray(funcionarios)) {
+          const cargoCount = funcionarios.reduce((acc, func) => {
+            acc[func.cargo] = (acc[func.cargo] || 0) + 1
             return acc
           }, {})
 
-          const dadosContratadosFormatted: (string | number)[][] = [['Cargo', 'Contratados']]
-          const coresCont: string[] = []
+          const dadosFuncionariosFormatted: (string | number)[][] = [['Cargo', 'Funcionários']]
+          const coresFunc: string[] = []
           Object.entries(cargoCount).forEach(([cargo, count], index) => {
-            dadosContratadosFormatted.push([cargo, count as number])
-            coresCont.push(colorPalette[index % colorPalette.length])
+            dadosFuncionariosFormatted.push([cargo, count as number])
+            coresFunc.push(colorPalette[index % colorPalette.length])
           })
-          setDadosContratados(dadosContratadosFormatted)
-          setCoresContratados(coresCont)
+          setDadosFuncionarios(dadosFuncionariosFormatted)
+          setCoresFuncionarios(coresFunc)
         }
 
       } catch (error) {
@@ -97,7 +97,7 @@ const Home: React.FC = () => {
           <p className="text-lg font-medium mt-2">Empresas ativas</p>
         </div>
         <div className="shadow-lg p-6 rounded-lg border border-red-200 bg-red-50 text-center">
-          <h3 className="text-5xl font-bold text-red-600">{geral.contratados}</h3>
+          <h3 className="text-5xl font-bold text-red-600">{geral.funcionarios}</h3>
           <p className="text-lg font-medium mt-2">Funcionários ativos</p>
         </div>
       </div>
@@ -129,20 +129,20 @@ const Home: React.FC = () => {
         />
       </div>
 
-      <h3 className="text-2xl font-bold text-gray-700 mt-6 mb-4 text-center">Distribuição dos funcionários por cargo</h3>
+      <h3 className="text-2xl font-bold text-gray-700 mt-6 mb-4 text-center">Distribuição dos funcionários por área de atuação</h3>
       <div className="shadow-lg p-4 rounded-lg border border-gray-200 bg-white">
         <Chart
           chartType="PieChart"
           width="100%"
           height="400px"
-          data={dadosContratados}
+          data={dadosFuncionarios}
           options={{
             title: 'Distribuição dos funcionários por cargo',
             chartArea: { width: '90%', height: '70%' },
             pieHole: 0.4,
             is3D: false,
             legend: { position: 'bottom' },
-            colors: coresContratados,
+            colors: coresFuncionarios,
           }}
         />
       </div>

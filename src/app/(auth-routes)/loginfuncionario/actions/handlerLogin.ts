@@ -1,4 +1,4 @@
-import { ContratadoLogin } from "@/app/types/auth";
+import { FuncionarioLogin } from "@/app/types/auth";
 import { signIn } from "next-auth/react";
 
 export default async function handlerLogin(
@@ -6,7 +6,7 @@ export default async function handlerLogin(
     formData: FormData
 ) {
     const entries = Array.from(formData.entries());
-    const data = Object.fromEntries(entries) as ContratadoLogin;
+    const data = Object.fromEntries(entries) as FuncionarioLogin;
 
     if (!data.email) {
         return {
@@ -24,7 +24,7 @@ export default async function handlerLogin(
     const result = await signIn("credentials", {
         email: data.email,
         senha: data.senha,
-        type: "contratado",
+        type: "funcionario",
         redirect: false,
     });
 

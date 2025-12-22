@@ -11,13 +11,13 @@ import { alerts } from "@/lib/alerts"
 function MenuLateral() {
   const { data: session } = useSession()
   const router = useRouter()
-  const contratado = (session as any)?.contratado
+  const funcionario = (session as any)?.funcionario
 
   async function logout() {
     alerts.confirm("Deseja realmente fazer logout?", async () => {
       await signOut({ redirect: false })
       alerts.success("Logout realizado com sucesso!")
-      router.push("/logincontratado")
+      router.push("/loginfuncionario")
     })
   }
 
@@ -30,7 +30,7 @@ function MenuLateral() {
       <div className="h-full px-4 py-6 overflow-y-auto text-white mt-12">
         <div className="flex items-center p-4 mb-6 mt-12">
           <FaUserAlt className="h-8 w-8 text-yellow-400 mr-4 flex-shrink-0" />
-          <span className="text-xl font-semibold leading-tight break-words">{contratado?.nome || "Admin"}</span>
+          <span className="text-xl font-semibold leading-tight break-words">{funcionario?.nome || "Admin"}</span>
         </div>
 
         <ul className="space-y-4">
@@ -63,7 +63,7 @@ function MenuLateral() {
           </li>
           <li>
             <Link
-              href="/contratado"
+              href="/funcionario"
               className="flex items-center p-3 rounded-lg hover:bg-yellow-500 hover:text-black transition-colors group"
             >
               <FaUsers className="w-6 h-6 mr-3 text-yellow-400 group-hover:text-black" />

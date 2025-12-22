@@ -18,7 +18,7 @@ enum Cargo {
 
 model Empresa {
   cod       Int     @id @default(autoincrement())
-  contratado_id Int
+  funcionario_id Int
   cnpj      String  @unique @db.VarChar(18)
   nome      String  @db.VarChar(100)
   email     String  @unique @db.VarChar(100)
@@ -29,7 +29,7 @@ model Empresa {
   createdAt    DateTime     @default(now())
   deletedAt    DateTime?
   updatedAt    DateTime     @updatedAt
-  contratado   Contratado @relation(fields: [contratado_id], references: [id])
+  funcionario   Funcionario @relation(fields: [funcionario_id], references: [id])
   feedbacks Feedback[]
   contratos Contrato[]
 }
@@ -44,7 +44,7 @@ model Feedback {
   empresa     Empresa     @relation(fields: [empresaCod], references: [cod])
 }
 
-model Contratado {
+model Funcionario {
   id         Int      @id @default(autoincrement())
   nome       String   @db.VarChar(100)
   email      String   @unique @db.VarChar(100)
@@ -65,14 +65,14 @@ model Contratado {
 
 model Servico {
   cod         Int     @id @default(autoincrement())
-  contratado_id     Int
+  funcionario_id     Int
   nome        String  @unique @db.VarChar(100)
   descricao   String  @db.VarChar(255)
   preco       Float
   simbolo     String  @db.VarChar(255)
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
-  contratado   Contratado @relation(fields: [contratado_id], references: [id])
+  funcionario   Funcionario @relation(fields: [funcionario_id], references: [id])
   contratos   Contrato[]
 }
 
@@ -90,7 +90,7 @@ model Contrato {
 
 model Atividade {
   id             Int       @id @default(autoincrement())
-  contratadoId  Int
+  funcionarioId  Int
   tarefa         String    @db.VarChar(100)
   area           String    @db.VarChar(100)
   descricao      String    @db.VarChar(255)
@@ -101,7 +101,7 @@ model Atividade {
   ultimaModificacao DateTime
   arquivos     Arquivo[]
   comentarios  Comentario[]
-  contratado       Contratado @relation(fields: [contratadoId], references: [id])
+  funcionario       Funcionario @relation(fields: [funcionarioId], references: [id])
 }
 
 model Arquivo {
@@ -118,11 +118,11 @@ model Arquivo {
 model Comentario {
   id          Int         @id @default(autoincrement())
   atividadeId Int
-  contratadoId Int
+  funcionarioId Int
   descricao    String     @db.VarChar(255)
   data        DateTime
   atividade   Atividade   @relation(fields: [atividadeId], references: [id])
-  contratado Contratado @relation(fields: [contratadoId], references: [id])
+  funcionario Funcionario @relation(fields: [funcionarioId], references: [id])
 }
 
 model Projeto {

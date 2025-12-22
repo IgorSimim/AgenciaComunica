@@ -3,15 +3,15 @@ import prisma from "@/lib/prisma";
 
 export async function GET() {
     try {
-        const [empresas, contratados, servicos] = await Promise.all([
+        const [empresas, funcionarios, servicos] = await Promise.all([
             prisma.empresa.count({ where: { ativa: { not: false } } }),
-            prisma.contratado.count(),
+            prisma.funcionario.count(),
             prisma.servico.count()
         ]);
 
         return NextResponse.json({
             empresas,
-            contratados,
+            funcionarios,
             servicos
         });
     } catch (error) {

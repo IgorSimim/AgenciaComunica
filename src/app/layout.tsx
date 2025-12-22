@@ -7,7 +7,7 @@ import LayoutContent from "@/app/components/LayoutContent";
 export const metadata: Metadata = {
   title: "Agência Comunica",
   description: "Agencia de marketing digital",
-  keywords: ["Serviços", "Empresas", "Contratados", "Marketing Digital"],
+  keywords: ["Serviços", "Empresas", "Funcionários", "Marketing Digital"],
   icons: {
     icon: "/favicon.ico",
   },

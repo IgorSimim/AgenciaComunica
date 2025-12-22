@@ -104,7 +104,7 @@ export default function HomeDeslogado() {
                     </div>
                     <ul className="flex space-x-2 w-full justify-end mt-[4rem]">
                         <li className="flex justify-center items-center bg-orange-600 hover:bg-orange-700 text-white rounded-full text-2xl font-medium w-[267px] h-[75px] cursor-pointer transition-colors">
-                            <Link href="/contratados" className="w-full text-center">Saiba mais</Link>
+                            <Link href="/funcionarios" className="w-full text-center">Saiba mais</Link>
                         </li>
                     </ul>
                 </div>
