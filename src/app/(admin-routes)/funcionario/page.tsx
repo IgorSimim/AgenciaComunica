@@ -53,8 +53,8 @@ function Funcionarios() {
       <td className="px-6 py-4">{funcionario.cargo}</td>
       <td className="px-6 py-4">{funcionario.email}</td>
       <td className="px-6 py-4">
-        <HiOutlineEye className="text-3xl text-blue-700 inline-block cursor-pointer hover:text-blue-700 transition-colors" title="Consulta" onClick={() => router.push(`funcionario/consultar/${funcionario.id}`)} />
-        <HiOutlinePencilAlt className="text-3xl text-yellow-500 inline-block cursor-pointer hover:text-yellow-700 transition-colors" title="Alteração" onClick={() => router.push(`funcionario/editar/${funcionario.id}`)} />
+        <HiOutlineEye className="text-3xl text-blue-700 inline-block cursor-pointer hover:text-blue-700 transition-colors" title="Consultar" onClick={() => router.push(`funcionario/consultar/${funcionario.id}`)} />
+        <HiOutlinePencilAlt className="text-3xl text-yellow-500 inline-block cursor-pointer hover:text-yellow-700 transition-colors" title="Alterar" onClick={() => router.push(`funcionario/editar/${funcionario.id}`)} />
         <HiOutlineXCircle className="text-3xl text-red-600 inline-block cursor-pointer hover:text-red-800 transition-colors" title="Excluir" onClick={() => excluirFuncionario(funcionario)} />
       </td>
     </tr>

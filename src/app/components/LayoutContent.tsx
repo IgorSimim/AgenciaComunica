@@ -1,6 +1,5 @@
 'use client'
 import { usePathname } from "next/navigation";
-import Titulo from "@/app/components/Titulo";
 import MenuLateral from "@/app/components/MenuLateral";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
@@ -8,7 +7,7 @@ import Footer from "@/app/components/Footer";
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
-  // Rotas de admin com MenuLateral (Titulo + MenuLateral)
+  // Rotas de admin com MenuLateral (MenuLateral)
   const isAdminRoute = pathname.startsWith('/dashboard') ||
     pathname.startsWith('/servico') ||
     pathname.startsWith('/empresa') ||
@@ -27,7 +26,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   if (isAdminRoute) {
     return (
       <>
-        <Titulo />
+        <Header />
         <div className="sm:ml-64">
           <MenuLateral />
           {children}

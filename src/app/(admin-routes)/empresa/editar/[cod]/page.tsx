@@ -16,7 +16,7 @@ export default function AlteracaoEmpresa() {
   
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [currentImage, setCurrentImage] = useState<string>('')
-  const { uploading, uploadImage, error } = useImageUpload()
+  const { uploading, uploadImage, uploadError } = useImageUpload()
 
   const validateNome = (nome: string) => {
     const nomeRegex = /^[A-Za-zÀ-ú\s]+$/
@@ -53,18 +53,6 @@ export default function AlteracaoEmpresa() {
       return "Email deve ter no máximo 100 caracteres"
     }
     return true
-  }
-
-  const validateURL = (url: string) => {
-    try {
-      new URL(url)
-      if (url.length > 255) {
-        return "URL deve ter no máximo 255 caracteres"
-      }
-      return true
-    } catch {
-      return "URL deve ter um formato válido"
-    }
   }
 
   useEffect(() => {
@@ -104,7 +92,7 @@ export default function AlteracaoEmpresa() {
       }
       
       if (selectedFile) {
-        const uploadResult = await uploadImage(selectedFile, 'empresa')
+        const uploadResult = await uploadImage(selectedFile, 'empresas')
         if (!uploadResult) {
           alerts.error('Erro no upload da imagem')
           return
@@ -128,14 +116,14 @@ export default function AlteracaoEmpresa() {
         alerts.error(errorData.message || 'Erro ao alterar a empresa')
       }
     } catch (error) {
-      alerts.error("Erro ao processar a alteração. Tente novamente mais tarde.")
+      alerts.error("Erro ao processar a edição. Tente novamente mais tarde.")
     }
   }
 
 
   return (
     <div className="container mx-auto p-6">
-      <h2 className="text-3xl mb-6 font-bold text-gray-900">Alteração das informações da empresa</h2>
+      <h2 className="text-3xl mb-6 font-bold text-gray-900">Editar informações da empresa</h2>
       <form
         className="grid grid-cols-1 gap-6 max-w-4xl mx-auto bg-gray-100 p-6 rounded-lg shadow-lg"
         onSubmit={handleSubmit(alteraDados)}
@@ -240,7 +228,7 @@ export default function AlteracaoEmpresa() {
               }}
               label=""
             />
-            {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+            {uploadError && <p className="text-red-500 text-sm mt-1">{uploadError}</p>}
           </div>
         </fieldset>
 
@@ -255,7 +243,7 @@ export default function AlteracaoEmpresa() {
           <button
             type="button"
             className="bg-gray-500 text-white font-bold rounded-md py-4 px-8 w-full sm:w-auto hover:bg-gray-600 focus:outline-none focus:ring-4 focus:ring-gray-300 transition-all duration-200 ease-in-out shadow-md"
-            onClick={() =>
+            onClick={() => {
               reset({
                 nome: "",
                 cnpj: "",
@@ -264,7 +252,9 @@ export default function AlteracaoEmpresa() {
                 setor: "",
                 logotipo: "",
               })
-            }
+              setSelectedFile(null)
+              setCurrentImage('')
+            }}
           >
             Limpar
           </button>

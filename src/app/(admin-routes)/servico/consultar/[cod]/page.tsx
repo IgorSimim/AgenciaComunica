@@ -41,7 +41,7 @@ export default function ConsultaServico() {
 
   return (
     <div className="container mx-auto p-6">
-      <h2 className="text-3xl mb-6 font-bold text-gray-900">Consulta das informações do serviço</h2>
+      <h2 className="text-3xl mb-6 font-bold text-gray-900">Consultar informações do serviço</h2>
 
       <div className="grid grid-cols-1 gap-6 max-w-4xl mx-auto bg-gray-100 p-6 rounded-lg shadow-lg">
         <fieldset className="border border-gray-300 rounded-md p-4">
@@ -119,7 +119,7 @@ export default function ConsultaServico() {
               <div className="w-full h-56">
                 <img
                   src={simbolo}
-                  alt="Símbolo do serviço"
+                  alt=""
                   className="w-full h-full object-contain rounded-lg"
                 />
               </div>

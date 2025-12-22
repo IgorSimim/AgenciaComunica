@@ -3,6 +3,52 @@ import { getServerSession } from "next-auth";
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/app/api/config/auth/authOptions";
 
+// GET /api/empresa/:cod
+export async function GET(
+    _request: NextRequest,
+    { params }: { params: Promise<{ cod: string }> }
+) {
+    try {
+        const { cod: codStr } = await params;
+        if (!codStr) {
+            return NextResponse.json(
+                { message: "Código da empresa é obrigatório" },
+                { status: 400 }
+            );
+        }
+
+        const cod = parseInt(codStr, 10);
+        if (isNaN(cod)) {
+            return NextResponse.json(
+                { message: "Código da empresa deve ser um número válido" },
+                { status: 400 }
+            );
+        }
+
+        const empresa = await prisma.empresa.findFirst({
+            where: {
+                cod: cod,
+                deletedAt: null
+            },
+        });
+
+        if (!empresa) {
+            return NextResponse.json(
+                { message: "Empresa não encontrada" },
+                { status: 404 }
+            );
+        }
+
+        return NextResponse.json(empresa, { status: 200 });
+    } catch (error) {
+        return NextResponse.json(
+            { message: "Erro ao buscar empresa" },
+            { status: 500 }
+        );
+    }
+}
+
+
 // PUT /api/empresa/:cod
 export async function PUT(
     _request: NextRequest,
@@ -153,48 +199,3 @@ export async function PUT(
 //         );
 //     }
 // }
-
-// GET /api/empresa/:cod
-export async function GET(
-    _request: NextRequest,
-    { params }: { params: Promise<{ cod: string }> }
-) {
-    try {
-        const { cod: codStr } = await params;
-        if (!codStr) {
-            return NextResponse.json(
-                { message: "Código da empresa é obrigatório" },
-                { status: 400 }
-            );
-        }
-
-        const cod = parseInt(codStr, 10);
-        if (isNaN(cod)) {
-            return NextResponse.json(
-                { message: "Código da empresa deve ser um número válido" },
-                { status: 400 }
-            );
-        }
-
-        const empresa = await prisma.empresa.findFirst({
-            where: {
-                cod: cod,
-                deletedAt: null
-            },
-        });
-
-        if (!empresa) {
-            return NextResponse.json(
-                { message: "Empresa não encontrada" },
-                { status: 404 }
-            );
-        }
-
-        return NextResponse.json(empresa, { status: 200 });
-    } catch (error) {
-        return NextResponse.json(
-            { message: "Erro ao buscar empresa" },
-            { status: 500 }
-        );
-    }
-}

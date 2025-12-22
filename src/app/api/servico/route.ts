@@ -64,7 +64,7 @@ export async function POST(
         const data = await _request.json()
 
         const { nome, descricao, preco, simbolo } = data
-        if (!nome || !descricao || preco === undefined || !simbolo) {
+        if (!nome || !descricao || preco === undefined) {
             return NextResponse.json(
                 { message: "Todos os campos são obrigatórios" },
                 { status: 400 }
@@ -88,7 +88,7 @@ export async function POST(
                 nome,
                 descricao,
                 preco: parseFloat(preco),
-                simbolo
+                simbolo: simbolo || '/uploads/servicos/default.png',
             },
         })
 

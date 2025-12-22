@@ -104,7 +104,7 @@ export async function PUT(
         const dadosAtualizados = await _request.json();
 
         const { nome, descricao, preco, simbolo } = dadosAtualizados;
-        if (!nome || !descricao || !preco || !simbolo) {
+        if (!nome || !descricao || !preco) {
             return NextResponse.json(
                 { message: "Todos os campos são obrigatórios" },
                 { status: 400 }
@@ -117,7 +117,7 @@ export async function PUT(
                 nome,
                 descricao,
                 preco,
-                simbolo
+                ...(simbolo && { simbolo })
             },
         });
 

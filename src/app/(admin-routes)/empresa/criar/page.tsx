@@ -13,7 +13,7 @@ export default function CriarEmpresa() {
   })
   
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const { uploading, uploadImage, error: uploadError } = useImageUpload()
+  const { uploading, uploadImage, uploadError } = useImageUpload()
   const imageUploadRef = useRef<ImageUploadRef>(null)
 
   const validateNome = (nome: string) => {
@@ -63,18 +63,6 @@ export default function CriarEmpresa() {
     return true
   }
 
-  const validateURL = (url: string) => {
-    try {
-      new URL(url)
-      if (url.length > 255) {
-        return "URL deve ter no máximo 255 caracteres"
-      }
-      return true
-    } catch {
-      return "URL deve ter um formato válido"
-    }
-  }
-
   async function criarEmpresa(data: TEmpresa) {
     // Validar se há imagem selecionada
     if (!selectedFile) {
@@ -83,7 +71,7 @@ export default function CriarEmpresa() {
     }
     
     // Fazer upload da imagem
-    const uploadedUrl = await uploadImage(selectedFile, 'empresa')
+    const uploadedUrl = await uploadImage(selectedFile, 'empresas')
     if (!uploadedUrl) {
       alerts.error('Erro no upload da imagem')
       return

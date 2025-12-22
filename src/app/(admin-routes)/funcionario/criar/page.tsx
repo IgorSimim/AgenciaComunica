@@ -50,25 +50,13 @@ const validateSenha = (senha: string) => {
   return true
 }
 
-const validateURL = (url: string) => {
-  try {
-    new URL(url)
-    if (url.length > 255) {
-      return "URL deve ter no máximo 255 caracteres"
-    }
-    return true
-  } catch {
-    return "URL deve ter um formato válido"
-  }
-}
-
 const FuncionariosRegister: React.FC = () => {
   const { register, handleSubmit, reset, formState: { errors } } = useForm<TFuncionario>({
     mode: "onBlur"
   })
   
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const { uploading, uploadImage, error: uploadError } = useImageUpload()
+  const { uploading, uploadImage, uploadError } = useImageUpload()
   const imageUploadRef = useRef<ImageUploadRef>(null)
 
   async function criarFuncionario(data: TFuncionario) {
@@ -79,7 +67,7 @@ const FuncionariosRegister: React.FC = () => {
     }
     
     // Fazer upload da imagem
-    const uploadedUrl = await uploadImage(selectedFile, 'funcionario')
+    const uploadedUrl = await uploadImage(selectedFile, 'funcionarios')
     if (!uploadedUrl) {
       alerts.error('Erro no upload da imagem')
       return

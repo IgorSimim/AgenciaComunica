@@ -131,7 +131,7 @@ export async function POST(
                 telefone,
                 sobre,
                 dtnasc,
-                foto: foto || '/uploads/funcionario/default.png',
+                foto: foto || '/uploads/funcionarios/default.png',
                 cargo,
             },
         })

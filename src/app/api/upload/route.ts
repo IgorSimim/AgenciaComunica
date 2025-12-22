@@ -10,19 +10,19 @@ export async function POST(request: NextRequest) {
     const type: string = data.get('type') as string
 
     if (!file) {
-      return NextResponse.json({ error: 'Nenhum arquivo enviado' }, { status: 400 })
+      return NextResponse.json({ message: 'Nenhum arquivo enviado' }, { status: 400 })
     }
 
-    if (!type || !['funcionario', 'empresa'].includes(type)) {
-      return NextResponse.json({ error: 'Tipo inválido' }, { status: 400 })
+    if (!type || !['funcionarios', 'empresas', 'servicos'].includes(type)) {
+      return NextResponse.json({ message: 'Tipo inválido' }, { status: 400 })
     }
 
     if (!file.type.startsWith('image/')) {
-      return NextResponse.json({ error: 'Apenas imagens são permitidas' }, { status: 400 })
+      return NextResponse.json({ message: 'Apenas imagens são permitidas' }, { status: 400 })
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      return NextResponse.json({ error: 'Arquivo muito grande. Máximo 5MB' }, { status: 400 })
+      return NextResponse.json({ message: 'Arquivo muito grande. Máximo 5MB' }, { status: 400 })
     }
 
     const bytes = await file.arrayBuffer()
@@ -49,7 +49,6 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Erro no upload:', error)
-    return NextResponse.json({ error: 'Erro interno do servidor' }, { status: 500 })
+    return NextResponse.json({ message: 'Erro interno do servidor' }, { status: 500 })
   }
 }

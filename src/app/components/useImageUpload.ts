@@ -1,12 +1,11 @@
 'use client'
-
 import { useState } from 'react'
 
 export function useImageUpload() {
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const uploadImage = async (file: File, type: 'funcionario' | 'empresa'): Promise<string | null> => {
+  const uploadImage = async (file: File, type: 'funcionarios' | 'empresas' | 'servicos'): Promise<string | null> => {
     setUploading(true)
     setError(null)
 
@@ -23,7 +22,7 @@ export function useImageUpload() {
       const result = await response.json()
 
       if (!response.ok) {
-        throw new Error(result.error || 'Erro no upload')
+        throw new Error(result.message || 'Erro no upload')
       }
 
       return result.url
@@ -36,5 +35,5 @@ export function useImageUpload() {
     }
   }
 
-  return { uploading, uploadImage, error }
+  return { uploading, uploadImage, uploadError: error }
 }

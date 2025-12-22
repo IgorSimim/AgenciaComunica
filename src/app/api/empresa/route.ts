@@ -171,7 +171,7 @@ export async function POST(
                 email,
                 senha: hashedPassword,
                 setor,
-                logotipo: logotipo || '/uploads/empresa/default.png',
+                logotipo: logotipo || '/uploads/empresas/default.png',
                 ativa
             },
         })
