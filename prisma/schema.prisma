@@ -24,7 +24,8 @@ model Empresa {
   email     String  @unique @db.VarChar(100)
   senha     String  @db.VarChar(100)
   setor     String  @db.VarChar(100)
-  logotipo  String  @db.VarChar(255)
+  logotipoUrl  String  @db.VarChar(255)
+  logotipoPublicId  String
   ativa     Boolean @default(true)
   createdAt    DateTime     @default(now())
   deletedAt    DateTime?
@@ -52,7 +53,8 @@ model Funcionario {
   telefone   String   @unique @db.VarChar(15)
   sobre      String   @db.VarChar(255)
   dtnasc     DateTime @db.Date
-  foto       String   @db.VarChar(255)
+  fotoUrl       String   @db.VarChar(255)
+  fotoPublicId  String
   cargo      Cargo
   createdAt    DateTime     @default(now())
   deletedAt    DateTime?
@@ -69,7 +71,8 @@ model Servico {
   nome        String  @unique @db.VarChar(100)
   descricao   String  @db.VarChar(255)
   preco       Float
-  simbolo     String  @db.VarChar(255)
+  simboloUrl      String  @db.VarChar(255)
+  simboloPublicId String
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
   funcionario   Funcionario @relation(fields: [funcionario_id], references: [id])
