@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/app/api/config/auth/authOptions";
+import { deleteImageFile } from "@/lib/fileUtils";
 
 // GET /api/servico/:cod
 export async function GET(
@@ -111,6 +112,11 @@ export async function PUT(
             );
         }
 
+        // Se um novo símbolo foi enviado, deletar o antigo
+        if (simbolo && servico.simbolo && simbolo !== servico.simbolo) {
+            await deleteImageFile(servico.simbolo);
+        }
+
         await prisma.servico.update({
             where: { cod: cod },
             data: {
@@ -186,6 +192,11 @@ export async function DELETE(
         //         { status: 403 }
         //     );
         // }
+
+        // Deletar a imagem antes de deletar o serviço
+        if (servico.simbolo) {
+            await deleteImageFile(servico.simbolo);
+        }
 
         await prisma.servico.delete({
             where: { cod: cod }

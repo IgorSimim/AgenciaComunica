@@ -2,6 +2,7 @@ import { NextResponse, NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/config/auth/authOptions";
+import { deleteImageFile } from "@/lib/fileUtils";
 
 // PUT /api/funcionario/:id
 export async function PUT(
@@ -65,6 +66,11 @@ export async function PUT(
                 { message: "Todos os campos são obrigatórios" },
                 { status: 400 }
             );
+        }
+
+        // Se uma nova foto foi enviada, deletar a antiga
+        if (foto && funcionario.foto && foto !== funcionario.foto) {
+            await deleteImageFile(funcionario.foto);
         }
 
         await prisma.funcionario.update({
@@ -132,6 +138,11 @@ export async function DELETE(
         //         { status: 403 }
         //     );
         // }
+
+        // Deletar a foto antes de fazer o delete
+        if (funcionario.foto) {
+            await deleteImageFile(funcionario.foto);
+        }
 
         await prisma.funcionario.update({
             where: { id: parseInt(id) },

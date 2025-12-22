@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/app/api/config/auth/authOptions";
+import { deleteImageFile } from "@/lib/fileUtils";
 
 // GET /api/empresa/:cod
 export async function GET(
@@ -114,6 +115,11 @@ export async function PUT(
             );
         }
 
+        // Se uma nova imagem foi enviada, deletar a antiga
+        if (logotipo && empresa.logotipo && logotipo !== empresa.logotipo) {
+            await deleteImageFile(empresa.logotipo);
+        }
+
         await prisma.empresa.update({
             where: { cod },
             data: {
@@ -179,6 +185,11 @@ export async function PUT(
 //                 { message: "Funcionário não autenticado" },
 //                 { status: 401 }
 //             );
+//         }
+
+//         // Deletar a imagem antes de fazer soft delete
+//         if (empresa.logotipo) {
+//             await deleteImageFile(empresa.logotipo);
 //         }
 
 //         await prisma.empresa.update({

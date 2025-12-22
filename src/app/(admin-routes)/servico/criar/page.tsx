@@ -29,7 +29,7 @@ export default function CriarServico() {
 
     // Se há uma nova imagem selecionada, fazer upload
     if (selectedFile) {
-      const uploadedUrl = await uploadImage(selectedFile, 'empresas')
+      const uploadedUrl = await uploadImage(selectedFile, 'servicos')
       if (!uploadedUrl) {
         alerts.error('Erro no upload da imagem')
         return
