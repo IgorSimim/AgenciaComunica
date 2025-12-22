@@ -4,6 +4,9 @@ const nextConfig = {
     NEXT_PUBLIC_API_URL: process.env.NODE_ENV === 'production' 
       ? 'https://your-production-domain.com' 
       : 'http://localhost:4000'
+  },
+  images: {
+    domains: ['res.cloudinary.com']
   }
 }
 
