@@ -35,7 +35,8 @@ export async function GET() {
                 telefone: true,
                 sobre: true,
                 dtnasc: true,
-                foto: true,
+                fotoUrl: true,
+                fotoPublicId: true,
                 cargo: true,
                 createdAt: true,
                 updatedAt: true,
@@ -91,7 +92,7 @@ export async function POST(
 
         const data = await _request.json()
 
-        const { nome, email, senha, telefone, sobre, dtnasc, foto, cargo } = data
+        const { nome, email, senha, telefone, sobre, dtnasc, fotoUrl, fotoPublicId, cargo } = data
         if (!nome || !email || !senha || !telefone || !sobre || !dtnasc || !cargo) {
             return NextResponse.json(
                 { message: "Todos os campos são obrigatórios" },
@@ -131,7 +132,8 @@ export async function POST(
                 telefone,
                 sobre,
                 dtnasc,
-                foto: foto || '/uploads/funcionarios/default.png',
+                fotoUrl,
+                fotoPublicId,
                 cargo,
             },
         })

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/app/api/config/auth/authOptions";
-import { deleteImageFile } from "@/lib/fileUtils";
+import cloudinary from "@/lib/cloudinary";
 
 // GET /api/servico/:cod
 export async function GET(
@@ -104,7 +104,7 @@ export async function PUT(
 
         const dadosAtualizados = await _request.json();
 
-        const { nome, descricao, preco, simbolo } = dadosAtualizados;
+        const { nome, descricao, preco, simboloUrl, simboloPublicId } = dadosAtualizados;
         if (!nome || !descricao || !preco) {
             return NextResponse.json(
                 { message: "Todos os campos são obrigatórios" },
@@ -112,9 +112,16 @@ export async function PUT(
             );
         }
 
-        // Se um novo símbolo foi enviado, deletar o antigo
-        if (simbolo && servico.simbolo && simbolo !== servico.simbolo) {
-            await deleteImageFile(servico.simbolo);
+        // Se uma nova foto foi enviada, deletar a antiga do Cloudinary
+        if (simboloPublicId && servico.simboloPublicId && simboloPublicId !== servico.simboloPublicId) {
+            try {
+                await cloudinary.uploader.destroy(servico.simboloPublicId);
+            } catch (error) {
+                return NextResponse.json(
+                    { message: "Erro ao deletar a imagem antiga do serviço" },
+                    { status: 500 }
+                );
+            }
         }
 
         await prisma.servico.update({
@@ -123,7 +130,8 @@ export async function PUT(
                 nome,
                 descricao,
                 preco,
-                ...(simbolo && { simbolo })
+                ...(simboloUrl && { simboloUrl }),
+                ...(simboloPublicId && { simboloPublicId }),
             },
         });
 
@@ -193,9 +201,16 @@ export async function DELETE(
         //     );
         // }
 
-        // Deletar a imagem antes de deletar o serviço
-        if (servico.simbolo) {
-            await deleteImageFile(servico.simbolo);
+        // Deletar a foto do Cloudinary antes de fazer o delete
+        if (servico.simboloPublicId) {
+            try {
+                await cloudinary.uploader.destroy(servico.simboloPublicId);
+            } catch (error) {
+                return NextResponse.json(
+                    { message: "Erro ao deletar a imagem do serviço" },
+                    { status: 500 }
+                );
+            }
         }
 
         await prisma.servico.delete({

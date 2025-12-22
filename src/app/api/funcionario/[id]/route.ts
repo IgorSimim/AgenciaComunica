@@ -2,7 +2,53 @@ import { NextResponse, NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/config/auth/authOptions";
-import { deleteImageFile } from "@/lib/fileUtils";
+import cloudinary from "@/lib/cloudinary";
+
+// GET /api/funcionario/:id
+export async function GET(
+    _request: NextRequest,
+    { params }: { params: Promise<{ id: string }> }
+) {
+    try {
+        const idStr = await params?.then((e) => e.id);
+        if (!idStr) {
+            return NextResponse.json(
+                { message: "ID do funcionário é obrigatório" },
+                { status: 400 }
+            );
+        }
+
+        const id = parseInt(idStr, 10);
+        if (isNaN(id)) {
+            return NextResponse.json(
+                { message: "ID do funcionário deve ser um número válido" },
+                { status: 400 }
+            );
+        }
+
+        const funcionario = await prisma.funcionario.findFirst({
+            where: {
+                id: id,
+                deletedAt: null
+            },
+        });
+
+        if (!funcionario) {
+            return NextResponse.json(
+                { message: "Funcionário não encontrado" },
+                { status: 404 }
+            );
+        }
+
+        return NextResponse.json(funcionario, { status: 200 });
+    } catch (error) {
+        return NextResponse.json(
+            { message: "Erro ao buscar funcionário" },
+            { status: 500 }
+        );
+    }
+}
+
 
 // PUT /api/funcionario/:id
 export async function PUT(
@@ -60,7 +106,7 @@ export async function PUT(
 
         const dadosAtualizados = await _request.json();
 
-        const { nome, email, telefone, sobre, foto, cargo } = dadosAtualizados;
+        const { nome, email, telefone, sobre, fotoUrl, fotoPublicId, cargo } = dadosAtualizados;
         if (!nome || !email || !telefone || !sobre || !cargo) {
             return NextResponse.json(
                 { message: "Todos os campos são obrigatórios" },
@@ -68,9 +114,16 @@ export async function PUT(
             );
         }
 
-        // Se uma nova foto foi enviada, deletar a antiga
-        if (foto && funcionario.foto && foto !== funcionario.foto) {
-            await deleteImageFile(funcionario.foto);
+        // Se uma nova foto foi enviada, deletar a antiga do Cloudinary
+        if (fotoPublicId && funcionario.fotoPublicId && fotoPublicId !== funcionario.fotoPublicId) {
+            try {
+                await cloudinary.uploader.destroy(funcionario.fotoPublicId);
+            } catch (error) {
+                return NextResponse.json(
+                    { message: "Erro ao deletar a imagem antiga do funcionário" },
+                    { status: 500 }
+                );
+            }
         }
 
         await prisma.funcionario.update({
@@ -80,7 +133,8 @@ export async function PUT(
                 email,
                 telefone,
                 sobre,
-                ...(foto && { foto }),
+                ...(fotoUrl && { fotoUrl }),
+                ...(fotoPublicId && { fotoPublicId }),
                 cargo
             },
         });
@@ -139,9 +193,16 @@ export async function DELETE(
         //     );
         // }
 
-        // Deletar a foto antes de fazer o delete
-        if (funcionario.foto) {
-            await deleteImageFile(funcionario.foto);
+        // Deletar a foto do Cloudinary antes de fazer o delete
+        if (funcionario.fotoPublicId) {
+            try {
+                await cloudinary.uploader.destroy(funcionario.fotoPublicId);
+            } catch (error) {
+                return NextResponse.json(
+                    { message: "Erro ao deletar a imagem do funcionário" },
+                    { status: 500 }
+                );
+            }
         }
 
         await prisma.funcionario.update({
@@ -158,51 +219,6 @@ export async function DELETE(
     } catch (error) {
         return NextResponse.json(
             { message: "Erro ao excluir funcionário" },
-            { status: 500 }
-        );
-    }
-}
-
-// GET /api/funcionario/:id
-export async function GET(
-    _request: NextRequest,
-    { params }: { params: Promise<{ id: string }> }
-) {
-    try {
-        const idStr = await params?.then((e) => e.id);
-        if (!idStr) {
-            return NextResponse.json(
-                { message: "ID do funcionário é obrigatório" },
-                { status: 400 }
-            );
-        }
-
-        const id = parseInt(idStr, 10);
-        if (isNaN(id)) {
-            return NextResponse.json(
-                { message: "ID do funcionário deve ser um número válido" },
-                { status: 400 }
-            );
-        }
-
-        const funcionario = await prisma.funcionario.findFirst({
-            where: {
-                id: id,
-                deletedAt: null
-            },
-        });
-
-        if (!funcionario) {
-            return NextResponse.json(
-                { message: "Funcionário não encontrado" },
-                { status: 404 }
-            );
-        }
-
-        return NextResponse.json(funcionario, { status: 200 });
-    } catch (error) {
-        return NextResponse.json(
-            { message: "Erro ao buscar funcionário" },
             { status: 500 }
         );
     }

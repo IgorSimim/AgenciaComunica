@@ -54,7 +54,7 @@ const FuncionariosRegister: React.FC = () => {
   const { register, handleSubmit, reset, formState: { errors } } = useForm<TFuncionario>({
     mode: "onBlur"
   })
-  
+
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const { uploading, uploadImage, uploadError } = useImageUpload()
   const imageUploadRef = useRef<ImageUploadRef>(null)
@@ -65,10 +65,10 @@ const FuncionariosRegister: React.FC = () => {
       alerts.error('Foto é obrigatória')
       return
     }
-    
+
     // Fazer upload da imagem
-    const uploadedUrl = await uploadImage(selectedFile, 'funcionarios')
-    if (!uploadedUrl) {
+    const uploadResult = await uploadImage(selectedFile, 'funcionarios')
+    if (!uploadResult) {
       alerts.error('Erro no upload da imagem')
       return
     }
@@ -81,7 +81,8 @@ const FuncionariosRegister: React.FC = () => {
       cargo: data.cargo,
       dtnasc: new Date(data.dtnasc).toISOString(),
       sobre: data.sobre,
-      foto: uploadedUrl
+      fotoUrl: uploadResult.url,
+      fotoPublicId: uploadResult.publicId
     }
 
     try {
@@ -98,7 +99,7 @@ const FuncionariosRegister: React.FC = () => {
         imageUploadRef.current?.clearImage()
       } else {
         const errorData = await response.json()
-        alerts.error(errorData.message|| 'Erro ao criar o funcionário')
+        alerts.error(errorData.message || 'Erro ao criar o funcionário')
       }
     } catch (error) {
       alerts.error("Erro ao processar a criação. Tente novamente mais tarde.")
@@ -190,7 +191,7 @@ const FuncionariosRegister: React.FC = () => {
                   maxLength: { value: 100, message: "Senha deve ter no máximo 100 caracteres" },
                   validate: validateSenha
                 })}
-                type="password"
+                type="text"
                 id="senha"
                 className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.senha ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
                 placeholder="Digite a senha (mín. 8 caracteres)"

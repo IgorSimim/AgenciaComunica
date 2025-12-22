@@ -25,18 +25,16 @@ export default function CriarServico() {
   }
 
   async function criarServico(data: Omit<TServico, 'cod'>) {
-    let simboloUrl = ''
-
     // Se há uma nova imagem selecionada, fazer upload
-    if (selectedFile) {
-      const uploadedUrl = await uploadImage(selectedFile, 'servicos')
-      if (!uploadedUrl) {
-        alerts.error('Erro no upload da imagem')
-        return
-      }
-      simboloUrl = uploadedUrl
-    } else {
+    if (!selectedFile) {
       alerts.error('Símbolo é obrigatório')
+      return
+    }
+
+    // Fazer upload da imagem
+    const uploadResult = await uploadImage(selectedFile, 'servicos')
+    if (!uploadResult) {
+      alerts.error('Erro no upload da imagem')
       return
     }
 
@@ -44,7 +42,8 @@ export default function CriarServico() {
       nome: data.nome,
       descricao: data.descricao,
       preco: data.preco,
-      simbolo: simboloUrl
+      simboloUrl: uploadResult.url,
+      simboloPublicId: uploadResult.publicId
     }
 
     try {

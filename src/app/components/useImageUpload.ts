@@ -5,7 +5,7 @@ export function useImageUpload() {
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const uploadImage = async (file: File, type: 'funcionarios' | 'empresas' | 'servicos'): Promise<string | null> => {
+  const uploadImage = async (file: File, type: 'funcionarios' | 'empresas' | 'servicos'): Promise<{url: string, publicId: string} | null> => {
     setUploading(true)
     setError(null)
 
@@ -25,7 +25,7 @@ export function useImageUpload() {
         throw new Error(result.message || 'Erro no upload')
       }
 
-      return result.url
+      return { url: result.url, publicId: result.publicId }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido'
       setError(errorMessage)

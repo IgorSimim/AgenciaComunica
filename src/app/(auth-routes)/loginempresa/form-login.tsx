@@ -51,7 +51,6 @@ export default function EmpresaLoginForm() {
     if (wasPending && !isPending) {
       if (state?.success) {
         alerts.success("Login realizado com sucesso!")
-        console.log('Redirecionando para /home-empresa');
         setTimeout(() => {
           window.location.href = '/home-empresa';
         }, 1000);

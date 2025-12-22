@@ -13,7 +13,7 @@ export default function AlteracaoEmpresa() {
   const { register, reset, handleSubmit, formState: { errors }, setValue } = useForm<TEmpresa>({
     mode: "onBlur"
   })
-  
+
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [currentImage, setCurrentImage] = useState<string>('')
   const { uploading, uploadImage, uploadError } = useImageUpload()
@@ -62,14 +62,14 @@ export default function AlteracaoEmpresa() {
         const dado = await response.json()
 
         if (response.ok) {
-          setCurrentImage(dado.logotipo)
+          setCurrentImage(dado.logotipoUrl)
           reset({
             nome: dado.nome,
             cnpj: dado.cnpj,
             email: dado.email,
             senha: dado.senha,
             setor: dado.setor,
-            logotipo: dado.logotipo
+            logotipo: dado.logotipoUrl
           })
         } else {
           alerts.error("Não foi possível carregar os dados da empresa")
@@ -84,28 +84,31 @@ export default function AlteracaoEmpresa() {
   async function alteraDados(data: TEmpresa) {
     try {
       let logotipoUrl: string = data.logotipo || currentImage
-      
+      let logotipoPublicId: string = ''
+
       // Validar se há imagem
       if (!logotipoUrl && !selectedFile) {
         alerts.error('Logotipo é obrigatório')
         return
       }
-      
+
       if (selectedFile) {
         const uploadResult = await uploadImage(selectedFile, 'empresas')
         if (!uploadResult) {
           alerts.error('Erro no upload da imagem')
           return
         }
-        logotipoUrl = uploadResult
+        logotipoUrl = uploadResult.url
+        logotipoPublicId = uploadResult.publicId
       }
 
       const response = await fetch("/api/empresa/" + params.cod, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          ...data, 
-          logotipo: logotipoUrl 
+        body: JSON.stringify({
+          ...data,
+          logotipoUrl: logotipoUrl,
+          logotipoPublicId: logotipoPublicId
         }),
       })
 

@@ -11,7 +11,7 @@ export default function CriarEmpresa() {
   const { register, handleSubmit, reset, formState: { errors } } = useForm<TEmpresa>({
     mode: "onBlur"
   })
-  
+
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const { uploading, uploadImage, uploadError } = useImageUpload()
   const imageUploadRef = useRef<ImageUploadRef>(null)
@@ -69,10 +69,10 @@ export default function CriarEmpresa() {
       alerts.error('Logotipo é obrigatório')
       return
     }
-    
+
     // Fazer upload da imagem
-    const uploadedUrl = await uploadImage(selectedFile, 'empresas')
-    if (!uploadedUrl) {
+    const uploadResult = await uploadImage(selectedFile, 'empresas')
+    if (!uploadResult) {
       alerts.error('Erro no upload da imagem')
       return
     }
@@ -83,7 +83,8 @@ export default function CriarEmpresa() {
       email: data.email,
       senha: data.senha,
       setor: data.setor,
-      logotipo: uploadedUrl
+      logotipoUrl: uploadResult.url,
+      logotipoPublicId: uploadResult.publicId
     }
 
     try {
@@ -92,7 +93,7 @@ export default function CriarEmpresa() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(novaEmpresa),
       })
-      
+
       if (response.status === 201 || response.status === 200) {
         alerts.success("Empresa criada com sucesso!")
         reset()
@@ -179,7 +180,7 @@ export default function CriarEmpresa() {
                   maxLength: { value: 100, message: "Senha deve ter no máximo 100 caracteres" },
                   validate: validateSenha
                 })}
-                type="TEXT"
+                type="text"
                 id="senha"
                 className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.senha ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'
                   }`}

@@ -33,14 +33,14 @@ export default function AlteracaoServico() {
                 const dado = await response.json()
 
                 if (response.ok) {
-                    setCurrentImage(dado.simbolo)
+                    setCurrentImage(dado.simboloUrl)
                     reset({
                         nome: dado.nome,
                         descricao: dado.descricao,
-                        simbolo: dado.simbolo,
+                        simboloUrl: dado.simboloUrl,
                         preco: dado.preco
                     })
-                    setCurrentImage(dado.simbolo)
+                    setCurrentImage(dado.simboloUrl)
                 } else {
                     alerts.error("Não foi possível carregar os dados do serviço")
                 }
@@ -53,7 +53,8 @@ export default function AlteracaoServico() {
 
     async function alteraDados(data: TServico) {
         try {
-            let simboloUrl = data.simbolo || currentImage
+            let simboloUrl = data.simboloUrl || currentImage
+            let simboloPublicId: string = ''
 
             // Validar se há imagem
             if (!simboloUrl && !selectedFile) {
@@ -63,19 +64,21 @@ export default function AlteracaoServico() {
 
             // Se há uma nova imagem selecionada, fazer upload
             if (selectedFile) {
-                const uploadedUrl = await uploadImage(selectedFile, 'servicos')
-                if (!uploadedUrl) {
+                const uploadResult = await uploadImage(selectedFile, 'servicos')
+                if (!uploadResult) {
                     alerts.error('Erro no upload da imagem')
                     return
                 }
-                simboloUrl = uploadedUrl
+                simboloUrl = uploadResult.url
+                simboloPublicId = uploadResult.publicId
             }
             const response = await fetch("/api/servico/" + params.cod, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     ...data,
-                    simbolo: simboloUrl
+                    simboloUrl: simboloUrl,
+                    simboloPublicId: simboloPublicId
                 }),
             })
 
@@ -167,9 +170,9 @@ export default function AlteracaoServico() {
                             onImageChange={(file) => {
                                 setSelectedFile(file)
                                 if (file) {
-                                    setValue('simbolo', 'uploading...')
+                                    setValue('simboloUrl', 'uploading...')
                                 } else {
-                                    setValue('simbolo', '')
+                                    setValue('simboloUrl', '')
                                     setCurrentImage('')
                                 }
                             }}
@@ -194,7 +197,7 @@ export default function AlteracaoServico() {
                             reset({
                                 nome: "",
                                 descricao: "",
-                                simbolo: "",
+                                simboloUrl: "",
                                 preco: 0
                             })
                             setSelectedFile(null)

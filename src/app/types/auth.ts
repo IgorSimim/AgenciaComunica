@@ -15,7 +15,7 @@ export interface EmpresaSession {
     cnpj: string;
     nome: string;
     email: string;
-    logotipo: string;
+    logotipoUrl: string;
 }
 
 export interface FuncionarioSession {

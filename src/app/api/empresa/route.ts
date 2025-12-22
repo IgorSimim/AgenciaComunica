@@ -26,7 +26,8 @@ export async function GET() {
         //             nome: true,
         //             email: true,
         //             setor: true,
-        //             logotipo: true,
+        //             logotipoUrl: true,
+        //             logotipoPublicId: true,
         //             ativa: true,
         //             createdAt: true,
         //             updatedAt: true,
@@ -49,7 +50,8 @@ export async function GET() {
                     nome: true,
                     email: true,
                     setor: true,
-                    logotipo: true,
+                    logotipoUrl: true,
+                    logotipoPublicId: true,
                     ativa: true,
                     createdAt: true,
                     updatedAt: true,
@@ -73,7 +75,8 @@ export async function GET() {
                     nome: true,
                     email: true,
                     setor: true,
-                    logotipo: true,
+                    logotipoUrl: true,
+                    logotipoPublicId: true,
                     ativa: true,
                     createdAt: true,
                     updatedAt: true,
@@ -131,7 +134,7 @@ export async function POST(
 
         const data = await _request.json()
 
-        const { cnpj, nome, email, senha, setor, logotipo, ativa } = data
+        const { cnpj, nome, email, senha, setor, logotipoUrl, logotipoPublicId, ativa } = data
         if (!cnpj || !nome || !email || !senha || !setor) {
             return NextResponse.json(
                 { message: "Todos os campos são obrigatórios" },
@@ -171,7 +174,8 @@ export async function POST(
                 email,
                 senha: hashedPassword,
                 setor,
-                logotipo: logotipo || '/uploads/empresas/default.png',
+                logotipoUrl,
+                logotipoPublicId,
                 ativa
             },
         })

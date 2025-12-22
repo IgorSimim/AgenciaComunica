@@ -10,7 +10,7 @@ export default function ConsultaFuncionario() {
   const params = useParams()
   const { register, reset, watch } = useForm<TFuncionario>()
 
-  const foto = watch("foto")
+  const foto = watch("fotoUrl")
 
   useEffect(() => {
     async function getFuncionario() {
@@ -26,7 +26,7 @@ export default function ConsultaFuncionario() {
             cargo: dado.cargo,
             dtnasc: new Date(dado.dtnasc),
             sobre: dado.sobre,
-            foto: dado.foto,
+            fotoUrl: dado.fotoUrl,
             createdAt: dado.createdAt
           })
         } else {

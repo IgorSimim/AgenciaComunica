@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form"
 import { useParams } from "next/navigation"
 import { alerts } from "@/lib/alerts"
 import Link from "next/link"
-import { TFuncionario} from "@/app/types/index"
+import { TFuncionario } from "@/app/types/index"
 import ImageUpload from "@/app/components/ImageUpload"
 import { useImageUpload } from "@/app/components/useImageUpload"
 
@@ -48,7 +48,7 @@ export default function AlteracaoFuncionario() {
   const { register, reset, handleSubmit, formState: { errors }, setValue } = useForm<TFuncionario>({
     mode: "onBlur"
   })
-  
+
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [currentImage, setCurrentImage] = useState<string>('')
   const { uploading, uploadImage, uploadError } = useImageUpload()
@@ -60,7 +60,7 @@ export default function AlteracaoFuncionario() {
         const dado = await response.json()
 
         if (response.ok) {
-          setCurrentImage(dado.foto)
+          setCurrentImage(dado.fotoUrl)
           reset({
             nome: dado.nome,
             email: dado.email,
@@ -68,7 +68,7 @@ export default function AlteracaoFuncionario() {
             telefone: dado.telefone,
             cargo: dado.cargo,
             sobre: dado.sobre,
-            foto: dado.foto
+            fotoUrl: dado.fotoUrl
           })
         } else {
           alerts.error("Não foi possível carregar os dados do funcionário")
@@ -82,21 +82,23 @@ export default function AlteracaoFuncionario() {
 
   async function alteraDados(data: TFuncionario) {
     try {
-      let fotoUrl: string = data.foto || currentImage
-      
+      let fotoUrl: string = data.fotoUrl || currentImage
+      let fotoPublicId: string = ''
+
       // Validar se há imagem
       if (!fotoUrl && !selectedFile) {
         alerts.error('Foto é obrigatória')
         return
       }
-      
+
       if (selectedFile) {
         const uploadResult = await uploadImage(selectedFile, 'funcionarios')
         if (!uploadResult) {
           alerts.error('Erro no upload da imagem')
           return
         }
-        fotoUrl = uploadResult
+        fotoUrl = uploadResult.url
+        fotoPublicId = uploadResult.publicId
       }
 
       const response = await fetch("/api/funcionario/" + params.id, {
@@ -104,7 +106,8 @@ export default function AlteracaoFuncionario() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...data,
-          foto: fotoUrl
+          fotoUrl: fotoUrl,
+          fotoPublicId: fotoPublicId
         }),
       })
 
@@ -216,9 +219,9 @@ export default function AlteracaoFuncionario() {
               onImageChange={(file) => {
                 setSelectedFile(file)
                 if (file) {
-                  setValue('foto', 'uploading...')
+                  setValue('fotoUrl', 'uploading...')
                 } else {
-                  setValue('foto', '')
+                  setValue('fotoUrl', '')
                   setCurrentImage('')
                 }
               }}
@@ -266,7 +269,7 @@ export default function AlteracaoFuncionario() {
                 email: "",
                 telefone: "",
                 sobre: "",
-                foto: ""
+                fotoUrl: ""
               })
               setSelectedFile(null)
               setCurrentImage('')

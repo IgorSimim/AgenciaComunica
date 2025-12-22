@@ -20,7 +20,7 @@ const Footer = () => (
 
             {/* Segunda coluna */}
             <div className="md:basis-1/4 flex flex-col items-center">
-                <p className="text-center text-xl font-semibold mb-3">Redes Sociais:</p>
+                <p className="text-center text-xl font-semibold mb-3 mr-9">Redes sociais:</p>
                 <div className="flex space-x-4">
                     <a
                         href="https://api.whatsapp.com/send?phone=5553991393855"
@@ -51,7 +51,7 @@ const Footer = () => (
 
             {/* Terceira coluna */}
             <div className="md:basis-1/4 space-y-2">
-                <p className="text-xl font-semibold mb-3">Acesso Rápido:</p>
+                <p className="text-xl font-semibold mb-3">Acesso rápido:</p>
                 <div className="space-y-2">
                     <Link
                         href="/loginempresa"

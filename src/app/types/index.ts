@@ -8,7 +8,8 @@ export interface TEmpresa {
     email: string;
     senha: string;
     setor: string;
-    logotipo: string;
+    logotipoUrl: string;
+    logotipoPublicId: string;
     ativa: boolean;
     createdAt: Date;
     deletedAt: Date | null;
@@ -50,7 +51,8 @@ export interface TFuncionario {
     telefone: string;
     sobre: string;
     dtnasc: Date;
-    foto: string;
+    fotoUrl: string;
+    fotoPublicId: string;
     cargo: Cargo;
     createdAt: Date;
     deletedAt: Date | null;
@@ -86,7 +88,8 @@ export interface TServico {
     nome: string;
     descricao: string;
     preco: number;
-    simbolo: string;
+    simboloUrl: string;
+    simboloPublicId: string;
     createdAt: Date;
     updatedAt: Date;
     contratos: {

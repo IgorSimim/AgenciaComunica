@@ -10,7 +10,7 @@ export default function ConsultaServico() {
   const params = useParams()
   const { register, reset, watch } = useForm<TServico>()
 
-  const simbolo = watch("simbolo")
+  const simboloUrl = watch("simboloUrl")
   const preco = watch("preco")
 
   useEffect(() => {
@@ -23,7 +23,7 @@ export default function ConsultaServico() {
           reset({
             nome: dado.nome,
             descricao: dado.descricao,
-            simbolo: dado.simbolo,
+            simboloUrl: dado.simboloUrl,
             preco: dado.preco,
             createdAt: dado.createdAt,
             updatedAt: dado.updatedAt
@@ -118,7 +118,7 @@ export default function ConsultaServico() {
               <label htmlFor="simbolo" className="block mb-2 text-sm font-medium text-gray-800">Símbolo</label>
               <div className="w-full h-56">
                 <img
-                  src={simbolo}
+                  src={simboloUrl}
                   alt=""
                   className="w-full h-full object-contain rounded-lg"
                 />

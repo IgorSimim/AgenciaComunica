@@ -12,7 +12,8 @@ export async function GET() {
                 nome: true,
                 descricao: true,
                 preco: true,
-                simbolo: true,
+                simboloUrl: true,
+                simboloPublicId: true,
                 createdAt: true,
                 updatedAt: true
             }
@@ -63,7 +64,7 @@ export async function POST(
 
         const data = await _request.json()
 
-        const { nome, descricao, preco, simbolo } = data
+        const { nome, descricao, preco, simboloUrl, simboloPublicId } = data
         if (!nome || !descricao || preco === undefined) {
             return NextResponse.json(
                 { message: "Todos os campos são obrigatórios" },
@@ -88,7 +89,8 @@ export async function POST(
                 nome,
                 descricao,
                 preco: parseFloat(preco),
-                simbolo: simbolo || '/uploads/servicos/default.png',
+                simboloUrl,
+                simboloPublicId
             },
         })
 

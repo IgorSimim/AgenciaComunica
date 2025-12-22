@@ -48,7 +48,7 @@ function CadServicos() {
   const listaServicos = Array.isArray(servicos) ? servicos.map((servico: TServico) => (
     <tr key={servico.cod} className="odd:bg-gray-100 odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b border-gray-300 dark:border-gray-700">
       <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-        <img src={servico.simbolo} alt="Símbolo do serviço" className="w-20 h-20 sm:w-16 sm:h-16 object-contain" />
+        <img src={servico.simboloUrl} alt="Símbolo do serviço" className="w-20 h-20 sm:w-16 sm:h-16 object-contain" />
       </th>
       <td className="px-6 py-4">{servico.nome}</td>
       <td className="px-6 py-4">{servico.descricao}</td>

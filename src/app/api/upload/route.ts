@@ -1,66 +1,54 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { writeFile, mkdir } from 'fs/promises'
-import { join } from 'path'
-import { existsSync } from 'fs'
+import { NextRequest, NextResponse } from 'next/server';
+import cloudinary from '@/lib/cloudinary';
 
 export async function POST(request: NextRequest) {
   try {
-    const data = await request.formData()
-    const file: File | null = data.get('file') as unknown as File
-    const type: string = data.get('type') as string
+    const data = await request.formData();
+    const file: File | null = data.get('file') as unknown as File;
+    const type: string = data.get('type') as string;
 
-    if (!file) {
-      return NextResponse.json({ message: 'Nenhum arquivo enviado' }, { status: 400 })
+    // 1. Validações básicas (mantidas da sua versão original)
+    if (!file) return NextResponse.json({ message: 'Nenhum arquivo' }, { status: 400 });
+    if (!['funcionarios', 'empresas', 'servicos'].includes(type)) {
+      return NextResponse.json({ message: 'Tipo inválido' }, { status: 400 });
     }
 
-    if (!type || !['funcionarios', 'empresas', 'servicos'].includes(type)) {
-      return NextResponse.json({ message: 'Tipo inválido' }, { status: 400 })
-    }
+    // 2. Transformar o arquivo em Buffer
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
 
-    if (!file.type.startsWith('image/')) {
-      return NextResponse.json({ message: 'Apenas imagens são permitidas' }, { status: 400 })
-    }
+    // 3. Lógica de data para a pasta (Organização)
+    const now = new Date();
+    const brNow = new Date(now.toLocaleString("en-US", {timeZone: "America/Sao_Paulo"}));
+    const dateFolder = `${String(brNow.getDate()).padStart(2, '0')}-${String(brNow.getMonth() + 1).padStart(2, '0')}-${brNow.getFullYear()}`;
 
-    if (file.size > 5 * 1024 * 1024) {
-      return NextResponse.json({ message: 'Arquivo muito grande. Máximo 5MB' }, { status: 400 })
-    }
+    // 4. Upload para o Cloudinary usando Stream
+    // Usamos Promise para lidar com o comportamento assíncrono do upload_stream
+    const result: any = await new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          folder: `AgenciaComunica/${type}/${dateFolder}`,
+          // Opcional: define um nome amigável ou deixa o Cloudinary gerar um ID único
+          public_id: `${file.name.split('.')[0]}_${Date.now()}`,
+        },
+        (error, result) => {
+          if (error) return reject(error);
+          resolve(result);
+        }
+      );
 
-    const bytes = await file.arrayBuffer()
-    const buffer = Buffer.from(bytes)
+      uploadStream.end(buffer);
+    });
 
-    const now = new Date()
-    const brNow = new Date(now.toLocaleString("en-US", {timeZone: "America/Sao_Paulo"}))
-    const day = String(brNow.getDate()).padStart(2, '0')
-    const month = String(brNow.getMonth() + 1).padStart(2, '0')
-    const year = brNow.getFullYear()
-    const dateFolder = `${day}-${month}-${year}`
-    
-    const hours = String(brNow.getHours()).padStart(2, '0')
-    const minutes = String(brNow.getMinutes()).padStart(2, '0')
-    const seconds = String(brNow.getSeconds()).padStart(2, '0')
-    const timeStr = `${hours}${minutes}${seconds}`
-    const randomId = Math.random().toString(36).substring(2, 8)
-    const extension = file.name.split('.').pop()
-    const originalName = file.name.split('.')[0].replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20)
-    const filename = `${originalName}_${timeStr}_${randomId}.${extension}`
-
-    const uploadDir = join(process.cwd(), 'public', 'uploads', type, dateFolder)
-    if (!existsSync(uploadDir)) {
-      await mkdir(uploadDir, { recursive: true })
-    }
-
-    const filepath = join(uploadDir, filename)
-    await writeFile(filepath, buffer)
-
-    const publicUrl = `/uploads/${type}/${dateFolder}/${filename}`
-
+    // 5. Retorno da URL segura
     return NextResponse.json({ 
       success: true, 
-      url: publicUrl,
-      filename 
-    })
+      url: result.secure_url,
+      publicId: result.public_id // Guarde isso se quiser deletar a imagem depois
+    });
 
   } catch (error) {
-    return NextResponse.json({ message: 'Erro interno do servidor' }, { status: 500 })
+    console.error("Erro no Cloudinary:", error);
+    return NextResponse.json({ message: 'Erro no processamento do upload' }, { status: 500 });
   }
 }

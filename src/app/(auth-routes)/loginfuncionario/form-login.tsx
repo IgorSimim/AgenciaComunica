@@ -50,7 +50,6 @@ export default function FuncionarioLoginForm() {
     if (wasPending && !isPending) {
       if (state?.success) {
         alerts.success("Login realizado com sucesso!")
-        console.log('Redirecionando para /dashboard');
         setTimeout(() => {
           window.location.href = '/dashboard';
         }, 1000);

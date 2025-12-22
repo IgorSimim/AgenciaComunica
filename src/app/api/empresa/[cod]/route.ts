@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/app/api/config/auth/authOptions";
-import { deleteImageFile } from "@/lib/fileUtils";
+import cloudinary from "@/lib/cloudinary";
 
 // GET /api/empresa/:cod
 export async function GET(
@@ -107,7 +107,7 @@ export async function PUT(
 
         const dadosAtualizados = await _request.json();
 
-        const { nome, email, setor, logotipo, ativa } = dadosAtualizados;
+        const { nome, email, setor, logotipoUrl, logotipoPublicId, ativa } = dadosAtualizados;
         if (!nome || !email || !setor) {
             return NextResponse.json(
                 { message: "Todos os campos são obrigatórios" },
@@ -115,9 +115,16 @@ export async function PUT(
             );
         }
 
-        // Se uma nova imagem foi enviada, deletar a antiga
-        if (logotipo && empresa.logotipo && logotipo !== empresa.logotipo) {
-            await deleteImageFile(empresa.logotipo);
+        // Se uma nova foto foi enviada, deletar a antiga do Cloudinary
+        if (logotipoPublicId && empresa.logotipoPublicId && logotipoPublicId !== empresa.logotipoPublicId) {
+            try {
+                await cloudinary.uploader.destroy(empresa.logotipoPublicId);
+            } catch (error) {
+                return NextResponse.json(
+                    { message: "Erro ao deletar a imagem antiga da empresa" },
+                    { status: 500 }
+                );
+            }
         }
 
         await prisma.empresa.update({
@@ -126,7 +133,8 @@ export async function PUT(
                 nome,
                 email,
                 setor,
-                ...(logotipo && { logotipo }),
+                ...(logotipoUrl && { logotipoUrl }),
+                ...(logotipoPublicId && { logotipoPublicId }),
                 ativa
             },
         });
@@ -188,8 +196,12 @@ export async function PUT(
 //         }
 
 //         // Deletar a imagem antes de fazer soft delete
-//         if (empresa.logotipo) {
-//             await deleteImageFile(empresa.logotipo);
+//         if (empresa.logotipoPublicId) {
+//             try {
+//                 await cloudinary.uploader.destroy(empresa.logotipoPublicId);
+//             } catch (error) {
+//                 console.error('Erro ao deletar logotipo da empresa:', error);
+//             }
 //         }
 
 //         await prisma.empresa.update({

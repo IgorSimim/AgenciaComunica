@@ -26,7 +26,7 @@ export default function Funcionarios() {
                                     <div key={subIndex} className="text-center relative">
                                         <div className="relative w-40 h-40 mx-auto -mt-20">
                                             <img
-                                                src={funcionario.foto}
+                                                src={funcionario.fotoUrl}
                                                 alt={funcionario.nome}
                                                 className="w-full h-full object-cover rounded-full border-4 border-yellow-400 shadow-md"
                                             />
