@@ -23,7 +23,7 @@ export default function HomeDeslogado() {
         <div className="bg-yellow-400">
             <div className="flex">
                 <div className="w-[60%] flex justify-center items-center">
-                    <img src="/home-deslogado/img-slogan.jpg" alt="Imagem" className="w-full h-auto" />
+                    <img src="/home/img-slogan.jpg" alt="Imagem" className="w-full h-auto" />
                 </div>
 
                 <div className="w-[40%] flex justify-center items-center">
@@ -95,11 +95,11 @@ export default function HomeDeslogado() {
                     </p>
                     <div className="flex flex-col items-center gap-4 mt-[6rem]">
                         <div className="flex gap-16">
-                            <img src="/home-deslogado/img-equipe-larissa.png" alt="Foto da Larissa" className="rounded-3xl" />
-                            <img src="/home-deslogado/img-equipe-paulo.png" alt="Foto do Paulo" className="rounded-3xl" />
+                            <img src="/home/img-equipe-larissa.png" alt="Foto da Larissa" className="rounded-3xl" />
+                            <img src="/home/img-equipe-paulo.png" alt="Foto do Paulo" className="rounded-3xl" />
                         </div>
                         <div className="mt-[-4rem]">
-                            <img src="/home-deslogado/img-equipe-kbelo.png" alt="Foto do Kbelo" className=" rounded-3xl" />
+                            <img src="/home/img-equipe-kbelo.png" alt="Foto do Kbelo" className=" rounded-3xl" />
                         </div>
                     </div>
                     <ul className="flex space-x-2 w-full justify-end mt-[4rem]">
@@ -109,7 +109,7 @@ export default function HomeDeslogado() {
                     </ul>
                 </div>
                 <div className="w-1/2 flex justify-center items-center overflow-hidden">
-                    <img src="/home-deslogado/img-equipe.jpg" alt="Foto da equipe" className="w-full h-full object-cover" />
+                    <img src="/home/img-equipe.jpg" alt="Foto da equipe" className="w-full h-full object-cover" />
                 </div>
             </div>
         </div >
