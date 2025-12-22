@@ -85,7 +85,6 @@ export default function AlteracaoFuncionario() {
       let fotoUrl: string = data.fotoUrl || currentImage
       let fotoPublicId: string = ''
 
-      // Validar se há imagem
       if (!fotoUrl && !selectedFile) {
         alerts.error('Foto é obrigatória')
         return

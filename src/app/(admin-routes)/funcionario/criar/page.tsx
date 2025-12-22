@@ -60,13 +60,11 @@ const FuncionariosRegister: React.FC = () => {
   const imageUploadRef = useRef<ImageUploadRef>(null)
 
   async function criarFuncionario(data: TFuncionario) {
-    // Validar se há imagem selecionada
     if (!selectedFile) {
       alerts.error('Foto é obrigatória')
       return
     }
 
-    // Fazer upload da imagem
     const uploadResult = await uploadImage(selectedFile, 'funcionarios')
     if (!uploadResult) {
       alerts.error('Erro no upload da imagem')

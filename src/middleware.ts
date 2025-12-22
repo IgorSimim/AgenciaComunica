@@ -28,7 +28,6 @@ export async function middleware(request: NextRequest) {
   }
 
   // Rotas de Funcionário: exige que seja 'funcionario'
-  // Note que usei o matcher para filtrar, então aqui só checo a lógica
   const isFuncionarioRoute = pathname.startsWith("/dashboard") || 
                            pathname.startsWith("/funcionario") || 
                            pathname.startsWith("/servico") || 

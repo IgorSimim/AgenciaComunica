@@ -56,13 +56,11 @@ export default function AlteracaoServico() {
             let simboloUrl = data.simboloUrl || currentImage
             let simboloPublicId: string = ''
 
-            // Validar se há imagem
             if (!simboloUrl && !selectedFile) {
                 alerts.error('Símbolo é obrigatório')
                 return
             }
 
-            // Se há uma nova imagem selecionada, fazer upload
             if (selectedFile) {
                 const uploadResult = await uploadImage(selectedFile, 'servicos')
                 if (!uploadResult) {

@@ -7,7 +7,7 @@ export async function POST(request: NextRequest) {
     const file: File | null = data.get('file') as unknown as File;
     const type: string = data.get('type') as string;
 
-    // 1. Validações básicas (mantidas da sua versão original)
+    // 1. Validações básicas 
     if (!file) return NextResponse.json({ message: 'Nenhum arquivo' }, { status: 400 });
     if (!['funcionarios', 'empresas', 'servicos'].includes(type)) {
       return NextResponse.json({ message: 'Tipo inválido' }, { status: 400 });
@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
 
     // 3. Lógica de data para a pasta (Organização)
     const now = new Date();
-    const brNow = new Date(now.toLocaleString("en-US", {timeZone: "America/Sao_Paulo"}));
+    const brNow = new Date(now.toLocaleString("en-US", { timeZone: "America/Sao_Paulo" }));
     const dateFolder = `${String(brNow.getDate()).padStart(2, '0')}-${String(brNow.getMonth() + 1).padStart(2, '0')}-${brNow.getFullYear()}`;
 
     // 4. Upload para o Cloudinary usando Stream
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
       const uploadStream = cloudinary.uploader.upload_stream(
         {
           folder: `AgenciaComunica/${type}/${dateFolder}`,
-          // Opcional: define um nome amigável ou deixa o Cloudinary gerar um ID único
+          // Define um nome amigável ou deixa o Cloudinary gerar um ID único
           public_id: `${file.name.split('.')[0]}_${Date.now()}`,
         },
         (error, result) => {
@@ -41,14 +41,16 @@ export async function POST(request: NextRequest) {
     });
 
     // 5. Retorno da URL segura
-    return NextResponse.json({ 
-      success: true, 
+    return NextResponse.json({
+      success: true,
       url: result.secure_url,
-      publicId: result.public_id // Guarde isso se quiser deletar a imagem depois
+      publicId: result.public_id
     });
 
   } catch (error) {
-    console.error("Erro no Cloudinary:", error);
-    return NextResponse.json({ message: 'Erro no processamento do upload' }, { status: 500 });
+    return NextResponse.json({
+      message: 'Erro no processamento do upload'
+    },
+      { status: 500 });
   }
 }

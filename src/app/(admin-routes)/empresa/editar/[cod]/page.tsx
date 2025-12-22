@@ -86,7 +86,6 @@ export default function AlteracaoEmpresa() {
       let logotipoUrl: string = data.logotipoUrl || currentImage
       let logotipoPublicId: string = ''
 
-      // Validar se há imagem
       if (!logotipoUrl && !selectedFile) {
         alerts.error('Logotipo é obrigatório')
         return

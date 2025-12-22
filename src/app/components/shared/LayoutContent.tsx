@@ -7,7 +7,7 @@ import Footer from "@/app/components/layout/Footer";
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
-  // Rotas de admin com MenuLateral (MenuLateral)
+  // Rotas de admin com MenuLateral 
   const isAdminRoute = pathname.startsWith('/dashboard') ||
     pathname.startsWith('/servico') ||
     pathname.startsWith('/empresa') ||

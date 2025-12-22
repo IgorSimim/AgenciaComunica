@@ -64,13 +64,11 @@ export default function CriarEmpresa() {
   }
 
   async function criarEmpresa(data: TEmpresa) {
-    // Validar se há imagem selecionada
     if (!selectedFile) {
       alerts.error('Logotipo é obrigatório')
       return
     }
 
-    // Fazer upload da imagem
     const uploadResult = await uploadImage(selectedFile, 'empresas')
     if (!uploadResult) {
       alerts.error('Erro no upload da imagem')

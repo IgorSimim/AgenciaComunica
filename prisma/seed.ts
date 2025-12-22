@@ -71,8 +71,7 @@ const FuncionariosData = [
 
 export async function main() {
   const funcionarios = []
-  
-  // Criar funcionários
+
   for (const c of FuncionariosData) {
     const hashedPassword = await bcrypt.hash(c.senha, 10);
     const funcionario = await prisma.funcionario.create({
@@ -84,7 +83,6 @@ export async function main() {
     funcionarios.push(funcionario)
   }
 
-  // Criar empresas (usando o primeiro funcionário como proprietário)
   if (funcionarios.length > 0) {
     for (const e of EmpresasData) {
       const hashedPassword = await bcrypt.hash(e.senha, 10);
@@ -98,7 +96,6 @@ export async function main() {
     }
   }
 
-  // Criar serviços (usando o terceiro funcionário - redatora)
   if (funcionarios.length > 2) {
     for (const s of ServicosData) {
       await prisma.servico.create({

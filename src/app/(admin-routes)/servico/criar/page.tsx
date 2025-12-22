@@ -25,13 +25,11 @@ export default function CriarServico() {
   }
 
   async function criarServico(data: Omit<TServico, 'cod'>) {
-    // Se há uma nova imagem selecionada, fazer upload
     if (!selectedFile) {
       alerts.error('Símbolo é obrigatório')
       return
     }
 
-    // Fazer upload da imagem
     const uploadResult = await uploadImage(selectedFile, 'servicos')
     if (!uploadResult) {
       alerts.error('Erro no upload da imagem')
