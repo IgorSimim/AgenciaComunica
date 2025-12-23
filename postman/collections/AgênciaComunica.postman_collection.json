@@ -1,0 +1,203 @@
+{
+  "info": {
+    "_postman_id": "d55694a6-def2-402d-9804-8e2f2e5b0587",
+    "name": "AgênciaComunica",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "44479352",
+    "_collection_link": "https://igorleon-1288130.postman.co/workspace/0d685e84-daf3-4b1a-89e1-525e1fec67d7/collection/44479352-d55694a6-def2-402d-9804-8e2f2e5b0587?action=share&source=collection_link&creator=44479352"
+  },
+  "item": [
+    {
+      "name": "Serviços",
+      "item": [
+        {
+          "name": "Listar",
+          "id": "3d688225-663f-46aa-9a45-a274734816ad",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/api/servico",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "api",
+                "servico"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Excluir",
+          "id": "c3948679-8b8e-4d27-8513-6b64cbde6be9",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/api/servico/3",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "api",
+                "servico",
+                "3"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "428913b2-a485-4ac4-8250-903f88b10cea"
+    },
+    {
+      "name": "Empresas",
+      "item": [
+        {
+          "name": "Listar",
+          "id": "70566cad-77b7-4946-87ed-3e29caca9099",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJmdW5jaW9uYXJpb0JAZXhhbXBsZS5jb20iLCJub21lIjoiRnVuY2lvbsOhcmlvIFJlZGF0b3JhIiwiaWF0IjoxNzY2NTAyODcwLCJleHAiOjE3NjY1MTAwNzB9.J7od9yAueqjaW3RDbXeSd2TI5qEX8SLbuD8VAXBUtqw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/api/empresa",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "api",
+                "empresa"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "ec527ac6-a37f-4b8f-a223-7e89760bfc17"
+    },
+    {
+      "name": "Funcionários",
+      "item": [
+        {
+          "name": "Listar",
+          "id": "5447c276-2092-463b-a5af-4bf0f2b0f281",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/api/funcionario",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "api",
+                "funcionario"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Excluir",
+          "id": "c8eec87b-94c4-4658-af43-081d35ada6e1",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/api/funcionario/3",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "api",
+                "funcionario",
+                "3"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "e7d12355-32b9-478e-9556-afa3df9f937c"
+    },
+    {
+      "name": "Login",
+      "item": [
+        {
+          "name": "LoginEmpresa",
+          "id": "959a7f29-20e1-407a-a9e8-07dd25399a53",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"empresaA@example.com\",\r\n  \"senha\": \"-Senha123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/api/loginempresa",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "api",
+                "loginempresa"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "a57ab15d-af0f-4c4d-8457-9662bed2684d"
+    },
+    {
+      "name": "DadosGerais",
+      "item": [
+        {
+          "name": "Dashboard",
+          "id": "84572960-98a6-447a-9511-e6ddb3aa1426",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/api/dadosgerais",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "api",
+                "dadosgerais"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "6b36d8c5-1444-47f5-aa6d-58da7b1ecead"
+    }
+  ],
+  "variable": [
+    {
+      "id": "5caed73e-a368-4ada-ad46-ea288db1f9ce",
+      "key": "baseURL",
+      "value": "",
+      "type": "default"
+    }
+  ]
+}
