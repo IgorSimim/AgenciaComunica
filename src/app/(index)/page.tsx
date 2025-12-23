@@ -93,16 +93,16 @@ export default function HomeDeslogado() {
                         Contamos com profissionais dedicados e talentosos, especialistas em suas áreas, unidos pela criatividade e inovação.
                         Conheça as pessoas que fazem nossos projetos acontecerem!
                     </p>
-                    <div className="flex flex-col items-center gap-4 mt-[6rem]">
+                    <div className="flex flex-col items-center gap-4 mt-24">
                         <div className="flex gap-16">
                             <img src="/home/img-equipe-larissa.png" alt="Foto da Larissa" className="rounded-3xl" />
                             <img src="/home/img-equipe-paulo.png" alt="Foto do Paulo" className="rounded-3xl" />
                         </div>
-                        <div className="mt-[-4rem]">
+                        <div className="-mt-16">
                             <img src="/home/img-equipe-kbelo.png" alt="Foto do Kbelo" className=" rounded-3xl" />
                         </div>
                     </div>
-                    <ul className="flex space-x-2 w-full justify-end mt-[4rem]">
+                    <ul className="flex space-x-2 w-full justify-end mt-16">
                         <li className="flex justify-center items-center bg-orange-600 hover:bg-orange-700 text-white rounded-full text-2xl font-medium w-[267px] h-[75px] cursor-pointer transition-colors">
                             <Link href="/funcionarios" className="w-full text-center">Saiba mais</Link>
                         </li>

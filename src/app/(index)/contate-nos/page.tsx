@@ -84,7 +84,7 @@ export default function Contato() {
                                 value={formData.nome}
                                 onChange={handleChange}
                                 required
-                                className="w-full p-4 rounded-lg border-2 border-gray-300 text-gray-800 text-base"
+                                className="w-full p-4 rounded-lg border-2 border-gray-300 bg-white text-gray-800 text-base focus:border-orange-500 focus:outline-none"
                             />
                         </div>
 
@@ -105,7 +105,7 @@ export default function Contato() {
                                 value={formData.email}
                                 onChange={handleChange}
                                 required
-                                className="w-full p-4 rounded-lg border-2 border-gray-300 text-gray-800 text-base"
+                                className="w-full p-4 rounded-lg border-2 border-gray-300 bg-white text-gray-800 text-base focus:border-orange-500 focus:outline-none"
                             />
                         </div>
 
@@ -126,7 +126,7 @@ export default function Contato() {
                                 onChange={handleChange}
                                 required
                                 rows={6}
-                                className="w-full p-4 rounded-lg border-2 border-gray-300 text-gray-800 text-base"
+                                className="w-full p-4 rounded-lg border-2 border-gray-300 bg-white text-gray-800 text-base focus:border-orange-500 focus:outline-none resize-none"
                             ></textarea>
                         </div>
 
@@ -134,7 +134,7 @@ export default function Contato() {
                         <div className="text-center">
                             <button
                                 type="submit"
-                                className="bg-orange-600 hover:bg-orange-700 text-white text-xl font-medium px-10 py-3 rounded-full transition-colors transform hover:scale-105 shadow-md"
+                                className="bg-orange-600 hover:bg-orange-700 text-white text-xl font-medium px-10 py-3 rounded-full transition-colors transform hover:scale-105 shadow-md cursor-pointer"
                             >
                                 Enviar mensagem
                             </button>

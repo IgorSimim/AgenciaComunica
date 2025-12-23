@@ -48,7 +48,7 @@ function Empresas() {
   })
 
   const listaEmpresas = empresasFiltradas.map((empresa: TEmpresa) => (
-    <tr key={empresa.cod} className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+    <tr key={empresa.cod} className="odd:bg-white dark:odd:bg-gray-900 even:bg-gray-50 dark:even:bg-gray-800 border-b dark:border-gray-700">
       <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
         <img src={empresa.logotipoUrl} alt="Logotipo da empresa" className="w-20 h-20 object-contain rounded-lg" />
       </th>
@@ -100,31 +100,31 @@ function Empresas() {
         <div className="flex gap-1 bg-gray-100 p-1 rounded-lg">
           <button
             onClick={() => setFiltro('ativas')}
-            className={`px-4 py-2 rounded-md font-medium transition-all ${filtro === 'ativas' ? 'bg-emerald-500 text-white shadow-sm' : 'text-gray-600 hover:bg-white hover:shadow-sm'}`}
+            className={`px-4 py-2 rounded-md font-medium transition-all cursor-pointer ${filtro === 'ativas' ? 'bg-emerald-500 text-white shadow-xs' : 'text-gray-600 hover:bg-white hover:shadow-xs'}`}
           >
             Ativas
           </button>
           <button
             onClick={() => setFiltro('inativas')}
-            className={`px-4 py-2 rounded-md font-medium transition-all ${filtro === 'inativas' ? 'bg-red-500 text-white shadow-sm' : 'text-gray-600 hover:bg-white hover:shadow-sm'}`}
+            className={`px-4 py-2 rounded-md font-medium transition-all cursor-pointer ${filtro === 'inativas' ? 'bg-red-500 text-white shadow-xs' : 'text-gray-600 hover:bg-white hover:shadow-xs'}`}
           >
             Inativas
           </button>
           <button
             onClick={() => setFiltro('todas')}
-            className={`px-4 py-2 rounded-md font-medium transition-all ${filtro === 'todas' ? 'bg-slate-600 text-white shadow-sm' : 'text-gray-600 hover:bg-white hover:shadow-sm'}`}
+            className={`px-4 py-2 rounded-md font-medium transition-all cursor-pointer ${filtro === 'todas' ? 'bg-slate-600 text-white shadow-xs' : 'text-gray-600 hover:bg-white hover:shadow-xs'}`}
           >
             Todas
           </button>
         </div>
         <div className="flex gap-4">
         <Link href="/empresa/criar">
-          <button type="button" className="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-300 font-bold rounded-lg text-md px-5 py-2.5 dark:bg-green-700 dark:hover:bg-green-800 focus:outline-none dark:focus:ring-green-900">
+          <button type="button" className="text-white bg-green-600 hover:bg-green-700 focus:ring-4 cursor-pointer focus:ring-green-300 font-bold rounded-lg text-md px-5 py-2.5 dark:bg-green-700 dark:hover:bg-green-800 focus:outline-none dark:focus:ring-green-900">
             Novo cadastro
           </button>
         </Link>
 
-        <button type="button" className="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-bold rounded-lg text-md px-5 py-2.5 dark:bg-blue-700 dark:hover:bg-blue-800 focus:outline-none dark:focus:ring-blue-900" onClick={gerarpdf}>
+        <button type="button" className="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 cursor-pointer focus:ring-blue-300 font-bold rounded-lg text-md px-5 py-2.5 dark:bg-blue-700 dark:hover:bg-blue-800 focus:outline-none dark:focus:ring-blue-900" onClick={gerarpdf}>
           Gerar PDF
         </button>
         </div>

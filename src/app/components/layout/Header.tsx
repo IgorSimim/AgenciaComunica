@@ -183,7 +183,7 @@ function Header() {
             <div className="relative">
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="bg-orange-600 text-white px-6 py-3 rounded-full text-lg font-bold hover:bg-orange-700 hover:shadow-lg flex items-center space-x-2 transition-all duration-300"
+                className="bg-orange-600 text-white px-6 py-3 rounded-full text-lg font-bold cursor-pointer hover:bg-orange-700 hover:shadow-lg flex items-center space-x-2 transition-all duration-300"
               >
                 <span>Entrar</span>
                 <FaChevronDown className={`transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />

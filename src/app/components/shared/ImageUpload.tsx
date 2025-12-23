@@ -134,7 +134,7 @@ const ImageUpload = forwardRef<ImageUploadRef, ImageUploadProps>(({
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="mt-3 w-full bg-yellow-400 text-black font-medium px-4 py-2 rounded-lg hover:bg-yellow-500 transition-colors flex items-center justify-center gap-2"
+            className="mt-3 w-full bg-yellow-400 text-black font-medium px-4 py-2 rounded-lg cursor-pointer hover:bg-yellow-500 transition-colors flex items-center justify-center gap-2"
           >
             <FiUpload size={16} />
             Alterar imagem

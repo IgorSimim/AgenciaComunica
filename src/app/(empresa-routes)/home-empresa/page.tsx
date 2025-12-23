@@ -41,7 +41,7 @@ export default function Home() {
 
         {/* Adicionar nova tarefa */}
         <div className="flex justify-center mt-8">
-          <button className="bg-blue-600 text-white px-10 py-5 rounded-full text-xl hover:bg-blue-700 transition">
+          <button className="bg-blue-600 text-white px-10 py-5 rounded-full text-xl cursor-pointer hover:bg-blue-700 transition">
             Adicionar novo pedido
           </button>
         </div>

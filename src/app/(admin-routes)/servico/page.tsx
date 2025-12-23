@@ -46,7 +46,7 @@ function CadServicos() {
   }
 
   const listaServicos = Array.isArray(servicos) ? servicos.map((servico: TServico) => (
-    <tr key={servico.cod} className="odd:bg-gray-100 odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b border-gray-300 dark:border-gray-700">
+    <tr key={servico.cod} className="odd:bg-gray-100 dark:odd:bg-gray-900 even:bg-gray-50 dark:even:bg-gray-800 border-b border-gray-300 dark:border-gray-700">
       <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
         <img src={servico.simboloUrl} alt="Símbolo do serviço" className="w-20 h-20 sm:w-16 sm:h-16 object-contain" />
       </th>
@@ -86,7 +86,7 @@ function CadServicos() {
       <div className="flex justify-end gap-4 mb-4">
         <button
           type="button"
-          className="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-300 font-bold rounded-lg text-md px-5 py-2.5 dark:bg-green-700 dark:hover:bg-green-800 focus:outline-none dark:focus:ring-green-900"
+          className="text-white bg-green-600 hover:bg-green-700 focus:ring-4 cursor-pointer focus:ring-green-300 font-bold rounded-lg text-md px-5 py-2.5 dark:bg-green-700 dark:hover:bg-green-800 focus:outline-none dark:focus:ring-green-900"
           onClick={() => router.push('/servico/criar')}
         >
           Novo cadastro
@@ -94,7 +94,7 @@ function CadServicos() {
 
         <button
           type="button"
-          className="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-bold rounded-lg text-md px-5 py-2.5 dark:bg-blue-700 dark:hover:bg-blue-800 focus:outline-none dark:focus:ring-blue-900"
+          className="text-white bg-blue-600 hover:bg-blue-700 cursor-pointer focus:ring-4 focus:ring-blue-300 font-bold rounded-lg text-md px-5 py-2.5 dark:bg-blue-700 dark:hover:bg-blue-800 focus:outline-none dark:focus:ring-blue-900"
           onClick={gerarpdf}
         >
           Gerar PDF

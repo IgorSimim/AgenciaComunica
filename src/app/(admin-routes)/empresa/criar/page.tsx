@@ -128,7 +128,7 @@ export default function CriarEmpresa() {
                 })}
                 type="text"
                 id="nome"
-                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.nome ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'
+                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-xs ${errors.nome ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'
                   }`}
                 placeholder="Digite o nome da empresa"
               />
@@ -146,7 +146,7 @@ export default function CriarEmpresa() {
                 })}
                 type="text"
                 id="cnpj"
-                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.cnpj ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'
+                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-xs ${errors.cnpj ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'
                   }`}
                 placeholder="00.000.000/0000-00"
                 maxLength={18}
@@ -162,7 +162,7 @@ export default function CriarEmpresa() {
                 })}
                 type="email"
                 id="email"
-                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.email ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'
+                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-xs ${errors.email ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'
                   }`}
                 placeholder="Digite o email"
                 maxLength={100}
@@ -180,7 +180,7 @@ export default function CriarEmpresa() {
                 })}
                 type="text"
                 id="senha"
-                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.senha ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'
+                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-xs ${errors.senha ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'
                   }`}
                 placeholder="Digite a senha (mín. 8 caracteres)"
                 maxLength={100}
@@ -197,7 +197,7 @@ export default function CriarEmpresa() {
                 })}
                 type="text"
                 id="setor"
-                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.setor ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'
+                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-xs ${errors.setor ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'
                   }`}
                 placeholder="Setor de atuação da empresa"
                 maxLength={100}
@@ -221,10 +221,10 @@ export default function CriarEmpresa() {
         </fieldset>
 
         <div className="flex flex-col sm:flex-row justify-between items-center mt-6 gap-4">
-          <button type="submit" disabled={uploading} className="bg-yellow-400 text-black font-bold rounded-md py-4 px-8 w-full sm:w-auto hover:bg-yellow-500 focus:outline-none focus:ring-4 focus:ring-yellow-300 transition-all duration-200 ease-in-out shadow-md disabled:opacity-50">
+          <button type="submit" disabled={uploading} className="bg-yellow-400 text-black font-bold rounded-md py-4 px-8 w-full sm:w-auto cursor-pointer hover:bg-yellow-500 focus:outline-none focus:ring-4 focus:ring-yellow-300 transition-all duration-200 ease-in-out shadow-md disabled:opacity-50">
             {uploading ? 'Enviando...' : 'Cadastrar empresa'}
           </button>
-          <button type="button" className="bg-gray-500 text-white font-bold rounded-md py-4 px-8 w-full sm:w-auto hover:bg-gray-600 focus:outline-none focus:ring-4 focus:ring-gray-300 transition-all duration-200 ease-in-out shadow-md" onClick={() => reset()}>
+          <button type="button" className="bg-gray-500 text-white font-bold rounded-md py-4 px-8 w-full sm:w-auto cursor-pointer hover:bg-gray-600 focus:outline-none focus:ring-4 focus:ring-gray-300 transition-all duration-200 ease-in-out shadow-md" onClick={() => reset()}>
             Limpar
           </button>
         </div>
@@ -232,7 +232,7 @@ export default function CriarEmpresa() {
 
       <div className="flex justify-start mt-6">
         <Link href="/empresa">
-          <button className="bg-gray-600 text-white font-bold rounded-md py-4 px-8 w-full sm:w-auto hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-500 transition-all duration-200 ease-in-out shadow-md">
+          <button className="bg-gray-600 text-white font-bold rounded-md py-4 px-8 w-full sm:w-auto cursor-pointer hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-500 transition-all duration-200 ease-in-out shadow-md">
             Voltar
           </button>
         </Link>

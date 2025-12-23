@@ -64,7 +64,7 @@ export default function FuncionarioLoginForm() {
         <img
           src="/logo2.png"
           alt="Logo comunica"
-          className="w-65"
+          className="w-100"
         />
       </div>
       <div className="bg-gray-800 shadow-md rounded-xl p-8 w-full max-w-md mt-6">
@@ -146,7 +146,7 @@ export default function FuncionarioLoginForm() {
             <button
               type="submit"
               disabled={!isFormValid || isPending}
-              className={`w-full font-medium rounded-lg text-base px-5 py-2.5 focus:outline-none focus:ring-4 focus:ring-yellow-300 transition-colors ${
+              className={`w-full font-medium rounded-lg text-base px-5 py-2.5 cursor-pointer focus:outline-none focus:ring-4 focus:ring-yellow-300 transition-colors ${
                 isFormValid && !isPending
                   ? "bg-yellow-500 text-black hover:bg-yellow-600"
                   : "bg-gray-400 text-gray-600 cursor-not-allowed"

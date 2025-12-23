@@ -118,7 +118,7 @@ export default function EmpresaLoginForm() {
               <button
                 type="submit"
                 disabled={!isFormValid || isPending}
-                className={`w-3/4 py-3 text-white text-lg font-semibold rounded-full transition-colors ${isFormValid && !isPending
+                className={`w-3/4 py-3 text-white text-lg font-semibold cursor-pointer rounded-full transition-colors ${isFormValid && !isPending
                     ? "bg-orange-600 hover:bg-orange-700"
                     : "bg-gray-400 cursor-not-allowed"
                   }`}

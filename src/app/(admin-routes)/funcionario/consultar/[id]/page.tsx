@@ -53,7 +53,7 @@ export default function ConsultaFuncionario() {
                 {...register("nome")}
                 type="text"
                 id="nome"
-                className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
+                className="border border-gray-300 rounded-md p-3 w-full focus:outline-hidden focus:ring-2 focus:ring-yellow-400 shadow-xs"
                 placeholder="Nome do funcionário"
                 readOnly
               />
@@ -65,7 +65,7 @@ export default function ConsultaFuncionario() {
                 {...register("email")}
                 type="email"
                 id="email"
-                className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
+                className="border border-gray-300 rounded-md p-3 w-full focus:outline-hidden focus:ring-2 focus:ring-yellow-400 shadow-xs"
                 placeholder="Email do funcionário"
                 readOnly
               />
@@ -77,7 +77,7 @@ export default function ConsultaFuncionario() {
                 {...register("telefone")}
                 type="text"
                 id="telefone"
-                className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
+                className="border border-gray-300 rounded-md p-3 w-full focus:outline-hidden focus:ring-2 focus:ring-yellow-400 shadow-xs"
                 placeholder="Telefone do funcionário"
                 readOnly
               />
@@ -89,7 +89,7 @@ export default function ConsultaFuncionario() {
                 {...register("cargo")}
                 type="text"
                 id="cargo"
-                className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
+                className="border border-gray-300 rounded-md p-3 w-full focus:outline-hidden focus:ring-2 focus:ring-yellow-400 shadow-xs"
                 placeholder="Cargo do funcionário"
                 readOnly
               />
@@ -100,7 +100,7 @@ export default function ConsultaFuncionario() {
               <input
                 type="text"
                 id="dtnasc"
-                className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
+                className="border border-gray-300 rounded-md p-3 w-full focus:outline-hidden focus:ring-2 focus:ring-yellow-400 shadow-xs"
                 placeholder="Data de nascimento"
                 value={watch("dtnasc") ? new Date(watch("dtnasc")).toLocaleDateString('pt-BR') : ''}
                 readOnly
@@ -112,7 +112,7 @@ export default function ConsultaFuncionario() {
               <input
                 type="text"
                 id="createdAt"
-                className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
+                className="border border-gray-300 rounded-md p-3 w-full focus:outline-hidden focus:ring-2 focus:ring-yellow-400 shadow-xs"
                 placeholder="Data de admissão"
                 value={watch("createdAt") ? new Date(watch("createdAt")).toLocaleDateString('pt-BR') : ''}
                 readOnly
@@ -129,7 +129,7 @@ export default function ConsultaFuncionario() {
               <textarea
                 {...register("sobre")}
                 id="sobre"
-                className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
+                className="border border-gray-300 rounded-md p-3 w-full focus:outline-hidden focus:ring-2 focus:ring-yellow-400 shadow-xs"
                 placeholder="Descrição sobre o funcionário"
                 rows={6}
                 readOnly
@@ -153,7 +153,7 @@ export default function ConsultaFuncionario() {
 
       <div className="flex justify-start mt-6">
         <Link href="/funcionario">
-          <button className="bg-gray-600 text-white font-bold rounded-md py-4 px-8 w-full sm:w-auto hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-500 transition-all duration-200 ease-in-out shadow-md">
+          <button className="bg-gray-600 text-white font-bold rounded-md py-4 px-8 w-full sm:w-auto cursor-pointerhover:bg-gray-700 focus:outline-hidden focus:ring-4 focus:ring-gray-500 transition-all duration-200 ease-in-out shadow-md">
             Voltar
           </button>
         </Link>

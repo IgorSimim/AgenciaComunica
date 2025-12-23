@@ -125,7 +125,7 @@ const FuncionariosRegister: React.FC = () => {
                 })}
                 type="text"
                 id="nome"
-                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.nome ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
+                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-xs ${errors.nome ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
                 placeholder="Digite o nome completo"
                 maxLength={100}
               />
@@ -140,7 +140,7 @@ const FuncionariosRegister: React.FC = () => {
                 })}
                 type="email"
                 id="email"
-                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.email ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
+                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-xs ${errors.email ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
                 placeholder="Digite o email"
                 maxLength={100}
               />
@@ -158,7 +158,7 @@ const FuncionariosRegister: React.FC = () => {
                 })}
                 type="text"
                 id="telefone"
-                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.telefone ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
+                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-xs ${errors.telefone ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
                 placeholder="(11) 99999-9999"
                 maxLength={15}
               />
@@ -174,7 +174,7 @@ const FuncionariosRegister: React.FC = () => {
                 })}
                 type="text"
                 id="cargo"
-                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.cargo ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
+                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-xs ${errors.cargo ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
                 placeholder="Digite o cargo"
                 maxLength={50}
               />
@@ -191,7 +191,7 @@ const FuncionariosRegister: React.FC = () => {
                 })}
                 type="text"
                 id="senha"
-                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.senha ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
+                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-xs ${errors.senha ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
                 placeholder="Digite a senha (mín. 8 caracteres)"
                 maxLength={100}
               />
@@ -205,7 +205,7 @@ const FuncionariosRegister: React.FC = () => {
                 })}
                 type="date"
                 id="dtnasc"
-                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.dtnasc ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
+                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-xs ${errors.dtnasc ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
               />
               {errors.dtnasc && <p className="text-red-500 text-sm mt-1">{errors.dtnasc.message}</p>}
             </div>
@@ -236,7 +236,7 @@ const FuncionariosRegister: React.FC = () => {
                 minLength: { value: 10, message: "Descrição deve ter pelo menos 10 caracteres" }
               })}
               id="sobre"
-              className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.sobre ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
+              className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-xs ${errors.sobre ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
               placeholder="Escreva uma breve descrição sobre a pessoa contratada"
               maxLength={500}
             />
@@ -245,10 +245,10 @@ const FuncionariosRegister: React.FC = () => {
         </fieldset>
 
         <div className="flex flex-col sm:flex-row justify-between items-center mt-6 gap-4">
-          <button type="submit" disabled={uploading} className="bg-yellow-400 text-black font-bold rounded-md py-4 px-8 w-full sm:w-auto hover:bg-yellow-500 focus:outline-none focus:ring-4 focus:ring-yellow-300 transition-all duration-200 ease-in-out shadow-md disabled:opacity-50">
+          <button type="submit" disabled={uploading} className="bg-yellow-400 text-black font-bold rounded-md py-4 px-8 w-full sm:w-auto cursor-pointer hover:bg-yellow-500 focus:outline-none focus:ring-4 focus:ring-yellow-300 transition-all duration-200 ease-in-out shadow-md disabled:opacity-50">
             {uploading ? 'Enviando...' : 'Cadastrar funcionário'}
           </button>
-          <button type="button" className="bg-gray-500 text-white font-bold rounded-md py-4 px-8 w-full sm:w-auto hover:bg-gray-600 focus:outline-none focus:ring-4 focus:ring-gray-300 transition-all duration-200 ease-in-out shadow-md" onClick={() => reset()}>
+          <button type="button" className="bg-gray-500 text-white font-bold rounded-md py-4 px-8 w-full sm:w-auto cursor-pointer hover:bg-gray-600 focus:outline-none focus:ring-4 focus:ring-gray-300 transition-all duration-200 ease-in-out shadow-md" onClick={() => reset()}>
             Limpar
           </button>
         </div>
@@ -256,7 +256,7 @@ const FuncionariosRegister: React.FC = () => {
 
       <div className="flex justify-start mt-6">
         <Link href="/funcionario">
-          <button className="bg-gray-600 text-white font-bold rounded-md py-4 px-8 w-full sm:w-auto hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-500 transition-all duration-200 ease-in-out shadow-md">
+          <button className="bg-gray-600 text-white font-bold rounded-md py-4 px-8 w-full sm:w-auto cursor-pointer hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-500 transition-all duration-200 ease-in-out shadow-md">
             Voltar
           </button>
         </Link>

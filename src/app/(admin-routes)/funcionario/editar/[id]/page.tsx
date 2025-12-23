@@ -145,7 +145,7 @@ export default function AlteracaoFuncionario() {
                 })}
                 type="text"
                 id="nome"
-                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.nome ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
+                className={`border rounded-md p-3 w-full focus:outline-hidden focus:ring-2 shadow-xs ${errors.nome ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
                 placeholder="Digite o nome completo"
                 maxLength={100}
               />
@@ -162,7 +162,7 @@ export default function AlteracaoFuncionario() {
                 })}
                 type="email"
                 id="email"
-                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.email ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
+                className={`border rounded-md p-3 w-full focus:outline-hidden focus:ring-2 shadow-xs ${errors.email ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
                 placeholder="Digite o email"
                 maxLength={100}
               />
@@ -183,7 +183,7 @@ export default function AlteracaoFuncionario() {
                 })}
                 type="text"
                 id="telefone"
-                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.telefone ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
+                className={`border rounded-md p-3 w-full focus:outline-hidden focus:ring-2 shadow-xs ${errors.telefone ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
                 placeholder="(11) 99999-9999"
                 maxLength={15}
               />
@@ -201,7 +201,7 @@ export default function AlteracaoFuncionario() {
                 })}
                 type="text"
                 id="cargo"
-                className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.cargo ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
+                className={`border rounded-md p-3 w-full focus:outline-hidden focus:ring-2 shadow-xs ${errors.cargo ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
                 placeholder="Digite o cargo"
                 maxLength={50}
               />
@@ -243,7 +243,7 @@ export default function AlteracaoFuncionario() {
                 minLength: { value: 10, message: "Descrição deve ter pelo menos 10 caracteres" }
               })}
               id="sobre"
-              className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-sm ${errors.sobre ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
+              className={`border rounded-md p-3 w-full focus:outline-hidden focus:ring-2 shadow-xs ${errors.sobre ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
               placeholder="Escreva uma breve descrição sobre a pessoa contratada"
               maxLength={500}
             />
@@ -255,13 +255,13 @@ export default function AlteracaoFuncionario() {
           <button
             type="submit"
             disabled={uploading}
-            className="bg-yellow-400 text-black font-bold rounded-md py-4 px-8 w-full sm:w-auto hover:bg-yellow-500 focus:outline-none focus:ring-4 focus:ring-yellow-300 transition-all duration-200 ease-in-out shadow-md disabled:opacity-50"
+            className="bg-yellow-400 text-black font-bold rounded-md py-4 px-8 w-full sm:w-auto cursor-pointer hover:bg-yellow-500 focus:outline-hidden focus:ring-4 focus:ring-yellow-300 transition-all duration-200 ease-in-out shadow-md disabled:opacity-50"
           >
             {uploading ? 'Enviando...' : 'Alterar funcionário'}
           </button>
           <button
             type="button"
-            className="bg-gray-500 text-white font-bold rounded-md py-4 px-8 w-full sm:w-auto hover:bg-gray-600 focus:outline-none focus:ring-4 focus:ring-gray-300 transition-all duration-200 ease-in-out shadow-md"
+            className="bg-gray-500 text-white font-bold rounded-md py-4 px-8 w-full sm:w-auto cursor-pointer hover:bg-gray-600 focus:outline-hidden focus:ring-4 focus:ring-gray-300 transition-all duration-200 ease-in-out shadow-md"
             onClick={() => {
               reset({
                 nome: "",
@@ -281,7 +281,7 @@ export default function AlteracaoFuncionario() {
 
       <div className="flex justify-start mt-6">
         <Link href="/funcionario">
-          <button className="bg-gray-600 text-white font-bold rounded-md py-4 px-8 w-full sm:w-auto hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-500 transition-all duration-200 ease-in-out shadow-md">
+          <button className="bg-gray-600 text-white font-bold rounded-md py-4 px-8 w-full sm:w-auto cursor-pointer hover:bg-gray-700 focus:outline-hidden focus:ring-4 focus:ring-gray-500 transition-all duration-200 ease-in-out shadow-md">
             Voltar
           </button>
         </Link>

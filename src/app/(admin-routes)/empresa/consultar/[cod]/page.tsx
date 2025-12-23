@@ -54,7 +54,7 @@ export default function ConsultaEmpresa() {
                 {...register("nome")}
                 type="text"
                 id="nome"
-                className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
+                className="border border-gray-300 rounded-md p-3 w-full focus:outline-hidden focus:ring-2 focus:ring-yellow-400 shadow-xs"
                 placeholder="Nome da empresa"
                 readOnly
               />
@@ -68,7 +68,7 @@ export default function ConsultaEmpresa() {
                 {...register("cnpj")}
                 type="text"
                 id="cnpj"
-                className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
+                className="border border-gray-300 rounded-md p-3 w-full focus:outline-hidden focus:ring-2 focus:ring-yellow-400 shadow-xs"
                 placeholder="CNPJ da empresa"
                 readOnly
               />
@@ -82,7 +82,7 @@ export default function ConsultaEmpresa() {
                 {...register("email")}
                 type="email"
                 id="email"
-                className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
+                className="border border-gray-300 rounded-md p-3 w-full focus:outline-hidden focus:ring-2 focus:ring-yellow-400 shadow-xs"
                 placeholder="Email da empresa"
                 readOnly
               />
@@ -96,7 +96,7 @@ export default function ConsultaEmpresa() {
                 {...register("setor")}
                 type="text"
                 id="setor"
-                className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
+                className="border border-gray-300 rounded-md p-3 w-full focus:outline-hidden focus:ring-2 focus:ring-yellow-400 shadow-xs"
                 placeholder="Setor de atuação da empresa"
                 readOnly
               />
@@ -114,7 +114,7 @@ export default function ConsultaEmpresa() {
               <input
                 type="text"
                 id="createdAt"
-                className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
+                className="border border-gray-300 rounded-md p-3 w-full focus:outline-hidden focus:ring-2 focus:ring-yellow-400 shadow-xs"
                 placeholder="Data de cadastro"
                 value={watch("createdAt") ? new Date(watch("createdAt")).toLocaleDateString('pt-BR') : ''}
                 readOnly
@@ -128,7 +128,7 @@ export default function ConsultaEmpresa() {
               <input
                 type="text"
                 id="updatedAt"
-                className="border border-gray-300 rounded-md p-3 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400 shadow-sm"
+                className="border border-gray-300 rounded-md p-3 w-full focus:outline-hidden focus:ring-2 focus:ring-yellow-400 shadow-xs"
                 placeholder="Data da última atualização"
                 value={watch("updatedAt") ? new Date(watch("updatedAt")).toLocaleDateString('pt-BR') : ''}
                 readOnly
@@ -155,7 +155,7 @@ export default function ConsultaEmpresa() {
 
       <div className="flex justify-start mt-6">
         <Link href="/empresa">
-          <button className="bg-gray-600 text-white font-bold rounded-md py-4 px-8 w-full sm:w-auto hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-500 transition-all duration-200 ease-in-out shadow-md">
+          <button className="bg-gray-600 text-white font-bold rounded-md py-4 px-8 w-full sm:w-auto cursor-pointer hover:bg-gray-700 focus:outline-hidden focus:ring-4 focus:ring-gray-500 transition-all duration-200 ease-in-out shadow-md">
             Voltar
           </button>
         </Link>
