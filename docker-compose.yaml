@@ -18,18 +18,21 @@ services:
       start_period: 30s
 
   app:
-    build: .
+    build:
+      context: .
+      args:
+        NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
     container_name: app_agencia_comunica
     restart: always
     ports:
       - "3000:3000"
     environment:
-      DATABASE_URL: postgresql://postgres:12345@db:5432/agenciacomunica_db
-    # env_file:
-    #   - .env.docker
+      DATABASE_URL: ${DATABASE_URL}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
     depends_on:
       db:
         condition: service_healthy
+
 
 volumes:
   db_data:
