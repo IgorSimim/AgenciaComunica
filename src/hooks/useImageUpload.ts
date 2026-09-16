@@ -19,10 +19,14 @@ export function useImageUpload() {
         body: formData,
       })
 
-      const result = await response.json()
+      const result: { url?: string; publicId?: string; message?: string } = await response.json()
 
       if (!response.ok) {
         throw new Error(result.message || 'Erro no upload')
+      }
+
+      if (!result.url || !result.publicId) {
+        throw new Error('Resposta inválida do servidor de upload')
       }
 
       return { url: result.url, publicId: result.publicId }

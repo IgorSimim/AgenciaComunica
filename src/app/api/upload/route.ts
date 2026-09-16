@@ -1,46 +1,59 @@
 import { NextRequest, NextResponse } from 'next/server';
 import cloudinary from '@/lib/cloudinary';
 
+export const runtime = 'nodejs';
+
+const allowedTypes = ['funcionarios', 'empresas', 'servicos'] as const;
+const maxFileSize = 5 * 1024 * 1024;
+
 export async function POST(request: NextRequest) {
   try {
     const data = await request.formData();
-    const file: File | null = data.get('file') as unknown as File;
-    const type: string = data.get('type') as string;
+    const file = data.get('file');
+    const type = data.get('type');
 
-    // 1. Validações básicas 
-    if (!file) return NextResponse.json({ message: 'Nenhum arquivo' }, { status: 400 });
-    if (!['funcionarios', 'empresas', 'servicos'].includes(type)) {
+    if (!(file instanceof File) || file.size === 0) {
+      return NextResponse.json({ message: 'Nenhum arquivo válido foi enviado' }, { status: 400 });
+    }
+
+    if (file.size > maxFileSize || !file.type.startsWith('image/')) {
+      return NextResponse.json(
+        { message: 'A imagem deve ser válida, ter formato de imagem e no máximo 5MB' },
+        { status: 400 }
+      );
+    }
+
+    if (typeof type !== 'string' || !allowedTypes.includes(type as typeof allowedTypes[number])) {
       return NextResponse.json({ message: 'Tipo inválido' }, { status: 400 });
     }
 
-    // 2. Transformar o arquivo em Buffer
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // 3. Lógica de data para a pasta (Organização)
     const now = new Date();
     const brNow = new Date(now.toLocaleString("en-US", { timeZone: "America/Sao_Paulo" }));
     const dateFolder = `${String(brNow.getDate()).padStart(2, '0')}-${String(brNow.getMonth() + 1).padStart(2, '0')}-${brNow.getFullYear()}`;
+    const fileName = file.name.replace(/\.[^/.]+$/, '').replace(/[^a-zA-Z0-9_-]/g, '_');
 
-    // 4. Upload para o Cloudinary usando Stream
-    // Usamos Promise para lidar com o comportamento assíncrono do upload_stream
-    const result: any = await new Promise((resolve, reject) => {
+    const result = await new Promise<{ secure_url: string; public_id: string }>((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         {
           folder: `AgenciaComunica/${type}/${dateFolder}`,
-          // Define um nome amigável ou deixa o Cloudinary gerar um ID único
-          public_id: `${file.name.split('.')[0]}_${Date.now()}`,
+          public_id: `${fileName || 'imagem'}_${Date.now()}`,
         },
         (error, result) => {
           if (error) return reject(error);
-          resolve(result);
+          if (!result) return reject(new Error('O Cloudinary não retornou o resultado do upload'));
+          resolve({
+            secure_url: result.secure_url,
+            public_id: result.public_id,
+          });
         }
       );
 
       uploadStream.end(buffer);
     });
 
-    // 5. Retorno da URL segura
     return NextResponse.json({
       success: true,
       url: result.secure_url,
@@ -48,8 +61,9 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
+    console.error('Erro no upload da imagem:', error);
     return NextResponse.json({
-      message: 'Erro no processamento do upload'
+      message: error instanceof Error ? error.message : 'Erro no processamento do upload'
     },
       { status: 500 });
   }
