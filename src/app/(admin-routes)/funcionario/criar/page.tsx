@@ -7,6 +7,14 @@ import { TFuncionario } from "@/app/types/index"
 import ImageUpload, { ImageUploadRef } from "@/app/components/shared/ImageUpload"
 import { useImageUpload } from "@/hooks/useImageUpload"
 
+const cargos = [
+  { value: "RH", label: "RH" },
+  { value: "DESIGNER", label: "Designer" },
+  { value: "REDATORA", label: "Redatora" },
+  { value: "VIDEOMAKER", label: "Videomaker" },
+  { value: "GESTORTRAFEGO", label: "Gestor de tráfego" },
+] as const
+
 const validateNome = (nome: string) => {
   const nomeRegex = /^[A-Za-zÀ-ú\s]+$/
   if (!nomeRegex.test(nome)) {
@@ -166,18 +174,21 @@ const FuncionariosRegister: React.FC = () => {
             </div>
             <div>
               <label htmlFor="cargo" className="block mb-2 text-sm font-medium text-gray-800">Cargo</label>
-              <input
+              <select
                 {...register("cargo", {
-                  required: "Cargo é obrigatório",
-                  maxLength: { value: 50, message: "Cargo deve ter no máximo 50 caracteres" },
-                  minLength: { value: 2, message: "Cargo deve ter pelo menos 2 caracteres" }
+                  required: "Cargo é obrigatório"
                 })}
-                type="text"
                 id="cargo"
                 className={`border rounded-md p-3 w-full focus:outline-none focus:ring-2 shadow-xs ${errors.cargo ? 'border-red-500 focus:ring-red-400' : 'border-gray-300 focus:ring-yellow-400'}`}
-                placeholder="Digite o cargo"
-                maxLength={50}
-              />
+                defaultValue=""
+              >
+                <option value="" disabled>Selecione o cargo</option>
+                {cargos.map((cargo) => (
+                  <option key={cargo.value} value={cargo.value}>
+                    {cargo.label}
+                  </option>
+                ))}
+              </select>
               {errors.cargo && <p className="text-red-500 text-sm mt-1">{errors.cargo.message}</p>}
             </div>
             <div>
