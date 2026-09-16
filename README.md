@@ -1,121 +1,64 @@
 <div align="center">
   <img src="public/logo.png" alt="Agência Comunica Logo" width="150" height="auto">
-  <h1>Agência Comunica - Sistema de Gestão</h1>
+  <h1>Agência Comunica — Sistema de Gestão</h1>
+  <p>Plataforma web para gestão de agência de marketing digital</p>
+
+  ![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js)
+  ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
+  ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Prisma-336791?logo=postgresql)
+  ![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-38bdf8?logo=tailwindcss)
 </div>
 
-Sistema completo de gestão para agência de marketing digital, desenvolvido com Next.js 15, oferecendo soluções integradas para empresas e funcionários.
+---
 
-## 📋 Visão Geral
+## Visão Geral
 
-A **Agência Comunica** é uma plataforma web que conecta empresas clientes com uma equipe especializada em marketing digital, oferecendo gestão de projetos, contratos, atividades e comunicação centralizada.
+Sistema completo que conecta a equipe interna da agência com empresas clientes, centralizando gestão de contratos, atividades, projetos, feedbacks e arquivos em uma única plataforma.
 
-### 🎯 Principais Funcionalidades
+## Funcionalidades
 
-- **Gestão de Empresas**: Cadastro e gerenciamento de empresas clientes
-- **Gestão de Funcionários**: Controle de equipe com diferentes cargos e permissões
-- **Sistema de Contratos**: Criação e acompanhamento de contratos de serviços
-- **Gestão de Atividades**: Organização de tarefas com status e prioridades
-- **Sistema de Feedbacks**: Avaliações e comentários dos clientes
-- **Upload de Arquivos**: Integração com Cloudinary para gestão de mídia
-- **Dashboard Analytics**: Visualização de dados e métricas
+| Área | Funcionalidades |
+|------|----------------|
+| **Funcionários** | Gestão de equipe, atividades, comentários, upload de arquivos, dashboard com métricas |
+| **Empresas** | Visualização de contratos, envio de feedbacks, acompanhamento de projetos |
+| **Serviços** | Catálogo de serviços com preços e símbolos |
+| **Contratos** | Relacionamento empresa-serviço com termos e vigência |
 
-## 🏗️ Arquitetura do Sistema
+## Stack
 
-### 🔐 Sistema de Autenticação
+- **Framework**: Next.js 15 com Turbopack e App Router
+- **Linguagem**: TypeScript 5
+- **Banco de dados**: PostgreSQL + Prisma 6
+- **Autenticação**: NextAuth.js 4 + JWT + bcryptjs
+- **Estilização**: Tailwind CSS 4
+- **Upload de mídia**: Cloudinary
+- **Formulários**: React Hook Form
+- **Notificações**: Sonner + SweetAlert2
+- **Gráficos**: React Google Charts
+- **Email**: Nodemailer
 
-O sistema possui **dois tipos de usuários** com autenticação separada:
+## Pré-requisitos
 
-#### **Funcionários** (Área Administrativa)
-- **Cargos disponíveis**: Proprietária, RH, Designer, Redatora, Videomaker, Gestor de Tráfego
-- **Acesso**: Dashboard administrativo completo
-- **Rotas protegidas**: `/dashboard/*`, `/funcionario/*`, `/empresa/*`, `/servico/*`
-- **Login**: `/loginfuncionario`
-
-#### **Empresas** (Área do Cliente)
-- **Acesso**: Área restrita para clientes
-- **Funcionalidades**: Visualização de contratos, envio de feedbacks, acompanhamento de projetos
-- **Rotas protegidas**: `/home-empresa/*`
-- **Login**: `/loginempresa`
-
-### 🛡️ Middleware de Segurança
-
-```typescript
-// Proteção de rotas baseada em roles
-- Verificação automática de tokens JWT
-- Redirecionamento baseado no tipo de usuário
-- Controle de acesso granular por área
-```
-
-### 🗄️ Estrutura do Banco de Dados
-
-**Tecnologia**: PostgreSQL com Prisma ORM
-
-#### Principais Entidades:
-
-- **Funcionario**: Gestão da equipe interna
-- **Empresa**: Cadastro de clientes
-- **Servico**: Catálogo de serviços oferecidos
-- **Contrato**: Relacionamento empresa-serviço
-- **Atividade**: Tarefas e projetos
-- **Feedback**: Avaliações dos clientes
-- **Arquivo**: Gestão de documentos e mídias
-
-## 🚀 Tecnologias Utilizadas
-
-### **Frontend & Backend**
-- **Next.js 15** - Framework React com App Router
-- **TypeScript** - Tipagem estática
-- **Tailwind CSS** - Estilização
-- **React Hook Form** - Gerenciamento de formulários
-
-### **Autenticação & Segurança**
-- **NextAuth.js** - Autenticação
-- **JWT** - Tokens de sessão
-- **bcryptjs** - Hash de senhas
-
-### **Banco de Dados**
-- **PostgreSQL** - Banco principal
-- **Prisma** - ORM e migrations
-
-### **Upload & Mídia**
-- **Cloudinary** - Armazenamento de imagens
-- **Custom hooks** - Gestão de uploads
-
-### **UI/UX**
-- **Lucide React** - Ícones
-- **React Icons** - Biblioteca de ícones
-- **SweetAlert2** - Alertas e modais
-- **Sonner** - Notificações toast
-
-### **Analytics & Charts**
-- **React Google Charts** - Gráficos e relatórios
-
-## 📦 Instalação e Configuração
-
-### **Pré-requisitos**
 - Node.js 18+
 - PostgreSQL
-- Conta Cloudinary (para uploads)
+- Conta no [Cloudinary](https://cloudinary.com)
 
-### **1. Clone o repositório**
+## Instalação
+
 ```bash
+# 1. Clone e instale dependências
 git clone <repository-url>
 cd AgenciaComunica
-```
-
-### **2. Instale as dependências**
-```bash
 npm install
-```
 
-### **3. Configure as variáveis de ambiente**
-```bash
+# 2. Configure as variáveis de ambiente
 cp .env.example .env
 ```
 
-Edite o arquivo `.env` com suas configurações:
+Edite o `.env`:
+
 ```env
-# Database
+# Banco de dados
 DATABASE_URL=postgresql://user:password@localhost:5432/agenciacomunica_db
 
 # NextAuth
@@ -125,7 +68,7 @@ NEXTAUTH_SECRET=sua_chave_secreta_32_caracteres
 # JWT
 JWT_SECRET=sua_chave_jwt
 
-# Email (para notificações)
+# Email
 EMAIL=seu_email@gmail.com
 GMAIL_APP_PASSWORD=sua_senha_de_app
 
@@ -135,142 +78,116 @@ NEXT_PUBLIC_CLOUDINARY_API_KEY=sua_api_key
 CLOUDINARY_API_SECRET=sua_api_secret
 ```
 
-### **4. Configure o banco de dados**
 ```bash
-# Gerar cliente Prisma
+# 3. Configure o banco de dados
 npm run prisma:generate
-
-# Executar migrations
 npm run prisma:migrate
+npm run prisma:seed   # opcional — dados iniciais
 
-# Popular dados iniciais (opcional)
-npm run prisma:seed
-```
-
-### **5. Execute o projeto**
-```bash
-# Desenvolvimento (porta 4000)
+# 4. Inicie o servidor (porta 4000)
 npm run dev
-
-# Produção
-npm run build
-npm start
 ```
 
-## 🐳 Docker
-
-O projeto inclui configuração Docker para deploy simplificado:
+## Docker
 
 ```bash
-# Build da imagem
-docker build -t agencia-comunica .
-
-# Executar com docker-compose
 docker-compose up -d
 ```
 
-## 📁 Estrutura de Pastas
+## Scripts
+
+| Comando | Descrição |
+|---------|-----------|
+| `npm run dev` | Servidor de desenvolvimento (porta 4000) |
+| `npm run build` | Build para produção |
+| `npm start` | Executa o build de produção |
+| `npm run lint` | ESLint |
+| `npm run prisma:generate` | Gera o cliente Prisma |
+| `npm run prisma:migrate` | Executa migrations (dev) |
+| `npm run prisma:migrate:prod` | Executa migrations (produção) |
+| `npm run prisma:push` | Sincroniza schema sem migration |
+| `npm run prisma:seed` | Popula dados iniciais |
+| `npm run prisma:studio` | Interface visual do banco |
+| `npm run prisma:migrate:reset` | Reseta o banco de dados |
+| `npm run prisma:migrate:status` | Status das migrations |
+
+## Estrutura de Pastas
 
 ```
 src/
-├── actions/           # Server actions para autenticação
+├── actions/               # Server actions (login de empresa e funcionário)
 ├── app/
-│   ├── (admin-routes)/    # Rotas administrativas
+│   ├── (admin-routes)/    # Área administrativa — funcionários
 │   ├── (auth-routes)/     # Páginas de login
 │   ├── (empresa-routes)/  # Área do cliente
-│   ├── (index)/          # Páginas públicas
-│   ├── api/              # API routes
-│   ├── components/       # Componentes reutilizáveis
-│   └── types/           # Definições TypeScript
-├── hooks/            # Custom hooks
-├── lib/              # Utilitários e configurações
-└── middleware.ts     # Middleware de autenticação
+│   ├── (index)/           # Páginas públicas
+│   ├── api/               # API routes
+│   ├── components/        # Componentes reutilizáveis
+│   ├── providers/         # Context providers
+│   ├── styles/            # Estilos globais
+│   └── types/             # Tipos TypeScript
+├── hooks/                 # Custom hooks (ex: useImageUpload)
+├── lib/                   # Configurações (auth, prisma, cloudinary, alerts)
+└── middleware.ts          # Proteção de rotas por tipo de usuário
 ```
 
-## 🔧 Scripts Disponíveis
+## Rotas
 
-```bash
-# Desenvolvimento
-npm run dev              # Servidor de desenvolvimento (porta 4000)
+### Públicas
+| Rota | Descrição |
+|------|-----------|
+| `/` | Homepage |
+| `/sobre-nos` | Sobre a agência |
+| `/funcionarios` | Equipe |
+| `/contate-nos` | Contato |
 
-# Build
-npm run build           # Build para produção
-npm start              # Executar build de produção
+### Autenticação
+| Rota | Descrição |
+|------|-----------|
+| `/loginfuncionario` | Login da equipe interna |
+| `/loginempresa` | Login das empresas clientes |
 
-# Banco de dados
-npm run prisma:studio      # Interface visual do banco
-npm run prisma:migrate     # Executar migrations
-npm run prisma:seed        # Popular dados iniciais
-npm run prisma:generate    # Gerar cliente Prisma
+### Área Administrativa (Funcionários)
+| Rota | Descrição |
+|------|-----------|
+| `/dashboard` | Dashboard com métricas |
+| `/funcionario` | Gestão de funcionários |
+| `/empresa` | Gestão de empresas clientes |
+| `/servico` | Gestão de serviços |
 
-# Qualidade de código
-npm run lint              # ESLint
+### Área do Cliente (Empresas)
+| Rota | Descrição |
+|------|-----------|
+| `/home-empresa` | Dashboard da empresa |
+
+## Modelo de Dados
+
+```
+Funcionario ──< Atividade ──< Arquivo
+                           ──< Comentario >── Funcionario
+           ──< Empresa ──< Contrato >── Servico
+                       ──< Feedback
+           ──< Servico
+
+Projeto (independente)
 ```
 
-## 🌐 Rotas Principais
+**Cargos disponíveis**: `PROPRIETARIA` · `RH` · `DESIGNER` · `REDATORA` · `VIDEOMAKER` · `GESTORTRAFEGO`
 
-### **Públicas**
-- `/` - Homepage
-- `/sobre-nos` - Sobre a agência
-- `/funcionarios` - Equipe
-- `/contate-nos` - Contato
+## Autenticação e Segurança
 
-### **Autenticação**
-- `/loginempresa` - Login de empresas
-- `/loginfuncionario` - Login de funcionários
+- Dois fluxos de autenticação independentes: funcionários e empresas
+- Tokens JWT verificados via middleware em todas as rotas protegidas
+- Senhas armazenadas com hash bcryptjs
+- Redirecionamento automático baseado no tipo de usuário
 
-### **Área Administrativa** (Funcionários)
-- `/dashboard` - Dashboard principal
-- `/funcionario` - Gestão de funcionários
-- `/empresa` - Gestão de empresas
-- `/servico` - Gestão de serviços
+## Licença
 
-### **Área do Cliente** (Empresas)
-- `/home-empresa` - Dashboard da empresa
-
-## 🔒 Segurança
-
-- **Autenticação JWT** com NextAuth.js
-- **Middleware de proteção** de rotas
-- **Hash de senhas** com bcryptjs
-- **Validação de tipos** com TypeScript
-- **Sanitização de dados** nos formulários
-
-## 📊 Funcionalidades por Perfil
-
-### **Funcionários**
-- ✅ Gestão completa de empresas clientes
-- ✅ Criação e edição de serviços
-- ✅ Controle de atividades e projetos
-- ✅ Visualização de feedbacks
-- ✅ Upload de arquivos e mídias
-- ✅ Dashboard com métricas
-
-### **Empresas**
-- ✅ Visualização de contratos ativos
-- ✅ Envio de feedbacks e avaliações
-- ✅ Acompanhamento de projetos
-- ✅ Comunicação com a equipe
-
-## 🤝 Contribuição
-
-1. Fork o projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
-
-## 📄 Licença
-
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
-
-## 📞 Suporte
-
-Para suporte técnico ou dúvidas sobre o sistema:
-- 📧 Email: igorleonsimim@gmail.com
-- 📱 WhatsApp: (31) 98768-5091
-- 📍 Endereço: Pelotas, RS
+MIT — veja o arquivo [LICENSE](LICENSE).
 
 ---
 
-**Desenvolvido com ❤️ pela equipe Agência Comunica**
+<div align="center">
+  Desenvolvido com ❤️ pela equipe Agência Comunica<br>
+  <a href="mailto:igorleonsimim@gmail.com">igorleonsimim@gmail.com</a> · (31) 98768-5091 · Pelotas, RS
+</div>
