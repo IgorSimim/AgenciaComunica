@@ -1,30 +1,30 @@
-import { NextResponse, NextRequest } from "next/server";
+import { NextResponse, NextRequest } from "next/server"
 import bcrypt from "bcryptjs"
-import prisma from "@/lib/prisma";
-import { Atividade, Cargo, Comentario } from "@prisma/client";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/config/auth/authOptions";
+import prisma from "@/lib/prisma"
+import { Atividade, Cargo, Comentario } from "@prisma/client"
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/app/api/config/auth/authOptions"
 
 // GET /api/funcionario
 export async function GET() {
     try {
-        // const session = await getServerSession(authOptions);
+        // const session = await getServerSession(authOptions)
         // if (!session?.funcionario?.email) {
         //     return NextResponse.json(
         //         { message: "Funcionário não autenticado" },
         //         { status: 401 }
-        //     );
+        //     )
         // }
         
         // const funcionario = await prisma.funcionario.findUnique({
         //     where: { email: session.funcionario.email }
         // })
 
-        // if (!funcionario || (funcionario.cargo !== "PROPRIETARIA" && funcionario.cargo !== "RH")) {
+        // if (funcionario.cargo !== "PROPRIETARIA" || funcionario.cargo !== "RH") {
         //     return NextResponse.json(
         //         { message: "Somente a proprietária e os funcionários do RH" },
         //         { status: 403 }
-        //     );
+        //     )
         // }
 
         const funcionarioEncontrado = await prisma.funcionario.findMany({
@@ -37,32 +37,27 @@ export async function GET() {
                 dtnasc: true,
                 fotoUrl: true,
                 fotoPublicId: true,
-                cargo: true,
-                createdAt: true,
-                updatedAt: true,
-                deletedAt: true,
-                atividades: true,
-                comentarios: true
+                cargo: true
             },
             where: {
                 deletedAt: null
             },
             orderBy: { id: 'asc' },
-        });
+        })
 
         if (!funcionarioEncontrado) {
             return NextResponse.json(
                 { message: "Não existe funcionários cadastrados" },
                 { status: 404 }
-            );
+            )
         }
 
-        return NextResponse.json(funcionarioEncontrado);
+        return NextResponse.json(funcionarioEncontrado)
     } catch (error) {
         return NextResponse.json(
             { message: "Erro ao buscar funcionários" },
             { status: 500 }
-        );
+        )
     }
 }
 
@@ -79,11 +74,11 @@ export async function POST(
             )
         }
 
-        const funcionario = await prisma.funcionario.findUnique({
-            where: { email: session.funcionario.email },
-        })
+        // const funcionario = await prisma.funcionario.findUnique({
+        //    where: { email: session.funcionario.email },
+        // })
 
-        // if (!funcionario || (funcionario.cargo !== "PROPRIETARIA" && funcionario.cargo !== "RH")) {
+        // if (funcionario.cargo !== "PROPRIETARIA" || funcionario.cargo !== "RH") {
         //     return NextResponse.json(
         //         { message: "Acesso negado" },
         //         { status: 403 }

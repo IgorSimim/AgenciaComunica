@@ -19,58 +19,11 @@ export async function GET() {
             where: { email: session.funcionario.email },
         })
 
-        // if (!funcionario || (funcionario.cargo !== "PROPRIETARIA" && funcionario .cargo !== "RH")) {
-        //     const empresas = await prisma.empresa.findMany({
-        //         select: {
-        //             cod: true,
-        //             nome: true,
-        //             email: true,
-        //             setor: true,
-        //             logotipoUrl: true,
-        //             logotipoPublicId: true,
-        //             ativa: true,
-        //             createdAt: true,
-        //             updatedAt: true,
-        //         },
-        //         where: {
-        //             deletedAt: null
-        //         }
-        //     })
-        //     return NextResponse.json(
-        //         empresas,
-        //         { status: 200 }
-        //     )
-        // }
-
-        if (!funcionario || (funcionario.cargo !== "PROPRIETARIA" && funcionario.cargo !== "RH")) {
-            const empresas = await prisma.empresa.findMany({
-                select: {
-                    cod: true,
-                    cnpj: true,
-                    nome: true,
-                    email: true,
-                    setor: true,
-                    logotipoUrl: true,
-                    logotipoPublicId: true,
-                    ativa: true,
-                    createdAt: true,
-                    updatedAt: true,
-                    feedbacks: true
-                },
-                where: {
-                    deletedAt: null
-                }
-            })
-            return NextResponse.json(
-                empresas,
-                { status: 200 }
-            )
-        }
-
         if (funcionario.cargo === "PROPRIETARIA" || funcionario.cargo === "RH") {
             const empresas = await prisma.empresa.findMany({
                 select: {
                     cod: true,
+                    funcionario_id: true,
                     cnpj: true,
                     nome: true,
                     email: true,
@@ -80,7 +33,6 @@ export async function GET() {
                     ativa: true,
                     createdAt: true,
                     updatedAt: true,
-                    deletedAt: true,
                     feedbacks: true,
                     contratos: true
                 },
@@ -88,11 +40,38 @@ export async function GET() {
                     deletedAt: null
                 }
             })
+
             return NextResponse.json(
                 empresas,
                 { status: 200 }
             )
         }
+
+        if (funcionario.cargo !== "PROPRIETARIA" || funcionario.cargo !== "RH") {
+            const empresas = await prisma.empresa.findMany({
+                select: {
+                    cod: true,
+                    cnpj: true,
+                    nome: true,
+                    email: true,
+                    setor: true,
+                    logotipoUrl: true,
+                    logotipoPublicId: true,
+                    ativa: true,
+                    createdAt: true,
+                    updatedAt: true
+                },
+                where: {
+                    deletedAt: null
+                }
+            })
+
+            return NextResponse.json(
+                empresas,
+                { status: 200 }
+            )
+        }
+
     } catch (error) {
         return NextResponse.json(
             { mensagem: "Erro ao buscar empresas" },
@@ -125,7 +104,7 @@ export async function POST(
             )
         }
 
-        // if (!funcionario || (funcionario.cargo !== "PROPRIETARIA" && funcionario.cargo !== "REDATORA")) {
+        // if (funcionario.cargo !== "PROPRIETARIA" || funcionario.cargo !== "REDATORA") {
         //     return NextResponse.json(
         //         { message: "Acesso negado" },
         //         { status: 403 }

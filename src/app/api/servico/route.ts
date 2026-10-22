@@ -11,11 +11,8 @@ export async function GET() {
                 cod: true,
                 nome: true,
                 descricao: true,
-                preco: true,
                 simboloUrl: true,
-                simboloPublicId: true,
-                createdAt: true,
-                updatedAt: true
+                simboloPublicId: true
             }
         })
 
@@ -55,7 +52,7 @@ export async function POST(
             )
         }
 
-        // if (funcionario.cargo !== "PROPRIETARIA" && funcionario.cargo !== "REDATORA") {
+        // if (funcionario.cargo !== "PROPRIETARIA" || funcionario.cargo !== "REDATORA") {
         //     return NextResponse.json(
         //         { message: "Acesso negado" },
         //         { status: 403 }
