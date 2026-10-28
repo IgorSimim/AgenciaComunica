@@ -1,0 +1,52 @@
+$kind: http-request
+name: 'LoginEmpresa'
+url: '{{baseURL}}/api/auth/callback/credentials'
+method: POST
+headers:
+  - key: Content-Type
+    value: application/x-www-form-urlencoded
+  - key: Cookie
+    value: 'next-auth.csrf-token={{csrfCookie}}; next-auth.callback-url={{callbackUrlCookie}}'
+body:
+  type: urlencoded
+  content:
+    - key: email
+      value: empresaA@example.com
+    - key: senha
+      value: '-Senha123'
+    - key: type
+      value: empresa
+    - key: csrfToken
+      value: '{{csrfToken}}'
+    - key: callbackUrl
+      value: '{{baseURL}}'
+    - key: json
+      value: 'true'
+order: 1000
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      // Após o login bem-sucedido, lê o session-token do jar e salva como variável.
+      const jar = pm.cookies.jar();
+      const host = pm.request.url.getHost();
+
+      jar.getAll(host, (err, cookies) => {
+          if (err) { console.warn("Erro ao ler cookies:", err); return; }
+          console.log("Cookies após login:", JSON.stringify(cookies));
+
+          cookies.forEach(c => {
+              if (c.name === "next-auth.session-token") {
+                  pm.collectionVariables.set("sessionToken", c.value);
+                  console.log("sessionToken salvo:", c.value);
+              }
+          });
+      });
+
+      // Verifica se o login foi bem-sucedido
+      const body = pm.response.text();
+      if (body.includes("csrf=true")) {
+          console.error("ERRO: CSRF inválido. Execute BuscarCSRF antes do login.");
+      } else {
+          console.log("Login realizado com sucesso.")
+      }

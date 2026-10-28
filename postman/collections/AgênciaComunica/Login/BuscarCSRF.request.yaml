@@ -1,0 +1,44 @@
+$kind: http-request
+name: 'BuscarCSRF'
+url: '{{baseURL}}/api/auth/csrf'
+method: GET
+order: 1000
+scripts:
+  - type: beforeRequest
+    language: text/javascript
+    code: |-
+      // Limpa cookies anteriores do NextAuth para forçar novos Set-Cookie na resposta
+      const jar = pm.cookies.jar();
+      jar.clear(pm.request.url.getHost(), (err) => {
+          if (err) console.warn("Erro ao limpar cookies:", err);
+          else console.log("Cookies limpos para novo CSRF.");
+      });
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      // Salva o csrfToken do body (usado no form)
+      const json = pm.response.json();
+      if (json && json.csrfToken) {
+          pm.collectionVariables.set("csrfToken", json.csrfToken);
+          console.log("CSRF Token salvo:", json.csrfToken);
+      }
+
+      // Lê os cookies do jar (Postman gerencia automaticamente por domínio)
+      const jar = pm.cookies.jar();
+      const host = pm.request.url.getHost();
+
+      jar.getAll(host, (err, cookies) => {
+          if (err) { console.warn("Erro ao ler cookies:", err); return; }
+          console.log("Cookies no jar:", JSON.stringify(cookies));
+
+          cookies.forEach(c => {
+              if (c.name === "next-auth.csrf-token") {
+                  pm.collectionVariables.set("csrfCookie", c.value);
+                  console.log("csrfCookie salvo:", c.value);
+              }
+              if (c.name === "next-auth.callback-url") {
+                  pm.collectionVariables.set("callbackUrlCookie", c.value);
+                  console.log("callbackUrlCookie salvo:", c.value);
+              }
+          });
+      });

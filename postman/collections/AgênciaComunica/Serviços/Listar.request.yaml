@@ -1,0 +1,7 @@
+$kind: http-request
+description: ""
+url: "{{baseURL}}/api/servico"
+method: GET
+headers:
+  Cookie: next-auth.session-token={{sessionToken}}
+order: 1000

@@ -1,0 +1,8 @@
+$kind: http-request
+name: 'Listar'
+url: '{{baseURL}}/api/empresa'
+method: GET
+headers:
+  - key: Cookie
+    value: 'next-auth.session-token={{sessionToken}}'
+order: 1000

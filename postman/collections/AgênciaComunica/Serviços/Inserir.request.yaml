@@ -1,0 +1,18 @@
+$kind: http-request
+url: "{{baseURL}}/api/servico"
+method: POST
+headers:
+  Cookie: next-auth.session-token={{sessionToken}}
+  Content-Type: application/json
+order: 4000
+body:
+  type: json
+  content: |-
+    {
+      "funcionario_id": 1,
+      "nome": "teste",
+      "descricao": "Criação e gerenciamento de conteúdo para Instagram, Facebook e LinkedIn com foco em engajamento.",
+      "preco": 1500.00,
+      "simboloUrl": "https://res.cloudinary.com/demo/image/upload/v1/servicos/redes-sociais.png",
+      "simboloPublicId": "servicos/redes-sociais"
+    }

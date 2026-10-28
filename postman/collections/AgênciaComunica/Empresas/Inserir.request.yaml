@@ -1,0 +1,21 @@
+$kind: http-request
+url: "{{baseURL}}/api/empresa"
+method: POST
+headers:
+  Cookie: next-auth.session-token={{sessionToken}}
+  Content-Type: application/json
+order: 3000
+body:
+  type: json
+  content: |-
+    {
+      "funcionario_id": 1,
+      "cnpj": "31.444.512/0001-91",
+      "nome": "Bella Moda Ltda",
+      "email": "contato@bellamoda.com.br",
+      "senha": "Senha@2024",
+      "setor": "Moda e Vestuário",
+      "logotipoUrl": "https://res.cloudinary.com/demo/image/upload/v1/empresas/bella-moda-logo.png",
+      "logotipoPublicId": "empresas/bella-moda-logo",
+      "ativa": true
+    }

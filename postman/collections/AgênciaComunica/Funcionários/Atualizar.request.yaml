@@ -1,0 +1,19 @@
+$kind: http-request
+url: "{{baseURL}}/api/funcionario/5"
+method: PUT
+headers:
+  Cookie: next-auth.session-token={{sessionToken}}
+  Content-Type: application/json
+order: 3000
+body:
+  type: json
+  content: |-
+    {
+      "nome": "Rafael Oliveira Costa",
+      "email": "rafael.oliveira@agenciacomunica.com.br",
+      "telefone": "(21)91234-5678",
+      "sobre": "Videomaker especializado em conteúdo para redes sociais e campanhas publicitárias com foco em storytelling.",
+      "fotoUrl": "https://res.cloudinary.com/demo/image/upload/v1/funcionarios/rafael-oliveira.jpg",
+      "fotoPublicId": "funcionarios/rafael-oliveira",
+      "cargo": "VIDEOMAKER"
+    }

@@ -1,0 +1,5 @@
+$kind: collection
+description: ""
+variables:
+  baseURL: ""
+  csrfToken: ""

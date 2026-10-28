@@ -1,0 +1,21 @@
+$kind: http-request
+url: "{{baseURL}}/api/funcionario"
+method: POST
+headers:
+  Cookie: next-auth.session-token={{sessionToken}}
+  Content-Type: application/json
+order: 4000
+body:
+  type: json
+  content: |-
+    {
+      "nome": "Camila Ferreira Santos",
+      "email": "camila.teste@agenciacomunica.com.br",
+      "senha": "Camila@2024",
+      "telefone": "(11) 95503-7813",
+      "sobre": "Designer criativa com 4 anos de experiência em identidade visual e branding para marcas digitais.",
+      "dtnasc": "2004-03-12T00:00:00.000Z",
+      "fotoUrl": "https://res.cloudinary.com/demo/image/upload/v1/funcionarios/camila-ferreira.jpg",
+      "fotoPublicId": "funcionarios/camila-ferreira",
+      "cargo": "DESIGNER"
+    }
