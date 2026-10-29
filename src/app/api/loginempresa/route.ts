@@ -8,7 +8,8 @@ export async function POST(
     _request: NextRequest
 ) {
     try {
-        const { email, senha } = await _request.json()
+        const body = await _request.json()
+        const { email, senha } = body
 
         if (!email || !senha) {
             return NextResponse.json(
@@ -21,10 +22,10 @@ export async function POST(
             where: { email }
         })
 
-        if (!empresa) {
+        if (!empresa || empresa.deletedAt || !empresa.ativa) {
             return NextResponse.json(
-                { message: 'Empresa não encontrada' },
-                { status: 404 }
+                { message: 'Email ou senha incorretos' },
+                { status: 401 }
             )
         }
 
@@ -35,6 +36,11 @@ export async function POST(
                 { status: 401 })
         }
 
+        const secret = process.env.JWT_SECRET
+        if (!secret) {
+            throw new Error("JWT_SECRET não configurado")
+        }
+
         const token = jwt.sign(
             {
                 cod: empresa.cod,
@@ -42,18 +48,30 @@ export async function POST(
                 email: empresa.email,
                 nome: empresa.nome
             },
-            process.env.JWT_SECRET || 'your-secret-key',
+            secret,
             { expiresIn: '2h' }
         )
 
-        // Remover a senha do objeto retornado
-        const { senha: _, ...empresaSemSenha } = empresa
-
         return NextResponse.json({
-            empresa: empresaSemSenha,
+            empresa: {
+                cod: empresa.cod,
+                cnpj: empresa.cnpj,
+                nome: empresa.nome,
+                email: empresa.email,
+                setor: empresa.setor,
+                logotipoUrl: empresa.logotipoUrl,
+                ativa: empresa.ativa,
+            },
             token
         })
     } catch (error) {
+        if (error instanceof SyntaxError) {
+            return NextResponse.json(
+                { message: "Corpo da requisição inválido" },
+                { status: 400 }
+            )
+        }
+        console.error("Erro ao realizar login da empresa:", error)
         return NextResponse.json(
             { message: 'Erro ao realizar login' },
             { status: 500 }

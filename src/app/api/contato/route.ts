@@ -1,13 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
 
+function escapeHtml(value: string) {
+  const escapedCharacters: Record<string, string> = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+  }
+  return value.replace(/[&<>"']/g, (character) => escapedCharacters[character])
+}
+
 export async function POST(req: NextRequest) {
   try {
-    const { nome, email, mensagem } = await req.json()
+    const body = await req.json()
+    const { nome, email, mensagem } = body
 
     if (!nome || !email || !mensagem) {
       return NextResponse.json(
-        { ok: false, message: 'Todos os campos são obrigatórios.' },
+        { ok: false, message: 'Nome, email e mensagem válidos são obrigatórios.' },
         { status: 400 }
       )
     }
@@ -21,84 +33,68 @@ export async function POST(req: NextRequest) {
       )
     }
 
+    if (!process.env.EMAIL || !process.env.GMAIL_APP_PASSWORD) {
+      console.error('Configuração de email incompleta')
+      return NextResponse.json(
+        { ok: false, message: 'Serviço de contato temporariamente indisponível.' },
+        { status: 503 }
+      )
+    }
+
+    const nomeHtml = escapeHtml(nome.trim())
+    const emailHtml = escapeHtml(email.trim())
+    const mensagemHtml = escapeHtml(mensagem.trim()).replace(/\r?\n/g, '<br/>')
+
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
         user: process.env.EMAIL,
         pass: process.env.GMAIL_APP_PASSWORD,
       },
-      tls: {
-        rejectUnauthorized: false,
-      },
     })
 
-    // Testa conexão com o Gmail
-    await transporter.verify().then(() => {
-      console.log('Conexão com Gmail OK')
-    }).catch((err) => {
-      console.error('Erro ao conectar com Gmail:', err)
-    })
+    try {
+      await transporter.sendMail({
+        from: process.env.EMAIL,
+        to: process.env.EMAIL,
+        replyTo: email.trim(),
+        subject: `Novo contato pelo site: ${nome.trim()}`,
+        text: `
+          Novo contato recebido pelo site da Agência Comunica.
 
-    await transporter.sendMail({
-      from: process.env.EMAIL,
-      to: email,
-      subject: `Sua mensagem foi recebida pela Agência Comunica!`,
-      text: `
-                Olá ${nome},
+          Nome: ${nome.trim()}
+          E-mail: ${email.trim()}
 
-                Agradecemos pelo seu contato! 📨
-
-                Nossa equipe da Agência Comunica recebeu sua mensagem e está pronta para ajudar! Aqui está um resumo do seu contato:
-
-                - Nome: ${nome}
-                - E-mail: ${email}
-                - Mensagem: ${mensagem}
-                
-
-                Em breve, nossa equipe entrará em contato com você para discutir como podemos apoiar no seu projeto. Fique tranquilo(a), estamos à disposição para tirar todas as suas dúvidas.
-
-                Se preferir, entre em contato diretamente conosco através de nossos canais:
-                - E-mail: agenciacomunicamktdigital@gmail.com
-                - Telefone: (053) 99139-3855
-
-                Até logo, e nos vemos em breve! 😉
-
-                Atenciosamente,
-                Equipe Agência Comunica
-                `,
-      html: `
-                <p>Olá <strong>${nome}</strong>,</p>
-
-                <p>Agradecemos pelo seu contato! 📨</p>
-
-                <p>Nossa equipe da <strong>Agência Comunica</strong> recebeu sua mensagem e está pronta para ajudar! Aqui está um resumo do seu contato:</p>
-
-                <ul>
-                    <li><strong>Nome:</strong> ${nome}</li>
-                    <li><strong>E-mail:</strong> ${email}</li>
-                    <li><strong>Mensagem:</strong></li>
-                    <p>${mensagem}</p>
-                </ul>
-
-                <p>Em breve, nossa equipe entrará em contato com você para discutir como podemos apoiar no seu projeto. Fique tranquilo(a), estamos à disposição para tirar todas as suas dúvidas.</p>
-
-                <p>Se preferir, entre em contato diretamente conosco através de nossos canais:</p>
-                <ul>
-                    <li><strong>E-mail:</strong> agenciacomunicamktdigital@gmail.com</li>
-                    <li><strong>Telefone:</strong> (053) 99139-3855</li>
-                </ul>
-
-                <p>Até logo, e nos vemos em breve! 😉</p>
-
-                <p>Atenciosamente,<br/>
-                   Equipe <strong>Agência Comunica</strong></p>
-            `,
-    })
+          Mensagem:
+          ${mensagem.trim()}
+        `,
+        html: `
+          <h2>Novo contato recebido pelo site</h2>
+          <p><strong>Nome:</strong> ${nomeHtml}</p>
+          <p><strong>E-mail:</strong> ${emailHtml}</p>
+          <p><strong>Mensagem:</strong></p>
+          <p>${mensagemHtml}</p>
+        `,
+      })
+    } catch (error) {
+      console.error('Erro ao enviar confirmação de contato:', error)
+      return NextResponse.json(
+        { ok: false, message: 'Não foi possível enviar a confirmação agora.' },
+        { status: 502 }
+      )
+    }
 
     return NextResponse.json({ ok: true })
   } catch (error) {
+    if (error instanceof SyntaxError) {
+      return NextResponse.json(
+        { ok: false, message: 'Corpo da requisição inválido.' },
+        { status: 400 }
+      )
+    }
+    console.error('Erro ao processar contato:', error)
     return NextResponse.json(
-      { ok: false, message: error instanceof Error ? error.message : 'Erro desconhecido' },
+      { ok: false, message: 'Não foi possível processar sua mensagem agora.' },
       { status: 500 }
     )
   }

@@ -8,7 +8,8 @@ export async function POST(
     _request: NextRequest
 ) {
     try {
-        const { email, senha } = await _request.json()
+        const body = await _request.json()
+        const { email, senha } = body
 
         if (!email || !senha) {
             return NextResponse.json(
@@ -18,13 +19,13 @@ export async function POST(
         }
 
         const funcionario = await prisma.funcionario.findUnique({
-            where: { email }
+            where: { email },
         })
 
-        if (!funcionario) {
+        if (!funcionario || funcionario.deletedAt) {
             return NextResponse.json(
-                { message: 'Funcionário não encontrado' },
-                { status: 404 }
+                { message: 'Email ou senha incorretos' },
+                { status: 401 }
             )
         }
 
@@ -35,24 +36,38 @@ export async function POST(
                 { status: 401 })
         }
 
+        const secret = process.env.JWT_SECRET
+        if (!secret) {
+            throw new Error("JWT_SECRET não configurado")
+        }
+
         const token = jwt.sign(
             {
                 id: funcionario.id,
                 email: funcionario.email,
                 nome: funcionario.nome
             },
-            process.env.JWT_SECRET || 'your-secret-key',
+            secret,
             { expiresIn: '2h' }
         )
 
-        // Remover a senha do objeto retornado
-        const { senha: _, ...funcionarioSemSenha } = funcionario
-
         return NextResponse.json({
-            funcionario: funcionarioSemSenha,
+            funcionario: {
+                id: funcionario.id,
+                nome: funcionario.nome,
+                email: funcionario.email,
+                cargo: funcionario.cargo,
+            },
             token
         })
     } catch (error) {
+        if (error instanceof SyntaxError) {
+            return NextResponse.json(
+                { message: "Corpo da requisição inválido" },
+                { status: 400 }
+            )
+        }
+        console.error("Erro ao realizar login do funcionário:", error)
         return NextResponse.json(
             { message: 'Erro ao realizar login' },
             { status: 500 }

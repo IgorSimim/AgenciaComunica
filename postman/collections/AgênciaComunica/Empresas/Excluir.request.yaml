@@ -1,0 +1,6 @@
+$kind: http-request
+url: "{{baseURL}}/api/empresa/1"
+method: DELETE
+headers:
+  Cookie: next-auth.session-token={{sessionToken}}
+order: 2000

@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
-import { getServerSession } from "next-auth"
 import prisma from "@/lib/prisma"
-import { authOptions } from "@/app/api/config/auth/authOptions"
 import cloudinary from "@/lib/cloudinary"
+import { authorizeFuncionario, cargosGestao } from "@/lib/api/funcionario-auth"
 
 // GET /api/empresa/:cod
 export async function GET(
@@ -18,18 +17,35 @@ export async function GET(
             )
         }
 
-        const cod = parseInt(codStr, 10)
-        if (isNaN(cod)) {
+        const cod = Number(codStr)
+        if (!Number.isInteger(cod) || cod <= 0) {
             return NextResponse.json(
                 { message: "Código da empresa deve ser um número válido" },
                 { status: 400 }
             )
         }
 
+        const auth = await authorizeFuncionario(cargosGestao)
+        if (auth.response) {
+            return auth.response
+        }
+
         const empresa = await prisma.empresa.findFirst({
             where: {
                 cod: cod,
                 deletedAt: null
+            },
+            select: {
+                cod: true,
+                cnpj: true,
+                nome: true,
+                email: true,
+                setor: true,
+                logotipoUrl: true,
+                logotipoPublicId: true,
+                ativa: true,
+                createdAt: true,
+                updatedAt: true,
             },
         })
 
@@ -42,6 +58,7 @@ export async function GET(
 
         return NextResponse.json(empresa, { status: 200 })
     } catch (error) {
+        console.error("Erro ao buscar empresa:", error)
         return NextResponse.json(
             { message: "Erro ao buscar empresa" },
             { status: 500 }
@@ -64,17 +81,23 @@ export async function PUT(
             )
         }
 
-        const cod = parseInt(codStr, 10)
-        if (isNaN(cod)) {
+        const cod = Number(codStr)
+        if (!Number.isInteger(cod) || cod <= 0) {
             return NextResponse.json(
                 { message: "Código da empresa deve ser um número válido" },
                 { status: 400 }
             )
         }
 
-        const empresa = await prisma.empresa.findUnique({
+        const auth = await authorizeFuncionario(cargosGestao)
+        if (auth.response) {
+            return auth.response
+        }
+
+        const empresa = await prisma.empresa.findFirst({
             where: {
-                cod: cod
+                cod: cod,
+                deletedAt: null,
             },
         })
 
@@ -85,32 +108,25 @@ export async function PUT(
             )
         }
 
-        const session = await getServerSession(authOptions)
-        if (!session?.funcionario?.email) {
+        const dadosAtualizados = await _request.json()
+        const { nome, email, setor, logotipoUrl, logotipoPublicId, ativa } = dadosAtualizados
+        if (
+            !nome || !email || !setor
+        ) {
             return NextResponse.json(
-                { message: "Funcionário não autenticado" },
-                { status: 401 }
+                { message: "Dados obrigatórios ou status da empresa inválidos" },
+                { status: 400 }
             )
         }
 
-        // const funcionario = await prisma.funcionario.findUnique({
-        //     where: { email: session.funcionario.email }
-        // })
-
-        // if (funcionario.cargo !== "PROPRIETARIA" || funcionario.cargo !== "RH") {
-        //     return NextResponse.json(
-        //         { message: "Acesso negado para atualizar os dados da empresa" },
-        //         { status: 403 }
-        //     )
-        // }
-
-        const dadosAtualizados = await _request.json()
-
-        const { nome, email, setor, logotipoUrl, logotipoPublicId, ativa } = dadosAtualizados
-        if (!nome || !email || !setor) {
+        const empresaComEmail = await prisma.empresa.findFirst({
+            where: { email, cod: { not: cod } },
+            select: { cod: true },
+        })
+        if (empresaComEmail) {
             return NextResponse.json(
-                { message: "Todos os campos são obrigatórios" },
-                { status: 400 }
+                { message: "Já existe uma empresa com este email" },
+                { status: 409 }
             )
         }
 
@@ -119,6 +135,7 @@ export async function PUT(
             try {
                 await cloudinary.uploader.destroy(empresa.logotipoPublicId)
             } catch (error) {
+                console.error("Erro ao remover logotipo antigo da empresa:", error)
                 return NextResponse.json(
                     { message: "Erro ao deletar a imagem antiga da empresa" },
                     { status: 500 }
@@ -143,81 +160,15 @@ export async function PUT(
             { status: 200 }
         )
     } catch (error) {
+        if (error instanceof SyntaxError) {
+            return NextResponse.json(
+                { message: "Corpo da requisição inválido" },
+                { status: 400 }
+            )
+        }
         return NextResponse.json(
             { message: "Erro ao atualizar empresa" },
             { status: 500 }
         )
     }
 }
-
-// DELETE /api/empresa/:cod (Soft Delete)
-// export async function DELETE(
-//     _request: NextRequest,
-//     { params }: { params: Promise<{ cod: string }> }
-// ) {
-//     try {
-//         const codStr = await params?.then((e) => e.cod)
-//         if (!codStr) {
-//             return NextResponse.json(
-//                 { message: "Código da empresa é obrigatório" },
-//                 { status: 400 }
-//             )
-//         }
-
-//         const cod = parseInt(codStr, 10)
-//         if (isNaN(cod)) {
-//             return NextResponse.json(
-//                 { message: "Código da empresa deve ser um número válido" },
-//                 { status: 400 }
-//             )
-//         }
-
-//         const empresa = await prisma.empresa.findFirst({
-//             where: {
-//                 cod: cod,
-//                 deletedAt: null
-//             },
-//         })
-
-//         if (!empresa) {
-//             return NextResponse.json(
-//                 { message: "Empresa não encontrada" },
-//                 { status: 404 }
-//             )
-//         }
-
-//         const session = await getServerSession(authOptions)
-//         if (!session?.funcionario?.email) {
-//             return NextResponse.json(
-//                 { message: "Funcionário não autenticado" },
-//                 { status: 401 }
-//             )
-//         }
-
-//         // Deletar a imagem antes de fazer soft delete
-//         if (empresa.logotipoPublicId) {
-//             try {
-//                 await cloudinary.uploader.destroy(empresa.logotipoPublicId)
-//             } catch (error) {
-//                 console.error('Erro ao deletar logotipo da empresa:', error)
-//             }
-//         }
-
-//         await prisma.empresa.update({
-//             where: { cod },
-//             data: {
-//                 deletedAt: new Date()
-//             },
-//         })
-
-//         return NextResponse.json(
-//             { message: "Empresa removida com sucesso!" },
-//             { status: 200 }
-//         )
-//     } catch (error) {
-//         return NextResponse.json(
-//             { message: "Erro ao remover empresa" },
-//             { status: 500 }
-//         )
-//     }
-// }

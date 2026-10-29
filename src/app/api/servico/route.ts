@@ -1,7 +1,6 @@
 import { NextResponse, NextRequest } from "next/server"
 import prisma from "@/lib/prisma"
-import { authOptions } from "@/app/api/config/auth/authOptions"
-import { getServerSession } from "next-auth"
+import { authorizeFuncionario, cargosServico } from "@/lib/api/funcionario-auth"
 
 // GET /api/servico
 export async function GET() {
@@ -11,6 +10,7 @@ export async function GET() {
                 cod: true,
                 nome: true,
                 descricao: true,
+                preco: true,
                 simboloUrl: true,
                 simboloPublicId: true
             }
@@ -21,6 +21,7 @@ export async function GET() {
             { status: 200 }
         )
     } catch (error) {
+        console.error("Erro ao buscar serviços:", error)
         return NextResponse.json(
             { mensagem: "Erro ao buscar servicos" },
             { status: 500 }
@@ -33,38 +34,22 @@ export async function POST(
     _request: NextRequest
 ) {
     try {
-        const session = await getServerSession(authOptions)
-        if (!session?.funcionario?.email) {
-            return NextResponse.json(
-                { message: "Funcionário não autenticado" },
-                { status: 401 }
-            )
+        const auth = await authorizeFuncionario(cargosServico)
+        if (auth.response) {
+            return auth.response
         }
-
-        const funcionario = await prisma.funcionario.findUnique({
-            where: { email: session.funcionario.email },
-        })
-
-        if (!funcionario) {
-            return NextResponse.json(
-                { message: "Funcionário não encontrado" },
-                { status: 404 }
-            )
-        }
-
-        // if (funcionario.cargo !== "PROPRIETARIA" || funcionario.cargo !== "REDATORA") {
-        //     return NextResponse.json(
-        //         { message: "Acesso negado" },
-        //         { status: 403 }
-        //     )
-        // }
+        const { funcionario } = auth
 
         const data = await _request.json()
 
         const { nome, descricao, preco, simboloUrl, simboloPublicId } = data
-        if (!nome || !descricao || preco === undefined) {
+        const precoNumerico = Number(preco)
+        if (
+            !nome || !descricao || !simboloUrl || !simboloPublicId
+            || !Number.isFinite(precoNumerico) || precoNumerico <= 0
+        ) {
             return NextResponse.json(
-                { message: "Todos os campos são obrigatórios" },
+                { message: "Nome, descrição, símbolo e preço positivo são obrigatórios" },
                 { status: 400 }
             )
         }
@@ -76,7 +61,7 @@ export async function POST(
         if (existingServico) {
             return NextResponse.json(
                 { message: "Já existe um serviço com este nome" },
-                { status: 400 }
+                { status: 409 }
             )
         }
 
@@ -85,7 +70,7 @@ export async function POST(
                 funcionario_id: funcionario.id,
                 nome,
                 descricao,
-                preco: parseFloat(preco),
+                preco: precoNumerico,
                 simboloUrl,
                 simboloPublicId
             },
@@ -96,6 +81,12 @@ export async function POST(
             { status: 201 }
         )
     } catch (error) {
+        if (error instanceof SyntaxError) {
+            return NextResponse.json(
+                { message: "Corpo da requisição inválido" },
+                { status: 400 }
+            )
+        }
         return NextResponse.json(
             { message: "Erro ao criar serviço" },
             { status: 500 }

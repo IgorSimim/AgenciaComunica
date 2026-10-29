@@ -1,25 +1,20 @@
 import { NextResponse, NextRequest } from "next/server"
 import bcrypt from "bcryptjs"
 import prisma from "@/lib/prisma"
-import { authOptions } from "@/app/api/config/auth/authOptions"
-import { getServerSession } from "next-auth"
+import { cargosGestao, authorizeFuncionario } from "@/lib/api/funcionario-auth"
 
 // GET /api/empresa
 export async function GET() {
     try {
-        const session = await getServerSession(authOptions)
-        if (!session?.funcionario?.email) {
-            return NextResponse.json(
-                { message: "Funcionário não autenticado" },
-                { status: 401 }
-            )
+        const auth = await authorizeFuncionario()
+        if (auth.response) {
+            return auth.response
         }
 
-        const funcionario = await prisma.funcionario.findUnique({
-            where: { email: session.funcionario.email },
-        })
-
-        if (funcionario.cargo === "PROPRIETARIA" || funcionario.cargo === "RH") {
+        if (
+            auth.funcionario.cargo === "PROPRIETARIA"
+            || auth.funcionario.cargo === "RH"
+        ) {
             const empresas = await prisma.empresa.findMany({
                 select: {
                     cod: true,
@@ -47,32 +42,23 @@ export async function GET() {
             )
         }
 
-        if (funcionario.cargo !== "PROPRIETARIA" || funcionario.cargo !== "RH") {
-            const empresas = await prisma.empresa.findMany({
-                select: {
-                    cod: true,
-                    cnpj: true,
-                    nome: true,
-                    email: true,
-                    setor: true,
-                    logotipoUrl: true,
-                    logotipoPublicId: true,
-                    ativa: true,
-                    createdAt: true,
-                    updatedAt: true
-                },
-                where: {
-                    deletedAt: null
-                }
-            })
+        const empresas = await prisma.empresa.findMany({
+            select: {
+                cod: true,
+                nome: true,
+                setor: true,
+                logotipoUrl: true,
+                ativa: true,
+                createdAt: true,
+                updatedAt: true,
+            },
+            where: { deletedAt: null },
+        })
 
-            return NextResponse.json(
-                empresas,
-                { status: 200 }
-            )
-        }
+        return NextResponse.json(empresas, { status: 200 })
 
     } catch (error) {
+        console.error("Erro ao buscar empresas:", error)
         return NextResponse.json(
             { mensagem: "Erro ao buscar empresas" },
             { status: 500 }
@@ -85,36 +71,19 @@ export async function POST(
     _request: NextRequest
 ) {
     try {
-        const session = await getServerSession(authOptions)
-        if (!session?.funcionario?.email) {
-            return NextResponse.json(
-                { message: "Funcionário não autenticado" },
-                { status: 401 }
-            )
+        const auth = await authorizeFuncionario(cargosGestao)
+        if (auth.response) {
+            return auth.response
         }
-
-        const funcionario = await prisma.funcionario.findUnique({
-            where: { email: session.funcionario.email },
-        })
-
-        if (!funcionario) {
-            return NextResponse.json(
-                { message: "Funcionário não encontrado" },
-                { status: 404 }
-            )
-        }
-
-        // if (funcionario.cargo !== "PROPRIETARIA" || funcionario.cargo !== "REDATORA") {
-        //     return NextResponse.json(
-        //         { message: "Acesso negado" },
-        //         { status: 403 }
-        //     )
-        // }
+        const { funcionario } = auth
 
         const data = await _request.json()
 
         const { cnpj, nome, email, senha, setor, logotipoUrl, logotipoPublicId, ativa } = data
-        if (!cnpj || !nome || !email || !senha || !setor) {
+        if (
+            !cnpj || !nome || !email || !senha
+            ||             !setor || !logotipoUrl || !logotipoPublicId
+        ) {
             return NextResponse.json(
                 { message: "Todos os campos são obrigatórios" },
                 { status: 400 }
@@ -128,7 +97,7 @@ export async function POST(
         if (existingCnpj) {
             return NextResponse.json(
                 { message: "Já existe uma empresa com este CNPJ" },
-                { status: 400 }
+                { status: 409 }
             )
         }
 
@@ -139,7 +108,7 @@ export async function POST(
         if (existingEmail) {
             return NextResponse.json(
                 { message: "Já existe uma empresa com este email" },
-                { status: 400 }
+                { status: 409 }
             )
         }
 
@@ -155,7 +124,20 @@ export async function POST(
                 setor,
                 logotipoUrl,
                 logotipoPublicId,
-                ativa
+                ...(ativa !== undefined && { ativa })
+            },
+            select: {
+                cod: true,
+                funcionario_id: true,
+                cnpj: true,
+                nome: true,
+                email: true,
+                setor: true,
+                logotipoUrl: true,
+                logotipoPublicId: true,
+                ativa: true,
+                createdAt: true,
+                updatedAt: true,
             },
         })
 
@@ -164,6 +146,12 @@ export async function POST(
             { status: 201 }
         )
     } catch (error) {
+        if (error instanceof SyntaxError) {
+            return NextResponse.json(
+                { message: "Corpo da requisição inválido" },
+                { status: 400 }
+            )
+        }
         return NextResponse.json(
             { message: "Erro ao criar empresa" },
             { status: 500 }

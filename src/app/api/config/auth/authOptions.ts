@@ -13,7 +13,7 @@ export const authOptions: NextAuthOptions = {
         senha: { label: "Senha", type: "password" },
         type: { label: "Type", type: "text" },
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         const { email, senha, type } = credentials || {}
 
         if (!email || !senha || !type) {
@@ -23,12 +23,12 @@ export const authOptions: NextAuthOptions = {
         try {
           // Login como empresa
           if (type === "empresa") {
-            const empresa = await prisma.empresa.findUnique({
-              where: { email },
+            const empresa = await prisma.empresa.findFirst({
+              where: { email, deletedAt: null, ativa: true },
             })
 
             if (!empresa) {
-              throw new Error("Empresa não encontrada")
+              throw new Error("Email ou senha incorretos")
             }
 
             const senhaValida = await bcryptjs.compare(senha, empresa.senha)
@@ -39,18 +39,24 @@ export const authOptions: NextAuthOptions = {
             return {
               id: empresa.cod.toString(),
               email: empresa.email,
-              empresa
+              empresa: {
+                cod: empresa.cod,
+                cnpj: empresa.cnpj,
+                nome: empresa.nome,
+                email: empresa.email,
+                logotipoUrl: empresa.logotipoUrl,
+              },
             }
           } 
           
           // Login como funcionário
           if (type === "funcionario") {
             const funcionario = await prisma.funcionario.findUnique({
-              where: { email },
+              where: { email, deletedAt: null },
             })
 
             if (!funcionario) {
-              throw new Error("Funcionário não encontrado")
+              throw new Error("Email ou senha incorretos")
             }
 
             const senhaValida = await bcryptjs.compare(senha, funcionario.senha)
@@ -61,13 +67,18 @@ export const authOptions: NextAuthOptions = {
             return {
               id: funcionario.id.toString(),
               email: funcionario.email,
-              funcionario
+              funcionario: {
+                id: funcionario.id.toString(),
+                email: funcionario.email,
+                nome: funcionario.nome,
+                cargo: funcionario.cargo,
+              },
             }
           } else {
             throw new Error("Tipo inválido")
           }
-        } catch (error: any) {
-          throw new Error(error.message || "Erro ao fazer login")
+        } catch (error) {
+          throw new Error(error instanceof Error ? error.message : "Erro ao fazer login")
         }
       },
     }),
@@ -89,14 +100,29 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        if ((user as any).empresa) (token as any).empresa = (user as any).empresa
-        if ((user as any).funcionario) (token as any).funcionario = (user as any).funcionario
+        if (user.empresa) token.empresa = user.empresa
+        if (user.funcionario) token.funcionario = user.funcionario
       }
       return token
     },
     async session({ session, token }) {
-      if ((token as any).empresa) (session as any).empresa = (token as any).empresa
-      if ((token as any).funcionario) (session as any).funcionario = (token as any).funcionario
+      if (token.empresa) {
+        session.empresa = {
+          cod: token.empresa.cod,
+          cnpj: token.empresa.cnpj,
+          nome: token.empresa.nome,
+          email: token.empresa.email,
+          logotipoUrl: token.empresa.logotipoUrl,
+        }
+      }
+      if (token.funcionario) {
+        session.funcionario = {
+          id: token.funcionario.id,
+          email: token.funcionario.email,
+          nome: token.funcionario.nome,
+          cargo: token.funcionario.cargo,
+        }
+      }
       return session
     },
   },

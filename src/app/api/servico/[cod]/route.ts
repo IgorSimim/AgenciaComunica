@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
-import { getServerSession } from "next-auth"
 import prisma from "@/lib/prisma"
-import { authOptions } from "@/app/api/config/auth/authOptions"
 import cloudinary from "@/lib/cloudinary"
+import { authorizeFuncionario, cargosServico } from "@/lib/api/funcionario-auth"
 
 // GET /api/servico/:cod
 export async function GET(
@@ -10,6 +9,11 @@ export async function GET(
     { params }: { params: Promise<{ cod: string }> }
 ) {
     try {
+        const auth = await authorizeFuncionario(cargosServico)
+        if (auth.response) {
+            return auth.response
+        }
+
         const codStr = await params?.then((e) => e.cod)
         if (!codStr) {
             return NextResponse.json(
@@ -18,8 +22,8 @@ export async function GET(
             )
         }
 
-        const cod = parseInt(codStr, 10)
-        if (isNaN(cod)) {
+        const cod = Number(codStr)
+        if (!Number.isInteger(cod) || cod <= 0) {
             return NextResponse.json(
                 { message: "Código do serviço deve ser um número válido" },
                 { status: 400 }
@@ -29,6 +33,16 @@ export async function GET(
         const servico = await prisma.servico.findFirst({
             where: {
                 cod: cod
+            },
+            select: {
+                cod: true,
+                nome: true,
+                descricao: true,
+                preco: true,
+                simboloUrl: true,
+                simboloPublicId: true,
+                createdAt: true,
+                updatedAt: true,
             },
         })
 
@@ -41,6 +55,7 @@ export async function GET(
 
         return NextResponse.json(servico, { status: 200 })
     } catch (error) {
+        console.error("Erro ao buscar serviço:", error)
         return NextResponse.json(
             { message: "Erro ao buscar serviço" },
             { status: 500 }
@@ -54,6 +69,11 @@ export async function PUT(
     { params }: { params: Promise<{ cod: string }> }
 ) {
     try {
+        const auth = await authorizeFuncionario(cargosServico)
+        if (auth.response) {
+            return auth.response
+        }
+
         const codStr = await params?.then((e) => e.cod)
         if (!codStr) {
             return NextResponse.json(
@@ -62,8 +82,8 @@ export async function PUT(
             )
         }
 
-        const cod = parseInt(codStr, 10)
-        if (isNaN(cod)) {
+        const cod = Number(codStr)
+        if (!Number.isInteger(cod) || cod <= 0) {
             return NextResponse.json(
                 { message: "Código do serviço deve ser um número válido" },
                 { status: 400 }
@@ -83,32 +103,27 @@ export async function PUT(
             )
         }
 
-        const session = await getServerSession(authOptions)
-        if (!session?.funcionario?.email) {
+        const dadosAtualizados = await _request.json()
+        const { nome, descricao, preco, simboloUrl, simboloPublicId } = dadosAtualizados
+        const precoNumerico = Number(preco)
+        if (
+            !nome || !descricao
+            || !Number.isFinite(precoNumerico) || precoNumerico <= 0
+        ) {
             return NextResponse.json(
-                { message: "Funcionário não autenticado" },
-                { status: 401 }
+                { message: "Nome, descrição e preço positivo são obrigatórios" },
+                { status: 400 }
             )
         }
 
-        // const funcionario = await prisma.funcionario.findUnique({
-        //     where: { email: session.funcionario.email }
-        // })
-
-        // if (funcionario.cargo !== "PROPRIETARIA" || funcionario.cargo !== "REDATORA") {
-        //     return NextResponse.json(
-        //         { message: "Acesso negado para atualizar os dados da serviço" },
-        //         { status: 403 }
-        //     )
-        // }
-
-        const dadosAtualizados = await _request.json()
-
-        const { nome, descricao, preco, simboloUrl, simboloPublicId } = dadosAtualizados
-        if (!nome || !descricao || !preco) {
+        const servicoComNome = await prisma.servico.findFirst({
+            where: { nome, cod: { not: cod } },
+            select: { cod: true },
+        })
+        if (servicoComNome) {
             return NextResponse.json(
-                { message: "Todos os campos são obrigatórios" },
-                { status: 400 }
+                { message: "Já existe um serviço com este nome" },
+                { status: 409 }
             )
         }
 
@@ -117,6 +132,7 @@ export async function PUT(
             try {
                 await cloudinary.uploader.destroy(servico.simboloPublicId)
             } catch (error) {
+                console.error("Erro ao remover símbolo antigo do serviço:", error)
                 return NextResponse.json(
                     { message: "Erro ao deletar a imagem antiga do serviço" },
                     { status: 500 }
@@ -129,7 +145,7 @@ export async function PUT(
             data: {
                 nome,
                 descricao,
-                preco,
+                preco: precoNumerico,
                 ...(simboloUrl && { simboloUrl }),
                 ...(simboloPublicId && { simboloPublicId }),
             },
@@ -140,6 +156,12 @@ export async function PUT(
             { status: 200 }
         )
     } catch (error) {
+        if (error instanceof SyntaxError) {
+            return NextResponse.json(
+                { message: "Corpo da requisição inválido" },
+                { status: 400 }
+            )
+        }
         return NextResponse.json(
             { message: "Erro ao atualizar serviço" },
             { status: 500 }
@@ -153,6 +175,11 @@ export async function DELETE(
     { params }: { params: Promise<{ cod: string }> }
 ) {
     try {
+        const auth = await authorizeFuncionario(cargosServico)
+        if (auth.response) {
+            return auth.response
+        }
+
         const codStr = await params?.then((e) => e.cod)
         if (!codStr) {
             return NextResponse.json(
@@ -161,8 +188,8 @@ export async function DELETE(
             )
         }
 
-        const cod = parseInt(codStr, 10)
-        if (isNaN(cod)) {
+        const cod = Number(codStr)
+        if (!Number.isInteger(cod) || cod <= 0) {
             return NextResponse.json(
                 { message: "Código do serviço deve ser um número válido" },
                 { status: 400 }
@@ -182,30 +209,22 @@ export async function DELETE(
             )
         }
 
-        const session = await getServerSession(authOptions)
-        if (!session?.funcionario?.email) {
+        const contratos = await prisma.contrato.count({
+            where: { servicoId: cod },
+        })
+        if (contratos > 0) {
             return NextResponse.json(
-                { message: "Funcionário não autenticado" },
-                { status: 401 }
+                { message: "Não é possível excluir um serviço vinculado a contratos" },
+                { status: 409 }
             )
         }
-
-        // const funcionario = await prisma.funcionario.findUnique({
-        //     where: { email: session.funcionario.email }
-        // })
-
-        // if (funcionario.cargo !== "PROPRIETARIA" || funcionario.cargo !== "REDATORA") {
-        //     return NextResponse.json(
-        //         { message: "Acesso negado para deletar o serviço" },
-        //         { status: 403 }
-        //     )
-        // }
 
         // Deletar a foto do Cloudinary antes de fazer o delete
         if (servico.simboloPublicId) {
             try {
                 await cloudinary.uploader.destroy(servico.simboloPublicId)
             } catch (error) {
+                console.error("Erro ao remover símbolo do serviço:", error)
                 return NextResponse.json(
                     { message: "Erro ao deletar a imagem do serviço" },
                     { status: 500 }
@@ -222,6 +241,7 @@ export async function DELETE(
             { status: 200 }
         )
     } catch (error) {
+        console.error("Erro ao excluir serviço:", error)
         return NextResponse.json(
             { message: "Erro ao excluir serviço" },
             { status: 500 }

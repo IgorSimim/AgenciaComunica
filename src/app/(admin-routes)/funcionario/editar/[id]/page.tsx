@@ -9,6 +9,7 @@ import ImageUpload from "@/app/components/shared/ImageUpload"
 import { useImageUpload } from "@/hooks/useImageUpload"
 
 const cargos = [
+  { value: "PROPRIETARIA", label: "Proprietária" },
   { value: "RH", label: "RH" },
   { value: "DESIGNER", label: "Designer" },
   { value: "REDATORA", label: "Redatora" },
@@ -278,7 +279,7 @@ export default function AlteracaoFuncionario() {
                 nome: "",
                 email: "",
                 telefone: "",
-                cargo: "",
+                cargo: undefined,
                 sobre: "",
                 fotoUrl: ""
               })

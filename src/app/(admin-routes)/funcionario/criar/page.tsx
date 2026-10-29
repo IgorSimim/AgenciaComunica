@@ -8,6 +8,7 @@ import ImageUpload, { ImageUploadRef } from "@/app/components/shared/ImageUpload
 import { useImageUpload } from "@/hooks/useImageUpload"
 
 const cargos = [
+  { value: "PROPRIETARIA", label: "Proprietária" },
   { value: "RH", label: "RH" },
   { value: "DESIGNER", label: "Designer" },
   { value: "REDATORA", label: "Redatora" },

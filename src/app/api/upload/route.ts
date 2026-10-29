@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import cloudinary from '@/lib/cloudinary'
+import { authorizeFuncionario, cargosGestao, cargosServico } from '@/lib/api/funcionario-auth'
 
 export const runtime = 'nodejs'
 
@@ -10,7 +11,18 @@ export async function POST(request: NextRequest) {
   try {
     const data = await request.formData()
     const file = data.get('file')
-    const type = data.get('type')
+    const type = allowedTypes.find((allowedType) => allowedType === data.get('type'))
+
+    if (!type) {
+      return NextResponse.json(
+        { message: 'Tipo inválido' },
+        { status: 400 })
+    }
+
+    const auth = await authorizeFuncionario(type === 'servicos' ? cargosServico : cargosGestao)
+    if (auth.response) {
+      return auth.response
+    }
 
     if (!(file instanceof File) || file.size === 0) {
       return NextResponse.json(
@@ -18,17 +30,18 @@ export async function POST(request: NextRequest) {
         { status: 400 })
     }
 
-    if (file.size > maxFileSize || !file.type.startsWith('image/')) {
+    if (file.size > maxFileSize) {
       return NextResponse.json(
-        { message: 'A imagem deve ser válida, ter formato de imagem e no máximo 5MB' },
-        { status: 400 }
+        { message: 'A imagem deve ter no máximo 5MB' },
+        { status: 413 }
       )
     }
 
-    if (typeof type !== 'string' || !allowedTypes.includes(type as typeof allowedTypes[number])) {
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
       return NextResponse.json(
-        { message: 'Tipo inválido' }, 
-        { status: 400 })
+        { message: 'Formato de imagem não suportado. Envie JPEG, PNG ou WebP.' },
+        { status: 415 }
+      )
     }
 
     const bytes = await file.arrayBuffer()
@@ -62,12 +75,18 @@ export async function POST(request: NextRequest) {
       success: true,
       url: result.secure_url,
       publicId: result.public_id
-    })
+    }, { status: 201 })
 
   } catch (error) {
     console.error('Erro no upload da imagem:', error)
+    if (error instanceof SyntaxError) {
+      return NextResponse.json(
+        { message: 'Formulário de upload inválido' },
+        { status: 400 }
+      )
+    }
     return NextResponse.json({
-      message: error instanceof Error ? error.message : 'Erro no processamento do upload'
+      message: 'Não foi possível processar o upload agora'
     },
       { status: 500 })
   }
