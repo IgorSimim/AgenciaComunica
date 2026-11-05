@@ -21,10 +21,9 @@ export async function POST(
         const empresa = await prisma.empresa.findUnique({
             where: { email }
         })
-
-        if (!empresa || empresa.deletedAt || !empresa.ativa) {
+        if (!empresa) {
             return NextResponse.json(
-                { message: 'Email ou senha incorretos' },
+                { message: 'Email ou senha incorreta' },
                 { status: 401 }
             )
         }

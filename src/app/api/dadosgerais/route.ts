@@ -1,13 +1,8 @@
 import { NextResponse } from "next/server"
 import prisma from "@/lib/prisma"
-import { authorizeFuncionario } from "@/lib/api/funcionario-auth"
 
 export async function GET() {
     try {
-        const auth = await authorizeFuncionario()
-        if (auth.response) {
-            return auth.response
-        }
 
         const [empresas, funcionarios, servicos] = await Promise.all([
             prisma.empresa.count({ where: { ativa: true, deletedAt: null } }),

@@ -28,7 +28,7 @@ export const authOptions: NextAuthOptions = {
             })
 
             if (!empresa) {
-              throw new Error("Email ou senha incorretos")
+              throw new Error("Email ou senha incorreta")
             }
 
             const senhaValida = await bcryptjs.compare(senha, empresa.senha)
@@ -56,7 +56,7 @@ export const authOptions: NextAuthOptions = {
             })
 
             if (!funcionario) {
-              throw new Error("Email ou senha incorretos")
+              throw new Error("Email ou senha incorreta")
             }
 
             const senhaValida = await bcryptjs.compare(senha, funcionario.senha)
@@ -74,9 +74,8 @@ export const authOptions: NextAuthOptions = {
                 cargo: funcionario.cargo,
               },
             }
-          } else {
-            throw new Error("Tipo inválido")
           }
+          
         } catch (error) {
           throw new Error(error instanceof Error ? error.message : "Erro ao fazer login")
         }

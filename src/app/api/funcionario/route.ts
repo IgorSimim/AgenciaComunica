@@ -16,6 +16,7 @@ export async function GET() {
                 select: { cargo: true },
             })
             : null
+
         const isGestor = currentFuncionario?.cargo === Cargo.PROPRIETARIA
             || currentFuncionario?.cargo === Cargo.RH
 
@@ -63,11 +64,7 @@ export async function POST(
         const data = await _request.json()
 
         const { nome, email, senha, telefone, sobre, dtnasc, fotoUrl, fotoPublicId, cargo } = data
-        if (
-            !nome || !email || !senha || !telefone
-            || !sobre || !dtnasc || !fotoUrl || !fotoPublicId
-            || !cargo
-        ) {
+        if (!nome || !email || !senha || !telefone || !sobre || !dtnasc || !fotoUrl || !fotoPublicId || !cargo) {
             return NextResponse.json(
                 { message: "Todos os campos são obrigatórios" },
                 { status: 400 }
@@ -99,7 +96,6 @@ export async function POST(
         const existingEmail = await prisma.funcionario.findUnique({
             where: { email }
         })
-
         if (existingEmail) {
             return NextResponse.json(
                 { message: "Já existe um funcionário com este email" },
@@ -110,7 +106,6 @@ export async function POST(
         const existingTelefone = await prisma.funcionario.findUnique({
             where: { telefone }
         })
-
         if (existingTelefone) {
             return NextResponse.json(
                 { message: "Já existe um funcionário com este telefone" },

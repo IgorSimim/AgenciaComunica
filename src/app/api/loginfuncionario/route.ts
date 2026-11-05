@@ -21,10 +21,9 @@ export async function POST(
         const funcionario = await prisma.funcionario.findUnique({
             where: { email },
         })
-
         if (!funcionario || funcionario.deletedAt) {
             return NextResponse.json(
-                { message: 'Email ou senha incorretos' },
+                { message: 'Email ou senha incorreta' },
                 { status: 401 }
             )
         }

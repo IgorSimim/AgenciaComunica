@@ -44,10 +44,7 @@ export async function POST(
 
         const { nome, descricao, preco, simboloUrl, simboloPublicId } = data
         const precoNumerico = Number(preco)
-        if (
-            !nome || !descricao || !simboloUrl || !simboloPublicId
-            || !Number.isFinite(precoNumerico) || precoNumerico <= 0
-        ) {
+        if (!nome || !descricao || !simboloUrl || !simboloPublicId || !Number.isFinite(precoNumerico) || precoNumerico <= 0) {
             return NextResponse.json(
                 { message: "Nome, descrição, símbolo e preço positivo são obrigatórios" },
                 { status: 400 }

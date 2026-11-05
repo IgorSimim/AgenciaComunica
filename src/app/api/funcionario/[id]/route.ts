@@ -113,10 +113,7 @@ export async function PUT(
 
         const dadosAtualizados = await _request.json()
         const { nome, email, telefone, sobre, fotoUrl, fotoPublicId, cargo } = dadosAtualizados
-        if (
-            !nome || !email || !telefone || !sobre
-            || !cargo
-        ) {
+        if (!nome || !email || !telefone || !sobre || !cargo) {
             return NextResponse.json(
                 { message: "Todos os campos são obrigatórios" },
                 { status: 400 }
@@ -130,10 +127,7 @@ export async function PUT(
             )
         }
 
-        if (
-            actor.cargo === Cargo.RH
-            && (cargo === Cargo.PROPRIETARIA || funcionario.cargo === Cargo.PROPRIETARIA)
-        ) {
+        if (actor.cargo === Cargo.RH && (cargo === Cargo.PROPRIETARIA || funcionario.cargo === Cargo.PROPRIETARIA)) {
             return NextResponse.json(
                 { message: "Somente a proprietária pode gerenciar funcionários com este cargo" },
                 { status: 403 }

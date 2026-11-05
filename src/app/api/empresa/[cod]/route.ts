@@ -110,9 +110,8 @@ export async function PUT(
 
         const dadosAtualizados = await _request.json()
         const { nome, email, setor, logotipoUrl, logotipoPublicId, ativa } = dadosAtualizados
-        if (
-            !nome || !email || !setor
-        ) {
+        
+        if (!nome || !email || !setor) {
             return NextResponse.json(
                 { message: "Dados obrigatórios ou status da empresa inválidos" },
                 { status: 400 }

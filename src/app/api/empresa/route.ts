@@ -11,10 +11,7 @@ export async function GET() {
             return auth.response
         }
 
-        if (
-            auth.funcionario.cargo === "PROPRIETARIA"
-            || auth.funcionario.cargo === "RH"
-        ) {
+        if (auth.funcionario.cargo === "PROPRIETARIA" || auth.funcionario.cargo === "RH") {
             const empresas = await prisma.empresa.findMany({
                 select: {
                     cod: true,
@@ -80,10 +77,7 @@ export async function POST(
         const data = await _request.json()
 
         const { cnpj, nome, email, senha, setor, logotipoUrl, logotipoPublicId, ativa } = data
-        if (
-            !cnpj || !nome || !email || !senha
-            ||             !setor || !logotipoUrl || !logotipoPublicId
-        ) {
+        if (!cnpj || !nome || !email || !senha|| !setor || !logotipoUrl || !logotipoPublicId) {
             return NextResponse.json(
                 { message: "Todos os campos são obrigatórios" },
                 { status: 400 }

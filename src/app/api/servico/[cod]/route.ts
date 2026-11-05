@@ -106,10 +106,7 @@ export async function PUT(
         const dadosAtualizados = await _request.json()
         const { nome, descricao, preco, simboloUrl, simboloPublicId } = dadosAtualizados
         const precoNumerico = Number(preco)
-        if (
-            !nome || !descricao
-            || !Number.isFinite(precoNumerico) || precoNumerico <= 0
-        ) {
+        if (!nome || !descricao || !Number.isFinite(precoNumerico) || precoNumerico <= 0) {
             return NextResponse.json(
                 { message: "Nome, descrição e preço positivo são obrigatórios" },
                 { status: 400 }
