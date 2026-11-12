@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import bcryptjs from 'bcryptjs'
 import jwt from 'jsonwebtoken'
+import { apiController } from '@/lib/api/api-controller'
 
 // POST /api/loginfuncionario (Funcionário)
 export async function POST(
@@ -60,16 +61,6 @@ export async function POST(
             token
         })
     } catch (error) {
-        if (error instanceof SyntaxError) {
-            return NextResponse.json(
-                { message: "Corpo da requisição inválido" },
-                { status: 400 }
-            )
-        }
-        console.error("Erro ao realizar login do funcionário:", error)
-        return NextResponse.json(
-            { message: 'Erro ao realizar login' },
-            { status: 500 }
-        )
+        return apiController.handleError(error, 'Erro ao realizar login')
     }
 } 

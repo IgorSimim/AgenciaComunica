@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import prisma from "@/lib/prisma"
 import cloudinary from "@/lib/cloudinary"
 import { authorizeFuncionario, cargosServico } from "@/lib/api/funcionario-auth"
+import { apiController } from "@/lib/api/api-controller"
 
 // GET /api/servico/:cod
 export async function GET(
@@ -15,20 +16,12 @@ export async function GET(
         }
 
         const codStr = await params?.then((e) => e.cod)
-        if (!codStr) {
-            return NextResponse.json(
-                { message: "Código do serviço é obrigatório" },
-                { status: 400 }
-            )
-        }
-
-        const cod = Number(codStr)
-        if (!Number.isInteger(cod) || cod <= 0) {
-            return NextResponse.json(
-                { message: "Código do serviço deve ser um número válido" },
-                { status: 400 }
-            )
-        }
+        const parsedCode = apiController.parsePositiveInteger(codStr, {
+            missingMessage: "Código do serviço é obrigatório",
+            invalidMessage: "Código do serviço deve ser um número válido",
+        })
+        if ("response" in parsedCode) return parsedCode.response
+        const cod = parsedCode.value
 
         const servico = await prisma.servico.findFirst({
             where: {
@@ -55,11 +48,7 @@ export async function GET(
 
         return NextResponse.json(servico, { status: 200 })
     } catch (error) {
-        console.error("Erro ao buscar serviço:", error)
-        return NextResponse.json(
-            { message: "Erro ao buscar serviço" },
-            { status: 500 }
-        )
+        return apiController.handleError(error, "Erro ao buscar serviço")
     }
 }
 
@@ -75,20 +64,12 @@ export async function PUT(
         }
 
         const codStr = await params?.then((e) => e.cod)
-        if (!codStr) {
-            return NextResponse.json(
-                { message: "Código do serviço é obrigatório" },
-                { status: 400 }
-            )
-        }
-
-        const cod = Number(codStr)
-        if (!Number.isInteger(cod) || cod <= 0) {
-            return NextResponse.json(
-                { message: "Código do serviço deve ser um número válido" },
-                { status: 400 }
-            )
-        }
+        const parsedCode = apiController.parsePositiveInteger(codStr, {
+            missingMessage: "Código do serviço é obrigatório",
+            invalidMessage: "Código do serviço deve ser um número válido",
+        })
+        if ("response" in parsedCode) return parsedCode.response
+        const cod = parsedCode.value
 
         const servico = await prisma.servico.findFirst({
             where: {
@@ -153,16 +134,7 @@ export async function PUT(
             { status: 200 }
         )
     } catch (error) {
-        if (error instanceof SyntaxError) {
-            return NextResponse.json(
-                { message: "Corpo da requisição inválido" },
-                { status: 400 }
-            )
-        }
-        return NextResponse.json(
-            { message: "Erro ao atualizar serviço" },
-            { status: 500 }
-        )
+        return apiController.handleError(error, "Erro ao atualizar serviço")
     }
 }
 
@@ -178,20 +150,12 @@ export async function DELETE(
         }
 
         const codStr = await params?.then((e) => e.cod)
-        if (!codStr) {
-            return NextResponse.json(
-                { message: "Código do serviço é obrigatório" },
-                { status: 400 }
-            )
-        }
-
-        const cod = Number(codStr)
-        if (!Number.isInteger(cod) || cod <= 0) {
-            return NextResponse.json(
-                { message: "Código do serviço deve ser um número válido" },
-                { status: 400 }
-            )
-        }
+        const parsedCode = apiController.parsePositiveInteger(codStr, {
+            missingMessage: "Código do serviço é obrigatório",
+            invalidMessage: "Código do serviço deve ser um número válido",
+        })
+        if ("response" in parsedCode) return parsedCode.response
+        const cod = parsedCode.value
 
         const servico = await prisma.servico.findFirst({
             where: {
@@ -238,10 +202,6 @@ export async function DELETE(
             { status: 200 }
         )
     } catch (error) {
-        console.error("Erro ao excluir serviço:", error)
-        return NextResponse.json(
-            { message: "Erro ao excluir serviço" },
-            { status: 500 }
-        )
+        return apiController.handleError(error, "Erro ao excluir serviço")
     }
 }

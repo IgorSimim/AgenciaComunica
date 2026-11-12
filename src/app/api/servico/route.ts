@@ -1,6 +1,7 @@
 import { NextResponse, NextRequest } from "next/server"
 import prisma from "@/lib/prisma"
 import { authorizeFuncionario, cargosServico } from "@/lib/api/funcionario-auth"
+import { apiController } from "@/lib/api/api-controller"
 
 // GET /api/servico
 export async function GET() {
@@ -21,11 +22,7 @@ export async function GET() {
             { status: 200 }
         )
     } catch (error) {
-        console.error("Erro ao buscar serviços:", error)
-        return NextResponse.json(
-            { mensagem: "Erro ao buscar servicos" },
-            { status: 500 }
-        )
+        return apiController.handleError(error, "Erro ao buscar serviços")
     }
 }
 
@@ -78,15 +75,6 @@ export async function POST(
             { status: 201 }
         )
     } catch (error) {
-        if (error instanceof SyntaxError) {
-            return NextResponse.json(
-                { message: "Corpo da requisição inválido" },
-                { status: 400 }
-            )
-        }
-        return NextResponse.json(
-            { message: "Erro ao criar serviço" },
-            { status: 500 }
-        )
+        return apiController.handleError(error, "Erro ao criar serviço")
     }
 }

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import prisma from "@/lib/prisma"
 import cloudinary from "@/lib/cloudinary"
 import { authorizeFuncionario, cargosGestao } from "@/lib/api/funcionario-auth"
+import { apiController } from "@/lib/api/api-controller"
 
 // GET /api/empresa/:cod
 export async function GET(
@@ -10,20 +11,12 @@ export async function GET(
 ) {
     try {
         const { cod: codStr } = await params
-        if (!codStr) {
-            return NextResponse.json(
-                { message: "Código da empresa é obrigatório" },
-                { status: 400 }
-            )
-        }
-
-        const cod = Number(codStr)
-        if (!Number.isInteger(cod) || cod <= 0) {
-            return NextResponse.json(
-                { message: "Código da empresa deve ser um número válido" },
-                { status: 400 }
-            )
-        }
+        const parsedCode = apiController.parsePositiveInteger(codStr, {
+            missingMessage: "Código da empresa é obrigatório",
+            invalidMessage: "Código da empresa deve ser um número válido",
+        })
+        if ("response" in parsedCode) return parsedCode.response
+        const cod = parsedCode.value
 
         const auth = await authorizeFuncionario(cargosGestao)
         if (auth.response) {
@@ -58,11 +51,7 @@ export async function GET(
 
         return NextResponse.json(empresa, { status: 200 })
     } catch (error) {
-        console.error("Erro ao buscar empresa:", error)
-        return NextResponse.json(
-            { message: "Erro ao buscar empresa" },
-            { status: 500 }
-        )
+        return apiController.handleError(error, "Erro ao buscar empresa")
     }
 }
 
@@ -74,20 +63,12 @@ export async function PUT(
 ) {
     try {
         const codStr = await params?.then((e) => e.cod)
-        if (!codStr) {
-            return NextResponse.json(
-                { message: "Código da empresa é obrigatório" },
-                { status: 400 }
-            )
-        }
-
-        const cod = Number(codStr)
-        if (!Number.isInteger(cod) || cod <= 0) {
-            return NextResponse.json(
-                { message: "Código da empresa deve ser um número válido" },
-                { status: 400 }
-            )
-        }
+        const parsedCode = apiController.parsePositiveInteger(codStr, {
+            missingMessage: "Código da empresa é obrigatório",
+            invalidMessage: "Código da empresa deve ser um número válido",
+        })
+        if ("response" in parsedCode) return parsedCode.response
+        const cod = parsedCode.value
 
         const auth = await authorizeFuncionario(cargosGestao)
         if (auth.response) {
@@ -159,15 +140,6 @@ export async function PUT(
             { status: 200 }
         )
     } catch (error) {
-        if (error instanceof SyntaxError) {
-            return NextResponse.json(
-                { message: "Corpo da requisição inválido" },
-                { status: 400 }
-            )
-        }
-        return NextResponse.json(
-            { message: "Erro ao atualizar empresa" },
-            { status: 500 }
-        )
+        return apiController.handleError(error, "Erro ao atualizar empresa")
     }
 }

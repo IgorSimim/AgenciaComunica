@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import cloudinary from '@/lib/cloudinary'
 import { authorizeFuncionario, cargosGestao, cargosServico } from '@/lib/api/funcionario-auth'
+import { apiController } from '@/lib/api/api-controller'
 
 export const runtime = 'nodejs'
 
@@ -78,16 +79,12 @@ export async function POST(request: NextRequest) {
     }, { status: 201 })
 
   } catch (error) {
-    console.error('Erro no upload da imagem:', error)
     if (error instanceof SyntaxError) {
       return NextResponse.json(
         { message: 'Formulário de upload inválido' },
         { status: 400 }
       )
     }
-    return NextResponse.json({
-      message: 'Não foi possível processar o upload agora'
-    },
-      { status: 500 })
+    return apiController.handleError(error, 'Não foi possível processar o upload agora')
   }
 }

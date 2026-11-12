@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma"
 import cloudinary from "@/lib/cloudinary"
 import { Cargo } from "@prisma/client"
 import { authorizeFuncionario, cargosGestao } from "@/lib/api/funcionario-auth"
+import { apiController } from "@/lib/api/api-controller"
 
 // GET /api/funcionario/:id
 export async function GET(
@@ -16,20 +17,12 @@ export async function GET(
         }
 
         const idStr = await params?.then((e) => e.id)
-        if (!idStr) {
-            return NextResponse.json(
-                { message: "ID do funcionário é obrigatório" },
-                { status: 400 }
-            )
-        }
-
-        const id = Number(idStr)
-        if (!Number.isInteger(id) || id <= 0) {
-            return NextResponse.json(
-                { message: "ID do funcionário deve ser um número válido" },
-                { status: 400 }
-            )
-        }
+        const parsedId = apiController.parsePositiveInteger(idStr, {
+            missingMessage: "ID do funcionário é obrigatório",
+            invalidMessage: "ID do funcionário deve ser um número válido",
+        })
+        if ("response" in parsedId) return parsedId.response
+        const id = parsedId.value
 
         const funcionario = await prisma.funcionario.findFirst({
             where: {
@@ -60,11 +53,7 @@ export async function GET(
 
         return NextResponse.json(funcionario, { status: 200 })
     } catch (error) {
-        console.error("Erro ao buscar funcionário:", error)
-        return NextResponse.json(
-            { message: "Erro ao buscar funcionário" },
-            { status: 500 }
-        )
+        return apiController.handleError(error, "Erro ao buscar funcionário")
     }
 }
 
@@ -82,20 +71,12 @@ export async function PUT(
         const { funcionario: actor } = auth
 
         const idStr = await params?.then((c) => c.id)
-        if (!idStr) {
-            return NextResponse.json(
-                { message: "ID do funcionário é obrigatório" },
-                { status: 400 }
-            )
-        }
-
-        const id = Number(idStr)
-        if (!Number.isInteger(id) || id <= 0) {
-            return NextResponse.json(
-                { message: "ID deve ser um número válido" },
-                { status: 400 }
-            )
-        }
+        const parsedId = apiController.parsePositiveInteger(idStr, {
+            missingMessage: "ID do funcionário é obrigatório",
+            invalidMessage: "ID deve ser um número válido",
+        })
+        if ("response" in parsedId) return parsedId.response
+        const id = parsedId.value
 
         const funcionario = await prisma.funcionario.findUnique({
             where: {
@@ -187,16 +168,7 @@ export async function PUT(
             { status: 200 }
         )
     } catch (error) {
-        if (error instanceof SyntaxError) {
-            return NextResponse.json(
-                { message: "Corpo da requisição inválido" },
-                { status: 400 }
-            )
-        }
-        return NextResponse.json(
-            { message: "Erro ao atualizar funcionário" },
-            { status: 500 }
-        )
+        return apiController.handleError(error, "Erro ao atualizar funcionário")
     }
 }
 
@@ -213,24 +185,16 @@ export async function DELETE(
         const { funcionario: actor } = auth
 
         const id = await params?.then((c) => c.id)
-        if (!id) {
-            return NextResponse.json(
-                { message: "ID do funcionário é obrigatório" },
-                { status: 400 }
-            )
-        }
-
-        const parsedId = Number(id)
-        if (!Number.isInteger(parsedId) || parsedId <= 0) {
-            return NextResponse.json(
-                { message: "ID deve ser um número válido" },
-                { status: 400 }
-            )
-        }
+        const parsedId = apiController.parsePositiveInteger(id, {
+            missingMessage: "ID do funcionário é obrigatório",
+            invalidMessage: "ID deve ser um número válido",
+        })
+        if ("response" in parsedId) return parsedId.response
+        const funcionarioId = parsedId.value
 
         const funcionario = await prisma.funcionario.findFirst({
             where: {
-                id: parsedId,
+                id: funcionarioId,
                 deletedAt: null,
             },
         })
@@ -263,7 +227,7 @@ export async function DELETE(
         }
 
         await prisma.funcionario.update({
-            where: { id: parsedId },
+            where: { id: funcionarioId },
             data: {
                 deletedAt: new Date()
             }
@@ -274,10 +238,6 @@ export async function DELETE(
             { status: 200 }
         )
     } catch (error) {
-        console.error("Erro ao excluir funcionário:", error)
-        return NextResponse.json(
-            { message: "Erro ao excluir funcionário" },
-            { status: 500 }
-        )
+        return apiController.handleError(error, "Erro ao excluir funcionário")
     }
 }

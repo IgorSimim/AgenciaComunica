@@ -5,6 +5,7 @@ import { Cargo } from "@prisma/client"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/app/api/config/auth/authOptions"
 import { authorizeFuncionario, cargosGestao } from "@/lib/api/funcionario-auth"
+import { apiController } from "@/lib/api/api-controller"
 
 // GET /api/funcionario
 export async function GET() {
@@ -42,11 +43,7 @@ export async function GET() {
 
         return NextResponse.json(funcionarioEncontrado)
     } catch (error) {
-        console.error("Erro ao buscar funcionários:", error)
-        return NextResponse.json(
-            { message: "Erro ao buscar funcionários" },
-            { status: 500 }
-        )
+        return apiController.handleError(error, "Erro ao buscar funcionários")
     }
 }
 
@@ -147,15 +144,6 @@ export async function POST(
             { status: 201 }
         )
     } catch (error) {
-        if (error instanceof SyntaxError) {
-            return NextResponse.json(
-                { message: "Corpo da requisição inválido" },
-                { status: 400 }
-            )
-        }
-        return NextResponse.json(
-            { message: "Erro ao criar funcionário" },
-            { status: 500 }
-        )
+        return apiController.handleError(error, "Erro ao criar funcionário")
     }
 }

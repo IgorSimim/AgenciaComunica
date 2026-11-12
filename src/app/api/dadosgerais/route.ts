@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import prisma from "@/lib/prisma"
+import { apiController } from "@/lib/api/api-controller"
 
 export async function GET() {
     try {
@@ -16,10 +17,6 @@ export async function GET() {
             servicos
         })
     } catch (error) {
-        console.error("Erro ao buscar dados gerais:", error)
-        return NextResponse.json(
-            { message: "Erro ao buscar dados gerais" },
-            { status: 500 }
-        )
+        return apiController.handleError(error, "Erro ao buscar dados gerais")
     }
 }

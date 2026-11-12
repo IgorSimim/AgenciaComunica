@@ -2,6 +2,7 @@ import { NextResponse, NextRequest } from "next/server"
 import bcrypt from "bcryptjs"
 import prisma from "@/lib/prisma"
 import { cargosGestao, authorizeFuncionario } from "@/lib/api/funcionario-auth"
+import { apiController } from "@/lib/api/api-controller"
 
 // GET /api/empresa
 export async function GET() {
@@ -55,11 +56,7 @@ export async function GET() {
         return NextResponse.json(empresas, { status: 200 })
 
     } catch (error) {
-        console.error("Erro ao buscar empresas:", error)
-        return NextResponse.json(
-            { mensagem: "Erro ao buscar empresas" },
-            { status: 500 }
-        )
+        return apiController.handleError(error, "Erro ao buscar empresas")
     }
 }
 
@@ -140,15 +137,6 @@ export async function POST(
             { status: 201 }
         )
     } catch (error) {
-        if (error instanceof SyntaxError) {
-            return NextResponse.json(
-                { message: "Corpo da requisição inválido" },
-                { status: 400 }
-            )
-        }
-        return NextResponse.json(
-            { message: "Erro ao criar empresa" },
-            { status: 500 }
-        )
+        return apiController.handleError(error, "Erro ao criar empresa")
     }
 }
