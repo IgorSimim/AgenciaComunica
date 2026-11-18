@@ -1,8 +1,7 @@
 $kind: http-request
-name: 'Dashboard'
+name: Dashboard
 url: '{{baseURL}}/api/dadosgerais'
 method: GET
 headers:
-  - key: Cookie
-    value: 'next-auth.session-token={{sessionToken}}'
+  Cookie: 'next-auth.session-token={{sessionToken}}'
 order: 1000

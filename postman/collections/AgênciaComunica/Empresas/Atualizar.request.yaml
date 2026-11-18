@@ -1,18 +1,19 @@
 $kind: http-request
-url: "{{baseURL}}/api/empresa/3"
+name: Atualizar
+url: '{{baseURL}}/api/empresa/{{empresaCod}}'
 method: PUT
 headers:
-  Cookie: next-auth.session-token={{sessionToken}}
+  Cookie: 'next-auth.session-token={{sessionToken}}'
   Content-Type: application/json
 order: 2000
 body:
   type: json
   content: |-
     {
-      "nome": "TechVision Soluções Digitais",
-      "email": "contato@techvision.com.br",
-      "setor": "Tecnologia da Informação",
-      "logotipoUrl": "https://res.cloudinary.com/demo/image/upload/v1/empresas/techvision-logo.png",
-      "logotipoPublicId": "empresas/techvision-logo",
-      "ativa": false
+      "nome": "{{empresa_nome}}",
+      "email": "{{empresa_email}}",
+      "setor": "{{empresa_setor}}",
+      "logotipoUrl": "{{empresa_logotipoUrl}}",
+      "logotipoPublicId": "{{empresa_logotipoPublicId}}",
+      "ativa": true
     }

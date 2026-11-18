@@ -1,7 +1,17 @@
 $kind: http-request
-description: ""
-url: "{{baseURL}}/api/funcionario"
+name: Listar
+url: '{{baseURL}}/api/funcionario'
 method: GET
 headers:
-  Cookie: next-auth.session-token={{sessionToken}}
+  Cookie: 'next-auth.session-token={{sessionToken}}'
 order: 1000
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      // Salva o id do primeiro funcionário retornado para uso nas rotas de detalhe/atualizar/excluir
+      const json = pm.response.json();
+      if (Array.isArray(json) && json.length > 0) {
+          pm.collectionVariables.set("funcionarioId", json[0].id);
+          console.log("funcionarioId salvo:", json[0].id);
+      }

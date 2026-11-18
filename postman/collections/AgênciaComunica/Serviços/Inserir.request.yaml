@@ -1,18 +1,38 @@
 $kind: http-request
-url: "{{baseURL}}/api/servico"
+name: Inserir
+url: '{{baseURL}}/api/servico'
 method: POST
 headers:
-  Cookie: next-auth.session-token={{sessionToken}}
+  Cookie: 'next-auth.session-token={{sessionToken}}'
   Content-Type: application/json
 order: 4000
+scripts:
+  - type: beforeRequest
+    language: text/javascript
+    code: |-
+      // Gera dados aleatórios para o serviço
+      const rand = Math.floor(Math.random() * 90000) + 10000;
+      const tipos = ["Gestão de Redes Sociais", "Produção de Vídeos", "Design Gráfico", "Tráfego Pago", "Redação de Conteúdo", "Identidade Visual", "Email Marketing"];
+      const tipoBase = tipos[Math.floor(Math.random() * tipos.length)];
+      const nome = `${tipoBase} ${rand}`;
+
+      // Preço aleatório entre 500 e 5000
+      const preco = parseFloat((Math.random() * 4500 + 500).toFixed(2));
+
+      pm.collectionVariables.set("servico_nome", nome);
+      pm.collectionVariables.set("servico_descricao", `Serviço especializado em ${tipoBase.toLowerCase()} para empresas de todos os portes.`);
+      pm.collectionVariables.set("servico_preco", preco);
+      pm.collectionVariables.set("servico_simboloUrl", `https://res.cloudinary.com/demo/image/upload/v1/servicos/simbolo-${rand}.png`);
+      pm.collectionVariables.set("servico_simboloPublicId", `servicos/simbolo-${rand}`);
+
+      console.log(`Serviço gerado: ${nome} | R$ ${preco}`);
 body:
   type: json
   content: |-
     {
-      "funcionario_id": 1,
-      "nome": "teste",
-      "descricao": "Criação e gerenciamento de conteúdo para Instagram, Facebook e LinkedIn com foco em engajamento.",
-      "preco": 1500.00,
-      "simboloUrl": "https://res.cloudinary.com/demo/image/upload/v1/servicos/redes-sociais.png",
-      "simboloPublicId": "servicos/redes-sociais"
+      "nome": "{{servico_nome}}",
+      "descricao": "{{servico_descricao}}",
+      "preco": {{servico_preco}},
+      "simboloUrl": "{{servico_simboloUrl}}",
+      "simboloPublicId": "{{servico_simboloPublicId}}"
     }

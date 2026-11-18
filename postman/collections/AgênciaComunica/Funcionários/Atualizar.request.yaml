@@ -1,5 +1,5 @@
 $kind: http-request
-url: "{{baseURL}}/api/funcionario/5"
+url: "{{baseURL}}/api/funcionario/{{funcionarioId}}"
 method: PUT
 headers:
   Cookie: next-auth.session-token={{sessionToken}}
@@ -9,11 +9,11 @@ body:
   type: json
   content: |-
     {
-      "nome": "Rafael Oliveira Costa",
-      "email": "rafael.oliveira@agenciacomunica.com.br",
-      "telefone": "(21)91234-5678",
-      "sobre": "Videomaker especializado em conteúdo para redes sociais e campanhas publicitárias com foco em storytelling.",
-      "fotoUrl": "https://res.cloudinary.com/demo/image/upload/v1/funcionarios/rafael-oliveira.jpg",
-      "fotoPublicId": "funcionarios/rafael-oliveira",
-      "cargo": "VIDEOMAKER"
+      "nome": "{{func_nome}}",
+      "email": "{{func_email}}",
+      "telefone": "{{func_telefone}}",
+      "sobre": "{{func_sobre}}",
+      "fotoUrl": "{{func_fotoUrl}}",
+      "fotoPublicId": "{{func_fotoPublicId}}",
+      "cargo": "{{func_cargo}}"
     }

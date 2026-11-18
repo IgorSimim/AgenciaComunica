@@ -1,0 +1,17 @@
+name: AgênciaComunica
+values:
+  - key: baseURL
+    value: 'http://localhost:3000'
+    enabled: true
+  - key: emailFuncionario
+    value: 'funcionarioA@example.com'
+    enabled: true
+  - key: senhaFuncionario
+    value: '-Senha123'
+    enabled: true
+  - key: emailEmpresa
+    value: 'empresaA@example.com'
+    enabled: true
+  - key: senhaEmpresa
+    value: '-Senha123'
+    enabled: true

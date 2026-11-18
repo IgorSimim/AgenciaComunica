@@ -1,21 +1,54 @@
 $kind: http-request
-url: "{{baseURL}}/api/funcionario"
+name: Inserir
+url: '{{baseURL}}/api/funcionario'
 method: POST
 headers:
-  Cookie: next-auth.session-token={{sessionToken}}
+  Cookie: 'next-auth.session-token={{sessionToken}}'
   Content-Type: application/json
 order: 4000
+scripts:
+  - type: beforeRequest
+    language: text/javascript
+    code: |-
+      // Gera dados aleatórios para o funcionário
+      const rand = Math.floor(Math.random() * 90000) + 10000;
+      const cargos = ["DESIGNER", "REDATORA", "VIDEOMAKER", "GESTORTRAFEGO", "RH"];
+      const cargo = cargos[Math.floor(Math.random() * cargos.length)];
+
+      // Gera data de nascimento aleatória (entre 1985 e 2000)
+      const ano = Math.floor(Math.random() * 15) + 1985;
+      const mes = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
+      const dia = String(Math.floor(Math.random() * 28) + 1).padStart(2, '0');
+      const dtnasc = `${ano}-${mes}-${dia}T00:00:00.000Z`;
+
+      // Gera telefone aleatório
+      const ddd = Math.floor(Math.random() * 89) + 11;
+      const tel1 = Math.floor(Math.random() * 9000) + 1000;
+      const tel2 = Math.floor(Math.random() * 9000) + 1000;
+      const telefone = `(${ddd}) 9${tel1}-${tel2}`;
+
+      pm.collectionVariables.set("func_nome", `Funcionário Teste ${rand}`);
+      pm.collectionVariables.set("func_email", `func${rand}@agenciacomunica.com.br`);
+      pm.collectionVariables.set("func_senha", `Func@${rand}`);
+      pm.collectionVariables.set("func_telefone", telefone);
+      pm.collectionVariables.set("func_sobre", `Profissional de ${cargo.toLowerCase()} com experiência em projetos digitais.`);
+      pm.collectionVariables.set("func_dtnasc", dtnasc);
+      pm.collectionVariables.set("func_fotoUrl", `https://res.cloudinary.com/demo/image/upload/v1/funcionarios/foto-${rand}.jpg`);
+      pm.collectionVariables.set("func_fotoPublicId", `funcionarios/foto-${rand}`);
+      pm.collectionVariables.set("func_cargo", cargo);
+
+      console.log(`Funcionário gerado: ${pm.collectionVariables.get("func_nome")} | ${cargo} | ${telefone}`);
 body:
   type: json
   content: |-
     {
-      "nome": "Camila Ferreira Santos",
-      "email": "camila.teste@agenciacomunica.com.br",
-      "senha": "Camila@2024",
-      "telefone": "(11) 95503-7813",
-      "sobre": "Designer criativa com 4 anos de experiência em identidade visual e branding para marcas digitais.",
-      "dtnasc": "2004-03-12T00:00:00.000Z",
-      "fotoUrl": "https://res.cloudinary.com/demo/image/upload/v1/funcionarios/camila-ferreira.jpg",
-      "fotoPublicId": "funcionarios/camila-ferreira",
-      "cargo": "DESIGNER"
+      "nome": "{{func_nome}}",
+      "email": "{{func_email}}",
+      "senha": "{{func_senha}}",
+      "telefone": "{{func_telefone}}",
+      "sobre": "{{func_sobre}}",
+      "dtnasc": "{{func_dtnasc}}",
+      "fotoUrl": "{{func_fotoUrl}}",
+      "fotoPublicId": "{{func_fotoPublicId}}",
+      "cargo": "{{func_cargo}}"
     }

@@ -1,5 +1,5 @@
 $kind: http-request
-url: "{{baseURL}}/api/servico/6"
+url: "{{baseURL}}/api/servico/{{servicoId}}"
 method: PUT
 headers:
   Cookie: next-auth.session-token={{sessionToken}}
@@ -9,9 +9,9 @@ body:
   type: json
   content: |-
     {
-      "nome": "Produção de Vídeos Institucionais",
-      "descricao": "Roteiro, gravação e edição de vídeos para apresentação da marca e campanhas publicitárias.",
-      "preco": 2800.00,
-      "simboloUrl": "https://res.cloudinary.com/demo/image/upload/v1/servicos/video-institucional.png",
-      "simboloPublicId": "servicos/video-institucional"
+      "nome": "{{servico_nome}}",
+      "descricao": "{{servico_descricao}}",
+      "preco": {{servico_preco}},
+      "simboloUrl": "{{servico_simboloUrl}}",
+      "simboloPublicId": "{{servico_simboloPublicId}}"
     }

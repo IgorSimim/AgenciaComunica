@@ -1,21 +1,43 @@
 $kind: http-request
-url: "{{baseURL}}/api/empresa"
+name: Inserir
+url: '{{baseURL}}/api/empresa'
 method: POST
 headers:
-  Cookie: next-auth.session-token={{sessionToken}}
+  Cookie: 'next-auth.session-token={{sessionToken}}'
   Content-Type: application/json
 order: 3000
+scripts:
+  - type: beforeRequest
+    language: text/javascript
+    code: |-
+      // Gera dados aleatórios para a empresa
+      const rand = Math.floor(Math.random() * 90000) + 10000;
+      const setores = ["Tecnologia", "Moda e Vestuário", "Alimentação", "Saúde", "Educação", "Varejo", "Logística"];
+      const setor = setores[Math.floor(Math.random() * setores.length)];
+
+      // Gera CNPJ formatado aleatório (apenas para testes)
+      const n = () => Math.floor(Math.random() * 10);
+      const cnpj = `${n()}${n()}.${n()}${n()}${n()}.${n()}${n()}${n()}/000${n()}-${n()}${n()}`;
+
+      pm.collectionVariables.set("empresa_cnpj", cnpj);
+      pm.collectionVariables.set("empresa_nome", `Empresa Teste ${rand}`);
+      pm.collectionVariables.set("empresa_email", `empresa${rand}@teste.com.br`);
+      pm.collectionVariables.set("empresa_senha", `Senha@${rand}`);
+      pm.collectionVariables.set("empresa_setor", setor);
+      pm.collectionVariables.set("empresa_logotipoUrl", `https://res.cloudinary.com/demo/image/upload/v1/empresas/logo-${rand}.png`);
+      pm.collectionVariables.set("empresa_logotipoPublicId", `empresas/logo-${rand}`);
+
+      console.log(`Empresa gerada: ${pm.collectionVariables.get("empresa_nome")} | ${cnpj}`);
 body:
   type: json
   content: |-
     {
-      "funcionario_id": 1,
-      "cnpj": "31.444.512/0001-91",
-      "nome": "Bella Moda Ltda",
-      "email": "contato@bellamoda.com.br",
-      "senha": "Senha@2024",
-      "setor": "Moda e Vestuário",
-      "logotipoUrl": "https://res.cloudinary.com/demo/image/upload/v1/empresas/bella-moda-logo.png",
-      "logotipoPublicId": "empresas/bella-moda-logo",
+      "cnpj": "{{empresa_cnpj}}",
+      "nome": "{{empresa_nome}}",
+      "email": "{{empresa_email}}",
+      "senha": "{{empresa_senha}}",
+      "setor": "{{empresa_setor}}",
+      "logotipoUrl": "{{empresa_logotipoUrl}}",
+      "logotipoPublicId": "{{empresa_logotipoPublicId}}",
       "ativa": true
     }

@@ -67,6 +67,17 @@ const FuncionariosData = [
     fotoPublicId: 'logoC',
     cargo: 'REDATORA' as const,
   },
+  {
+    nome: 'Funcionário Proprietário',
+    email: 'funcionarioC@example.com',
+    senha: '-Senha123',
+    telefone: '11966666666', 
+    sobre: 'Proprietário da empresa.',
+    dtnasc: new Date('1980-01-01'),
+    fotoUrl: 'http://example.com/logoC.png',
+    fotoPublicId: 'logoC',
+    cargo: 'PROPRIETARIA' as const,
+  }
 ]
 
 export async function main() {
@@ -74,8 +85,10 @@ export async function main() {
 
   for (const c of FuncionariosData) {
     const hashedPassword = await bcrypt.hash(c.senha, 10);
-    const funcionario = await prisma.funcionario.create({
-      data: {
+    const funcionario = await prisma.funcionario.upsert({
+      where: { email: c.email },
+      update: {},
+      create: {
         ...c,
         senha: hashedPassword,
       },
@@ -86,11 +99,13 @@ export async function main() {
   if (funcionarios.length > 0) {
     for (const e of EmpresasData) {
       const hashedPassword = await bcrypt.hash(e.senha, 10);
-      await prisma.empresa.create({
-        data: {
+      await prisma.empresa.upsert({
+        where: { email: e.email },
+        update: {},
+        create: {
           ...e,
           senha: hashedPassword,
-          funcionario_id: funcionarios[0].id, 
+          funcionario_id: funcionarios[0].id,
         },
       })
     }
@@ -98,10 +113,12 @@ export async function main() {
 
   if (funcionarios.length > 2) {
     for (const s of ServicosData) {
-      await prisma.servico.create({
-        data: {
+      await prisma.servico.upsert({
+        where: { nome: s.nome },
+        update: {},
+        create: {
           ...s,
-          funcionario_id: funcionarios[2].id, 
+          funcionario_id: funcionarios[2].id,
         },
       })
     }

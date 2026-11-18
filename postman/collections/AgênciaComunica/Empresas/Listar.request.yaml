@@ -1,8 +1,17 @@
 $kind: http-request
-name: 'Listar'
-url: '{{baseURL}}/api/empresa'
+description: ""
+url: "{{baseURL}}/api/empresa"
 method: GET
 headers:
-  - key: Cookie
-    value: 'next-auth.session-token={{sessionToken}}'
+  Cookie: next-auth.session-token={{sessionToken}}
 order: 1000
+scripts:
+  - type: afterResponse
+    code: |-
+      // Salva o cod da primeira empresa retornada para uso nas rotas de detalhe/atualizar/excluir
+      const json = pm.response.json();
+      if (Array.isArray(json) && json.length > 0) {
+          pm.collectionVariables.set("empresaCod", json[0].cod);
+          console.log("empresaCod salvo:", json[0].cod);
+      }
+    language: text/javascript

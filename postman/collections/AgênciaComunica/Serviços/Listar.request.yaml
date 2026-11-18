@@ -1,7 +1,18 @@
 $kind: http-request
-description: ""
-url: "{{baseURL}}/api/servico"
+name: Listar
+url: '{{baseURL}}/api/servico'
 method: GET
 headers:
-  Cookie: next-auth.session-token={{sessionToken}}
+  Cookie: 'next-auth.session-token={{sessionToken}}'
 order: 1000
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      // Salva o cod do primeiro serviço retornado para uso nas rotas de detalhe/atualizar/excluir
+      const json = pm.response.json();
+      const lista = json.servicos || json;
+      if (Array.isArray(lista) && lista.length > 0) {
+          pm.collectionVariables.set("servicoCod", lista[0].cod);
+          console.log("servicoCod salvo:", lista[0].cod);
+      }
